@@ -1,0 +1,84 @@
+name: "Papecon"
+
+services:
+  db:
+    image: postgres:15
+    container_name: papecon_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: papecon_backend
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    ports:
+      - "${BACKEND_EXTERNAL_PORT}:8000"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+        - action: sync+restart
+          path: ./backend/requirements.txt
+          target: /app/requirements.txt
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: papecon_frontend
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    env_file:
+      - .env
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "100"
+      VITE_API_BASE_URL: "http://localhost:${BACKEND_EXTERNAL_PORT}"
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT}:5173"
+    depends_on:
+      - backend
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+        - action: sync+restart
+          path: ./frontend/package.json
+          target: /app/package.json
+        - action: sync+restart
+          path: ./frontend/package-lock.json
+          target: /app/package-lock.json
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: papecon_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_EXTERNAL_PORT:-5050}:80"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  frontend_node_modules:
