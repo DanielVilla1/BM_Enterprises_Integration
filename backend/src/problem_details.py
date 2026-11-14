@@ -59,6 +59,7 @@ def build_problem_response(
     title: str,
     detail: str,
     errors: list[dict[str, str]] | None = None,
+    extra_headers: dict[str, str] | None = None,
 ) -> JSONResponse:
     body: dict[str, object] = {
         "type": f"urn:bm-enterprises:problem:{error_code.lower().replace('_', '-')}",
@@ -74,12 +75,15 @@ def build_problem_response(
     headers = {"X-Trace-Id": str(trace_id)}
     if status_code == 401:
         headers["WWW-Authenticate"] = "Bearer"
+    headers.update(extra_headers or {})
     return JSONResponse(body, status_code=status_code, media_type=PROBLEM_MEDIA_TYPE, headers=headers)
 
 
 async def handle_business_rule_error(request: Request, error: Exception) -> JSONResponse:
     error = cast(BusinessRuleError, error)
-    return build_problem_response(request, error.status_code, error.error_code, error.title, error.detail)
+    return build_problem_response(
+        request, error.status_code, error.error_code, error.title, error.detail, None, error.headers
+    )
 
 
 async def handle_validation_error(request: Request, error: Exception) -> JSONResponse:

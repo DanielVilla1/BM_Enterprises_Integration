@@ -59,6 +59,10 @@ class EmployeeRepository:
         rows = self._session.scalars(statement.limit(limit).offset(offset)).all()
         return [self._to_entity(row) for row in rows]
 
+    def list_all(self) -> list[Employee]:
+        statement = select(EmployeeRow).order_by(EmployeeRow.full_name, EmployeeRow.employee_id)
+        return [self._to_entity(row) for row in self._session.scalars(statement).all()]
+
     def create(self, full_name: str, email: str, phone: str | None) -> Employee:
         row = EmployeeRow(full_name=full_name, email=email, phone=phone, is_active=False)
         self._session.add(row)

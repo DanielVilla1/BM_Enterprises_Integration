@@ -29,9 +29,13 @@ class ApplicationSettings(BaseSettings):
     clerk_audience: str = ""
     clerk_authorized_parties: Annotated[tuple[str, ...], NoDecode] = ()
     clerk_webhook_secret: str = ""
+    clerk_secret_key: str = ""
+    clerk_api_base_url: str = "https://api.clerk.com"
     clerk_clock_skew_seconds: int = 5
 
     helper_or_upload_enabled: bool = False
+    rate_limit_failed_auth_per_minute: int = 20
+    rate_limit_webhook_per_minute: int = 120
     max_webhook_body_bytes: int = 262144
 
     @field_validator("cors_allowed_origins", "clerk_authorized_parties", mode="before")

@@ -24,6 +24,7 @@ from .Entity.business_rule_error import BusinessRuleError
 from .Entity.employee import Principal
 from .Infrastructure.Clerk.clerk_token_verifier import ClerkTokenVerifier
 from .Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier
+from .rate_limiter import SlidingWindowLimiter
 from .Repository.audit_repository import AuditRepository
 from .Repository.employee_repository import EmployeeRepository
 from .Repository.permission_repository import PermissionRepository
@@ -60,6 +61,35 @@ def get_webhook_verifier() -> IWebhookVerifier:
     return ClerkWebhookVerifier(get_settings().clerk_webhook_secret)
 
 
+@lru_cache
+def get_rate_limiter() -> SlidingWindowLimiter:
+    return SlidingWindowLimiter()
+
+
+def _client_key(request: Request, purpose: str) -> str:
+    client_host = request.client.host if request.client else "unknown"
+    return f"{purpose}:{client_host}"
+
+
+def _too_many_requests() -> BusinessRuleError:
+    return BusinessRuleError(
+        429,
+        "RATE_LIMITED",
+        "Too many requests",
+        "Too many requests. Wait a minute and try again.",
+        {"Retry-After": "60"},
+    )
+
+
+def enforce_webhook_rate_limit(
+    request: Request, limiter: SlidingWindowLimiter = Depends(get_rate_limiter)
+) -> None:
+    key = _client_key(request, "webhook")
+    limiter.record(key)
+    if limiter.count(key, 60) > get_settings().rate_limit_webhook_per_minute:
+        raise _too_many_requests()
+
+
 def get_trace_id(request: Request) -> str:
     return getattr(request.state, "trace_id", "")
 
@@ -94,12 +124,22 @@ def get_webhook_service(
 
 
 def get_principal(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     session: Session = Depends(get_session),
     verifier: ITokenVerifier = Depends(get_token_verifier),
+    limiter: SlidingWindowLimiter = Depends(get_rate_limiter),
 ) -> Principal:
+    key = _client_key(request, "auth-failure")
+    if limiter.count(key, 60) >= get_settings().rate_limit_failed_auth_per_minute:
+        raise _too_many_requests()
     authentication = AuthenticationService(verifier, EmployeeRepository(session))
-    return authentication.authenticate(credentials.credentials if credentials else None)
+    try:
+        return authentication.authenticate(credentials.credentials if credentials else None)
+    except BusinessRuleError as rejection:
+        if rejection.status_code in (401, 403):
+            limiter.record(key)
+        raise
 
 
 get_principal.requires_authentication = True  # type: ignore[attr-defined]

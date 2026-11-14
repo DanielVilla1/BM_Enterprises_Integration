@@ -11,6 +11,20 @@ permissions:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bm_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     defaults:
       run:
         working-directory: backend
@@ -27,6 +41,10 @@ jobs:
       - name: Format check
         run: black --check .
       - name: Tests (unit, integration, interface, contract)
+        run: python -m pytest -q
+      - name: Tests on PostgreSQL (migrations, RLS lockdown, audit triggers)
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/bm_test
         run: python -m pytest -q
       - name: Dependency audit
         run: pip-audit -r requirements.txt

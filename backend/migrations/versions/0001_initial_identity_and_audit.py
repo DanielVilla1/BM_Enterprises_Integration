@@ -135,11 +135,14 @@ def _make_audit_log_append_only() -> None:
             )
 
 
+_LOCKED_DOWN_TABLES = (*_TABLES, "alembic_version")
+
+
 def _lock_down_data_api() -> None:
     """Row Level Security on every table; no grants for Supabase anon/authenticated."""
     if op.get_bind().dialect.name != "postgresql":
         return
-    for table_name in _TABLES:
+    for table_name in _LOCKED_DOWN_TABLES:
         op.execute(f"ALTER TABLE {table_name} ENABLE ROW LEVEL SECURITY")
         op.execute(f"""
             DO $$

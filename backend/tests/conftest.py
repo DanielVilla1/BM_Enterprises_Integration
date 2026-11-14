@@ -21,6 +21,7 @@ from alembic import command
 from alembic.config import Config
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
+from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session, sessionmaker
 from svix.webhooks import Webhook
 
@@ -44,7 +45,12 @@ from backend.src.Entity.access import RoleCode  # noqa: E402
 from backend.src.Entity.employee import Employee  # noqa: E402
 from backend.src.Infrastructure.Clerk.clerk_token_verifier import ClerkTokenVerifier  # noqa: E402
 from backend.src.Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier  # noqa: E402
-from backend.src.providers import get_session, get_token_verifier, get_webhook_verifier  # noqa: E402
+from backend.src.providers import (  # noqa: E402
+    get_rate_limiter,
+    get_session,
+    get_token_verifier,
+    get_webhook_verifier,
+)
 from backend.src.Repository.employee_repository import EmployeeRepository  # noqa: E402
 
 BACKEND_DIRECTORY = Path(__file__).resolve().parents[1]
@@ -96,11 +102,45 @@ def template_database(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return database_path
 
 
+POSTGRES_TEST_URL = os.environ.get("TEST_DATABASE_URL", "")
+USING_POSTGRES = POSTGRES_TEST_URL.startswith("postgresql")
+
+
+def _prepare_postgres_schema(engine: Engine) -> None:
+    """Fresh public schema that mimics Supabase: anon/authenticated roles with default grants."""
+    with engine.begin() as connection:
+        connection.execute(text("DROP SCHEMA IF EXISTS public CASCADE"))
+        connection.execute(text("CREATE SCHEMA public"))
+        for role_name in ("anon", "authenticated"):
+            connection.execute(
+                text(
+                    f"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{role_name}') "
+                    f"THEN CREATE ROLE {role_name}; END IF; END $$"
+                )
+            )
+            connection.execute(text(f"GRANT USAGE ON SCHEMA public TO {role_name}"))
+        connection.execute(
+            text("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated")
+        )
+
+
+def _alembic_config(database_url: str) -> Config:
+    configuration = Config(str(BACKEND_DIRECTORY / "alembic.ini"))
+    configuration.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
+    return configuration
+
+
 @pytest.fixture
-def session_factory(template_database: Path, tmp_path: Path) -> Iterator[sessionmaker[Session]]:
-    database_path = tmp_path / "test.db"
-    shutil.copy(template_database, database_path)
-    engine = build_engine(f"sqlite:///{database_path.as_posix()}")
+def session_factory(request: pytest.FixtureRequest, tmp_path: Path) -> Iterator[sessionmaker[Session]]:
+    if USING_POSTGRES:
+        engine = build_engine(POSTGRES_TEST_URL)
+        _prepare_postgres_schema(engine)
+        command.upgrade(_alembic_config(POSTGRES_TEST_URL), "head")
+    else:
+        template_database: Path = request.getfixturevalue("template_database")
+        database_path = tmp_path / "test.db"
+        shutil.copy(template_database, database_path)
+        engine = build_engine(f"sqlite:///{database_path.as_posix()}")
     yield sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
     engine.dispose()
 
@@ -111,6 +151,7 @@ def client(session_factory: sessionmaker[Session]) -> Iterator[TestClient]:
         with session_factory() as session:
             yield session
 
+    get_rate_limiter().reset()
     app.dependency_overrides[get_session] = override_session
     app.dependency_overrides[get_token_verifier] = build_test_verifier
     app.dependency_overrides[get_webhook_verifier] = lambda: ClerkWebhookVerifier(TEST_WEBHOOK_SECRET)

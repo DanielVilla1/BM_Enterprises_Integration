@@ -13,10 +13,14 @@ from fastapi.concurrency import run_in_threadpool
 from ..config import get_settings
 from ..DTO.account_dto import ProblemDetailsResponse, WebhookAckResponse
 from ..Entity.business_rule_error import BusinessRuleError
-from ..providers import get_webhook_service
+from ..providers import enforce_webhook_rate_limit, get_webhook_service
 from ..Service.clerk_webhook_service import ClerkWebhookService
 
-router = APIRouter(prefix="/api/v1/webhooks", tags=["webhooks"])
+router = APIRouter(
+    prefix="/api/v1/webhooks",
+    tags=["webhooks"],
+    dependencies=[Depends(enforce_webhook_rate_limit)],
+)
 
 
 @router.post(

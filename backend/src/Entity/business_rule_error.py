@@ -10,8 +10,16 @@
 class BusinessRuleError(Exception):
     """Raised by services; never carries internal details."""
 
-    def __init__(self, status_code: int, error_code: str, title: str, detail: str) -> None:
+    def __init__(
+        self,
+        status_code: int,
+        error_code: str,
+        title: str,
+        detail: str,
+        headers: dict[str, str] | None = None,
+    ) -> None:
         super().__init__(detail)
+        self.headers = headers or {}
         self.status_code = status_code
         self.error_code = error_code
         self.title = title

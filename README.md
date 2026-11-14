@@ -18,7 +18,7 @@ python -m venv .venv && .venv/Scripts/python -m pip install -r requirements-dev.
 .venv/Scripts/python -m pytest -q && .venv/Scripts/python -m ruff check . && .venv/Scripts/python -m black --check .
 ```
 
-From the repository root: `python -m alembic -c backend/alembic.ini upgrade head`, then create the first Owner once with `python -m backend.scripts.bootstrap_owner --name ... --email ... --clerk-user-id user_...`. After any API change run `python -m backend.scripts.export_openapi` and commit `backend/openapi.snapshot.json`.
+From the repository root: `python -m alembic -c backend/alembic.ini upgrade head`, then create the first Owner once with `python -m backend.scripts.bootstrap_owner --name ... --email ... --clerk-user-id user_...`. Schedule `python -m backend.scripts.reconcile_clerk` (for example hourly) to keep Clerk users and employees aligned; it aborts without changes if Clerk is unreachable or the result looks unsafe. Set `TEST_DATABASE_URL=postgresql+psycopg2://...` to run the whole suite, including the Row Level Security and audit-trigger tests, against PostgreSQL (CI does this). After any API change run `python -m backend.scripts.export_openapi` and commit `backend/openapi.snapshot.json`.
 
 **Frontend** (from `frontend/`): `npm ci`, `npm run lint`, `npm test`, `npm run build`. The frontend uses plain JavaScript with JSDoc (per `.github/copilot-instructions.md`), not TypeScript.
 

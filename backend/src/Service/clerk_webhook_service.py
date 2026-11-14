@@ -14,6 +14,7 @@ from ..Contract.i_unit_of_work import IUnitOfWork
 from ..Contract.i_webhook_event_repository import IWebhookEventRepository
 from ..Contract.i_webhook_verifier import IWebhookVerifier, WebhookSignatureError
 from ..Entity.business_rule_error import BusinessRuleError
+from ..Entity.clerk_user import verified_primary_email
 
 MAXIMUM_EVENT_ID_LENGTH = 128
 
@@ -63,7 +64,7 @@ class ClerkWebhookService:
         return "ignored"
 
     def _link_by_verified_email(self, clerk_user_id: str, event_data: dict[str, object]) -> str:
-        email = self._verified_primary_email(event_data)
+        email = verified_primary_email(event_data)
         if email is None:
             return "ignored"
         employee = self._employees.get_by_email(email)
@@ -106,19 +107,3 @@ class ClerkWebhookService:
             None,
         )
         return "processed"
-
-    @staticmethod
-    def _verified_primary_email(event_data: dict[str, object]) -> str | None:
-        primary_id = event_data.get("primary_email_address_id")
-        addresses = event_data.get("email_addresses")
-        if not isinstance(addresses, list):
-            return None
-        for address in addresses:
-            if not isinstance(address, dict) or address.get("id") != primary_id:
-                continue
-            verification = address.get("verification")
-            email = address.get("email_address")
-            is_verified = isinstance(verification, dict) and verification.get("status") == "verified"
-            if is_verified and isinstance(email, str) and email:
-                return email
-        return None
