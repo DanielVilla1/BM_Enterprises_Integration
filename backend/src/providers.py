@@ -27,6 +27,8 @@ from .Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier
 from .rate_limiter import SlidingWindowLimiter
 from .Repository.audit_repository import AuditRepository
 from .Repository.employee_repository import EmployeeRepository
+from .Repository.fleet_repositories import DriverLicenseRepository, TruckRepository
+from .Repository.operations_repositories import ClientRepository, DeliveryOrderRepository
 from .Repository.permission_repository import PermissionRepository
 from .Repository.unit_of_work import SqlAlchemyUnitOfWork
 from .Repository.webhook_event_repository import WebhookEventRepository
@@ -34,7 +36,11 @@ from .Service.audit_service import AuditService
 from .Service.authentication_service import AuthenticationService
 from .Service.authorization_service import AuthorizationService
 from .Service.clerk_webhook_service import ClerkWebhookService
+from .Service.client_service import ClientService
+from .Service.delivery_order_service import DeliveryOrderService
+from .Service.driver_license_service import DriverLicenseService
 from .Service.employee_service import EmployeeService
+from .Service.truck_service import TruckService
 
 bearer_scheme = HTTPBearer(auto_error=False, description="Clerk session token")
 
@@ -97,6 +103,32 @@ def get_trace_id(request: Request) -> str:
 def get_employee_service(session: Session = Depends(get_session)) -> EmployeeService:
     return EmployeeService(
         EmployeeRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session)
+    )
+
+
+def get_client_service(session: Session = Depends(get_session)) -> ClientService:
+    return ClientService(ClientRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session))
+
+
+def get_truck_service(session: Session = Depends(get_session)) -> TruckService:
+    return TruckService(TruckRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session))
+
+
+def get_driver_license_service(session: Session = Depends(get_session)) -> DriverLicenseService:
+    return DriverLicenseService(
+        EmployeeRepository(session),
+        DriverLicenseRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+    )
+
+
+def get_delivery_order_service(session: Session = Depends(get_session)) -> DeliveryOrderService:
+    return DeliveryOrderService(
+        DeliveryOrderRepository(session),
+        ClientRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
     )
 
 
