@@ -77,3 +77,73 @@ export function dispatcherActions(tripRecord) {
     canFail: FAILABLE_TRIP_STATUSES.includes(tripRecord.status),
   }
 }
+
+/**
+ * @function isCrewMember
+ * @description True when the employee is the trip's driver or one of its helpers.
+ * @param {{driver_id: string, helper_ids: Array<string>}} tripRecord Trip
+ * @param {string} employeeIdentifier Signed-in employee id
+ * @returns {boolean}
+ */
+export function isCrewMember(tripRecord, employeeIdentifier) {
+  return tripRecord.driver_id === employeeIdentifier || tripRecord.helper_ids.includes(employeeIdentifier)
+}
+
+/**
+ * @function canUploadSignedOr
+ * @description Crew may upload (or replace) the signed OR after delivery, until receipt is confirmed.
+ * @param {Object} tripRecord Trip
+ * @param {string} employeeIdentifier Signed-in employee id
+ * @returns {boolean}
+ */
+export function canUploadSignedOr(tripRecord, employeeIdentifier) {
+  return (
+    isCrewMember(tripRecord, employeeIdentifier) &&
+    ['DELIVERED_OR_PENDING', 'OR_UPLOADED'].includes(tripRecord.status)
+  )
+}
+
+/**
+ * @function canUploadStampedCopy
+ * @description The optional stamped copy can follow the signed OR.
+ * @param {Object} tripRecord Trip
+ * @param {string} employeeIdentifier Signed-in employee id
+ * @returns {boolean}
+ */
+export function canUploadStampedCopy(tripRecord, employeeIdentifier) {
+  return (
+    isCrewMember(tripRecord, employeeIdentifier) &&
+    ['OR_UPLOADED', 'COMPLETED'].includes(tripRecord.status)
+  )
+}
+
+/**
+ * @function canConfirmReceipt
+ * @description Only the assigned driver confirms receipt, once the signed OR is stored.
+ * @param {Object} tripRecord Trip
+ * @param {string} employeeIdentifier Signed-in employee id
+ * @returns {boolean}
+ */
+export function canConfirmReceipt(tripRecord, employeeIdentifier) {
+  return tripRecord.driver_id === employeeIdentifier && tripRecord.status === 'OR_UPLOADED'
+}
+
+/**
+ * @function canCorrectConfirmation
+ * @description A completed trip's confirmation can be reopened by the Owner.
+ * @param {{status: string}} tripRecord Trip
+ * @returns {boolean}
+ */
+export function canCorrectConfirmation(tripRecord) {
+  return tripRecord.status === 'COMPLETED'
+}
+
+/**
+ * @function describeDocumentKind
+ * @description Readable name for an OR document kind.
+ * @param {string} documentKind SIGNED_OR or STAMPED_COPY
+ * @returns {string}
+ */
+export function describeDocumentKind(documentKind) {
+  return documentKind === 'STAMPED_COPY' ? 'Stamped copy' : 'Signed OR'
+}

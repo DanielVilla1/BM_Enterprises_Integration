@@ -7,8 +7,14 @@
 // 2. Trip list with the actions that fit each status
 // 3. Backend rule failures (capacity, blocked dispatch) show in the notice
 
-import { assignableOrders, describeBlockReason, dispatcherActions } from '../shared/utils/dispatch'
+import {
+  assignableOrders,
+  canCorrectConfirmation,
+  describeBlockReason,
+  dispatcherActions,
+} from '../shared/utils/dispatch'
 import { compactPayload } from '../shared/utils/forms'
+import { DocumentLinks } from './DocumentLinks'
 import { ErrorNotice } from './ErrorNotice'
 import { ReasonForm } from './ReasonForm'
 
@@ -35,7 +41,7 @@ function ResourceOptions({ resources }) {
 /**
  * @function DispatchPanel
  * @description Pure UI for dispatching.
- * @param {Object} componentProps Props: loadState, trips, orders, resources, failure, actionFailure, isBusy, canWrite, onAssign, onClear, onClose
+ * @param {Object} componentProps Props: loadState, trips, orders, resources, failure, actionFailure, isBusy, canWrite, canCorrect, onAssign, onClear, onClose, onCorrect, onOpenDocument
  * @returns {import('react').ReactElement}
  */
 export function DispatchPanel({
@@ -47,9 +53,12 @@ export function DispatchPanel({
   actionFailure,
   isBusy,
   canWrite,
+  canCorrect,
   onAssign,
   onClear,
   onClose,
+  onCorrect,
+  onOpenDocument,
 }) {
   const openOrders = assignableOrders(orders)
   return (
@@ -120,6 +129,18 @@ export function DispatchPanel({
                 <span className="font-mono text-sm">{tripRecord.status}</span>
               </div>
               <p className="text-sm">{tripRecord.load_tons} t</p>
+              <DocumentLinks
+                documents={tripRecord.documents}
+                disabled={isBusy}
+                onOpen={(documentIdentifier) => onOpenDocument(tripRecord.trip_id, documentIdentifier)}
+              />
+              {canCorrect && canCorrectConfirmation(tripRecord) ? (
+                <ReasonForm
+                  label="Correct receipt confirmation"
+                  disabled={isBusy}
+                  onSubmit={(reasonText) => onCorrect(tripRecord.trip_id, reasonText)}
+                />
+              ) : null}
               {canWrite && available.canClear ? (
                 <button
                   type="button"

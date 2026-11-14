@@ -7,13 +7,21 @@
 // 2. Offer accept / depart / deliver only to the assigned driver
 // 3. Failures (for example a blocked dispatch) show in the notice
 
-import { crewProgressAction } from '../shared/utils/dispatch'
+import {
+  canConfirmReceipt,
+  canUploadSignedOr,
+  canUploadStampedCopy,
+  crewProgressAction,
+} from '../shared/utils/dispatch'
+import { ConfirmReceiptForm } from './ConfirmReceiptForm'
+import { DocumentLinks } from './DocumentLinks'
 import { ErrorNotice } from './ErrorNotice'
+import { OrUploadForm } from './OrUploadForm'
 
 /**
  * @function MyTripsPanel
  * @description Pure UI for a crew member's trips.
- * @param {Object} componentProps Props: loadState, trips, employeeIdentifier, failure, actionFailure, isBusy, onProgress
+ * @param {Object} componentProps Props: loadState, trips, employeeIdentifier, failure, actionFailure, isBusy, onProgress, onUpload, onConfirm, onOpenDocument
  * @returns {import('react').ReactElement}
  */
 export function MyTripsPanel({
@@ -24,6 +32,9 @@ export function MyTripsPanel({
   actionFailure,
   isBusy,
   onProgress,
+  onUpload,
+  onConfirm,
+  onOpenDocument,
 }) {
   return (
     <section className="space-y-4">
@@ -53,6 +64,31 @@ export function MyTripsPanel({
                 >
                   {nextAction.label}
                 </button>
+              ) : null}
+              <DocumentLinks
+                documents={tripRecord.documents}
+                disabled={isBusy}
+                onOpen={(documentIdentifier) => onOpenDocument(tripRecord.trip_id, documentIdentifier)}
+              />
+              {canUploadSignedOr(tripRecord, employeeIdentifier) ? (
+                <OrUploadForm
+                  label={tripRecord.status === 'OR_UPLOADED' ? 'Replace signed OR' : 'Upload signed OR'}
+                  disabled={isBusy}
+                  onUpload={(imageFile) => onUpload(tripRecord.trip_id, imageFile, 'SIGNED_OR')}
+                />
+              ) : null}
+              {canUploadStampedCopy(tripRecord, employeeIdentifier) ? (
+                <OrUploadForm
+                  label="Upload stamped copy (optional)"
+                  disabled={isBusy}
+                  onUpload={(imageFile) => onUpload(tripRecord.trip_id, imageFile, 'STAMPED_COPY')}
+                />
+              ) : null}
+              {canConfirmReceipt(tripRecord, employeeIdentifier) ? (
+                <ConfirmReceiptForm
+                  disabled={isBusy}
+                  onConfirm={(receivedAtIso) => onConfirm(tripRecord.trip_id, receivedAtIso)}
+                />
               ) : null}
             </li>
           )

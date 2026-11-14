@@ -15,6 +15,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, PlainSerializer, StringConstraints
 
 from ..Entity.dispatch import DispatchResources, ResourceAvailability, TripStatus, TripView
+from .or_dto import OrDocumentResponse
 
 ReasonText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=3, max_length=500)]
 LoadTons = Annotated[
@@ -72,6 +73,10 @@ class TripResponse(BaseModel):
     delivered_at: datetime | None
     closed_reason: str | None
     created_at: datetime
+    or_uploaded_at: datetime | None
+    receipt_confirmed_at: datetime | None
+    receipt_received_at: datetime | None
+    documents: list[OrDocumentResponse]
 
     @classmethod
     def from_view(cls, view: TripView) -> "TripResponse":
@@ -93,6 +98,10 @@ class TripResponse(BaseModel):
             delivered_at=trip.delivered_at,
             closed_reason=trip.closed_reason,
             created_at=trip.created_at,
+            or_uploaded_at=trip.or_uploaded_at,
+            receipt_confirmed_at=trip.receipt_confirmed_at,
+            receipt_received_at=trip.receipt_received_at,
+            documents=[OrDocumentResponse.from_entity(one) for one in view.documents],
         )
 
 

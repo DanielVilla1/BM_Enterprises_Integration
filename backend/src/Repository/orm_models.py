@@ -237,6 +237,15 @@ class TripRow(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
     )
+    or_uploaded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    or_uploaded_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("employees.employee_id"), nullable=True
+    )
+    receipt_confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    receipt_confirmed_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("employees.employee_id"), nullable=True
+    )
+    receipt_received_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class TripCrewRow(Base):
@@ -287,4 +296,38 @@ class TruckReplacementRow(Base):
     )
     replaced_by: Mapped[uuid.UUID | None] = mapped_column(
         Uuid, ForeignKey("employees.employee_id"), nullable=True
+    )
+
+
+class OrDocumentRow(Base):
+    __tablename__ = "or_documents"
+    __table_args__ = (
+        CheckConstraint("kind IN ('SIGNED_OR', 'STAMPED_COPY')", name="ck_or_documents_kind"),
+        CheckConstraint("size_bytes > 0", name="ck_or_documents_size_positive"),
+        Index("ix_or_documents_trip", "trip_id"),
+    )
+
+    document_id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    trip_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("trips.trip_id"), nullable=False)
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    storage_path: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    content_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(nullable=False)
+    uploaded_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("employees.employee_id"), nullable=True
+    )
+    uploaded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
+    )
+    superseded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class IdempotencyKeyRow(Base):
+    __tablename__ = "idempotency_keys"
+
+    key: Mapped[str] = mapped_column(String(128), primary_key=True)
+    actor_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("employees.employee_id"), primary_key=True)
+    scope: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
     )

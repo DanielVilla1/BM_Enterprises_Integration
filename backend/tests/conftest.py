@@ -40,12 +40,14 @@ os.environ.update(
 )
 
 from backend.main import app  # noqa: E402
+from backend.src.Contract.i_storage import StorageError  # noqa: E402
 from backend.src.database import build_engine  # noqa: E402
 from backend.src.Entity.access import RoleCode  # noqa: E402
 from backend.src.Entity.employee import Employee  # noqa: E402
 from backend.src.Infrastructure.Clerk.clerk_token_verifier import ClerkTokenVerifier  # noqa: E402
 from backend.src.Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier  # noqa: E402
 from backend.src.providers import (  # noqa: E402
+    get_object_storage,
     get_rate_limiter,
     get_session,
     get_token_verifier,
@@ -145,8 +147,37 @@ def session_factory(request: pytest.FixtureRequest, tmp_path: Path) -> Iterator[
     engine.dispose()
 
 
+class FakeObjectStorage:
+    """In-memory private bucket for tests; failures can be switched on."""
+
+    def __init__(self) -> None:
+        self.objects: dict[str, tuple[bytes, str]] = {}
+        self.deleted: list[str] = []
+        self.fail_put = False
+        self.fail_sign = False
+
+    def put(self, path: str, content: bytes, content_type: str) -> None:
+        if self.fail_put:
+            raise StorageError("down")
+        self.objects[path] = (content, content_type)
+
+    def create_signed_url(self, path: str, expires_in_seconds: int) -> str:
+        if self.fail_sign:
+            raise StorageError("down")
+        return f"https://storage.test/object/sign/{path}?token=fake&ttl={expires_in_seconds}"
+
+    def delete(self, path: str) -> None:
+        self.deleted.append(path)
+        self.objects.pop(path, None)
+
+
 @pytest.fixture
-def client(session_factory: sessionmaker[Session]) -> Iterator[TestClient]:
+def fake_storage() -> FakeObjectStorage:
+    return FakeObjectStorage()
+
+
+@pytest.fixture
+def client(session_factory: sessionmaker[Session], fake_storage: FakeObjectStorage) -> Iterator[TestClient]:
     def override_session() -> Iterator[Session]:
         with session_factory() as session:
             yield session
@@ -154,6 +185,7 @@ def client(session_factory: sessionmaker[Session]) -> Iterator[TestClient]:
     get_rate_limiter().reset()
     app.dependency_overrides[get_session] = override_session
     app.dependency_overrides[get_token_verifier] = build_test_verifier
+    app.dependency_overrides[get_object_storage] = lambda: fake_storage
     app.dependency_overrides[get_webhook_verifier] = lambda: ClerkWebhookVerifier(TEST_WEBHOOK_SECRET)
     with TestClient(app, raise_server_exceptions=False) as test_client:
         yield test_client

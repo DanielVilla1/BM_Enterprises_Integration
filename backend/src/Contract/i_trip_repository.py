@@ -8,6 +8,7 @@
 # 3. lock_resources serializes concurrent assignments on PostgreSQL
 
 from collections.abc import Iterable
+from datetime import datetime
 from decimal import Decimal
 from typing import Protocol
 from uuid import UUID
@@ -69,3 +70,13 @@ class ITripRepository(Protocol):
     def open_truck_statuses(self, truck_id: UUID) -> list[TripStatus]: ...
 
     def lock_resources(self, truck_ids: Iterable[UUID], employee_ids: Iterable[UUID]) -> None: ...
+
+    def lock_trip(self, trip_id: UUID) -> None: ...
+
+    def mark_or_uploaded(self, trip_id: UUID, uploaded_by: UUID | None) -> Trip | None: ...
+
+    def mark_receipt_confirmed(
+        self, trip_id: UUID, confirmed_by: UUID | None, received_at: datetime
+    ) -> Trip | None: ...
+
+    def clear_receipt_confirmation(self, trip_id: UUID) -> Trip | None: ...

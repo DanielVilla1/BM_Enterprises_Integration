@@ -111,6 +111,24 @@
         "title": "AuditRecordResponse",
         "type": "object"
       },
+      "Body_upload_or_document_api_v1_trips__trip_id__or_documents_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OrDocumentKind",
+            "default": "SIGNED_OR"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_or_document_api_v1_trips__trip_id__or_documents_post",
+        "type": "object"
+      },
       "ClientCreateRequest": {
         "additionalProperties": false,
         "properties": {
@@ -651,6 +669,24 @@
         "title": "DispatchResourcesResponse",
         "type": "object"
       },
+      "DocumentUrlResponse": {
+        "properties": {
+          "expires_in_seconds": {
+            "title": "Expires In Seconds",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "expires_in_seconds"
+        ],
+        "title": "DocumentUrlResponse",
+        "type": "object"
+      },
       "DriverLicenseDetailResponse": {
         "properties": {
           "employee_id": {
@@ -1088,6 +1124,59 @@
         "title": "MeResponse",
         "type": "object"
       },
+      "OrDocumentKind": {
+        "enum": [
+          "SIGNED_OR",
+          "STAMPED_COPY"
+        ],
+        "title": "OrDocumentKind",
+        "type": "string"
+      },
+      "OrDocumentResponse": {
+        "properties": {
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "document_id": {
+            "format": "uuid",
+            "title": "Document Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OrDocumentKind"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "superseded": {
+            "title": "Superseded",
+            "type": "boolean"
+          },
+          "trip_id": {
+            "format": "uuid",
+            "title": "Trip Id",
+            "type": "string"
+          },
+          "uploaded_at": {
+            "format": "date-time",
+            "title": "Uploaded At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "trip_id",
+          "kind",
+          "content_type",
+          "size_bytes",
+          "uploaded_at",
+          "superseded"
+        ],
+        "title": "OrDocumentResponse",
+        "type": "object"
+      },
       "OrderStatus": {
         "enum": [
           "PENDING",
@@ -1214,6 +1303,21 @@
           "trace_id"
         ],
         "title": "ProblemDetailsResponse",
+        "type": "object"
+      },
+      "ReceiptConfirmationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "received_at"
+        ],
+        "title": "ReceiptConfirmationRequest",
         "type": "object"
       },
       "ResourceAvailabilityResponse": {
@@ -1505,6 +1609,13 @@
             ],
             "title": "Departed At"
           },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/OrDocumentResponse"
+            },
+            "title": "Documents",
+            "type": "array"
+          },
           "driver_id": {
             "format": "uuid",
             "title": "Driver Id",
@@ -1522,6 +1633,18 @@
             "title": "Load Tons",
             "type": "number"
           },
+          "or_uploaded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Or Uploaded At"
+          },
           "order_id": {
             "format": "uuid",
             "title": "Order Id",
@@ -1530,6 +1653,30 @@
           "pickup_location": {
             "title": "Pickup Location",
             "type": "string"
+          },
+          "receipt_confirmed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Confirmed At"
+          },
+          "receipt_received_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Received At"
           },
           "scheduled_date": {
             "format": "date",
@@ -1566,7 +1713,11 @@
           "departed_at",
           "delivered_at",
           "closed_reason",
-          "created_at"
+          "created_at",
+          "or_uploaded_at",
+          "receipt_confirmed_at",
+          "receipt_received_at",
+          "documents"
         ],
         "title": "TripResponse",
         "type": "object"
@@ -4238,6 +4389,106 @@
         ]
       }
     },
+    "/api/v1/trips/{trip_id}/confirm-receipt": {
+      "post": {
+        "operationId": "confirm_receipt_api_v1_trips__trip_id__confirm_receipt_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 8,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiptConfirmationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Confirm Receipt",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
     "/api/v1/trips/{trip_id}/crew": {
       "put": {
         "operationId": "change_trip_crew_api_v1_trips__trip_id__crew_put",
@@ -4567,6 +4818,360 @@
         "summary": "Fail Trip",
         "tags": [
           "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/or-documents": {
+      "get": {
+        "operationId": "list_or_documents_api_v1_trips__trip_id__or_documents_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrDocumentResponse"
+                  },
+                  "title": "Response List Or Documents Api V1 Trips  Trip Id  Or Documents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Or Documents",
+        "tags": [
+          "or-documents"
+        ]
+      },
+      "post": {
+        "operationId": "upload_or_document_api_v1_trips__trip_id__or_documents_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_or_document_api_v1_trips__trip_id__or_documents_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrDocumentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upload Or Document",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/or-documents/{document_id}/url": {
+      "get": {
+        "operationId": "issue_or_document_url_api_v1_trips__trip_id__or_documents__document_id__url_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "document_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Document Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUrlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Issue Or Document Url",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/receipt-correction": {
+      "post": {
+        "operationId": "correct_receipt_confirmation_api_v1_trips__trip_id__receipt_correction_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripReasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Correct Receipt Confirmation",
+        "tags": [
+          "or-documents"
         ]
       }
     },

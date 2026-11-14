@@ -17,10 +17,14 @@ from .src.Controller.delivery_order_controller import router as delivery_order_r
 from .src.Controller.driver_license_controller import router as driver_license_router
 from .src.Controller.employee_controller import router as employee_router
 from .src.Controller.health_controller import router as health_router
+from .src.Controller.or_controller import router as or_router
 from .src.Controller.trip_controller import router as trip_router
 from .src.Controller.truck_controller import router as truck_router
 from .src.Controller.webhook_controller import router as webhook_router
 from .src.problem_details import install_problem_details
+from .src.request_limits import BodySizeLimitMiddleware
+
+REQUEST_OVERHEAD_BYTES = 1024 * 1024
 
 
 def create_application() -> FastAPI:
@@ -40,6 +44,9 @@ def create_application() -> FastAPI:
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
         allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
     )
+    application.add_middleware(
+        BodySizeLimitMiddleware, maximum_bytes=settings.max_upload_bytes + REQUEST_OVERHEAD_BYTES
+    )
     install_problem_details(application)
     for router in (
         health_router,
@@ -50,6 +57,7 @@ def create_application() -> FastAPI:
         truck_router,
         delivery_order_router,
         trip_router,
+        or_router,
         administration_router,
         webhook_router,
     ):

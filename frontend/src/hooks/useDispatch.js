@@ -7,6 +7,7 @@
 // 2. Every mutation reloads both so blocked resources update
 
 import { useCallback, useEffect } from 'react'
+import { correctConfirmation, fetchOrDocumentUrl } from '../services/orService'
 import {
   assignTrip,
   closeTrip,
@@ -58,5 +59,12 @@ export function useDispatch() {
     submitClearance: (tripIdentifier) => runAction(() => runTripAction(tripIdentifier, 'clear-dispatch')),
     submitClose: (tripIdentifier, closeAction, closeReason) =>
       runAction(() => closeTrip(tripIdentifier, closeAction, closeReason)),
+    submitCorrection: (tripIdentifier, correctionReason) =>
+      runAction(() => correctConfirmation(tripIdentifier, correctionReason)),
+    openDocument: (tripIdentifier, documentIdentifier) =>
+      runAction(async () => {
+        const signed = await fetchOrDocumentUrl(tripIdentifier, documentIdentifier)
+        window.open(signed.url, '_blank', 'noopener')
+      }),
   }
 }
