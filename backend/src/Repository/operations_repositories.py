@@ -175,6 +175,14 @@ class DeliveryOrderRepository:
         self._session.refresh(row)
         return _order(row)
 
+    def set_status(self, order_id: UUID, status: OrderStatus) -> DeliveryOrder | None:
+        row = self._session.get(DeliveryOrderRow, order_id)
+        if row is None:
+            return None
+        row.status = status.value
+        self._session.flush()
+        return _order(row)
+
     def cancel(self, order_id: UUID, reason: str) -> DeliveryOrder | None:
         row = self._session.get(DeliveryOrderRow, order_id)
         if row is None:

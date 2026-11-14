@@ -30,6 +30,7 @@ from .Repository.employee_repository import EmployeeRepository
 from .Repository.fleet_repositories import DriverLicenseRepository, TruckRepository
 from .Repository.operations_repositories import ClientRepository, DeliveryOrderRepository
 from .Repository.permission_repository import PermissionRepository
+from .Repository.trip_repository import TripRepository
 from .Repository.unit_of_work import SqlAlchemyUnitOfWork
 from .Repository.webhook_event_repository import WebhookEventRepository
 from .Service.audit_service import AuditService
@@ -40,6 +41,7 @@ from .Service.client_service import ClientService
 from .Service.delivery_order_service import DeliveryOrderService
 from .Service.driver_license_service import DriverLicenseService
 from .Service.employee_service import EmployeeService
+from .Service.trip_service import TripService
 from .Service.truck_service import TruckService
 
 bearer_scheme = HTTPBearer(auto_error=False, description="Clerk session token")
@@ -132,6 +134,18 @@ def get_delivery_order_service(session: Session = Depends(get_session)) -> Deliv
     )
 
 
+def get_trip_service(session: Session = Depends(get_session)) -> TripService:
+    return TripService(
+        TripRepository(session),
+        DeliveryOrderRepository(session),
+        TruckRepository(session),
+        EmployeeRepository(session),
+        DriverLicenseRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+    )
+
+
 def get_audit_service(session: Session = Depends(get_session)) -> AuditService:
     return AuditService(AuditRepository(session))
 
@@ -185,15 +199,21 @@ class AccessContext:
     level: AccessLevel
 
 
-def require_capability(capability: str, minimum_level: AccessLevel | None = None):
-    """Dependency factory: 403 unless a role grants the capability (at the minimum level)."""
+def require_capability(
+    capability: str,
+    minimum_level: AccessLevel | None = None,
+    only_levels: tuple[AccessLevel, ...] | None = None,
+):
+    """Dependency factory: 403 unless a role grants the capability (at the required level)."""
 
     def check_capability(
         principal: Principal = Depends(get_principal),
         authorization: AuthorizationService = Depends(get_authorization_service),
     ) -> AccessContext:
         level = authorization.require_level(principal, capability)
-        if minimum_level is not None and level.rank < minimum_level.rank:
+        too_weak = minimum_level is not None and level.rank < minimum_level.rank
+        not_allowed = only_levels is not None and level not in only_levels
+        if too_weak or not_allowed:
             raise BusinessRuleError(
                 403, "PERMISSION_DENIED", "Forbidden", "Your role does not allow this action."
             )
@@ -201,4 +221,5 @@ def require_capability(capability: str, minimum_level: AccessLevel | None = None
 
     check_capability.capability = capability  # type: ignore[attr-defined]
     check_capability.minimum_level = minimum_level  # type: ignore[attr-defined]
+    check_capability.only_levels = only_levels  # type: ignore[attr-defined]
     return check_capability

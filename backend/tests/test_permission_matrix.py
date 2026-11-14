@@ -38,11 +38,15 @@ def _all_routes() -> list[tuple[str, str, APIRoute]]:
     ]
 
 
-def _capability_rule(route: APIRoute) -> tuple[str, AccessLevel | None] | None:
+def _capability_rule(route: APIRoute):
     for call in _dependency_calls(route.dependant):
         capability = getattr(call, "capability", None)
         if capability is not None:
-            return capability, getattr(call, "minimum_level", None)
+            return (
+                capability,
+                getattr(call, "minimum_level", None),
+                getattr(call, "only_levels", None),
+            )
     return None
 
 
@@ -88,10 +92,14 @@ def test_every_role_gets_exactly_what_the_matrix_grants(client, session_factory,
         rule = _capability_rule(route)
         if rule is None:
             continue
-        capability, minimum = rule
+        capability, minimum, only_levels = rule
         for role, person in people.items():
             level = grants.get((capability, role.value))
-            allowed = level is not None and (minimum is None or level.rank >= minimum.rank)
+            allowed = (
+                level is not None
+                and (minimum is None or level.rank >= minimum.rank)
+                and (only_levels is None or level in only_levels)
+            )
             response = client.request(
                 method,
                 _concrete_path(path),

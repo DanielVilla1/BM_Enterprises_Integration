@@ -17,6 +17,7 @@
     {"capability": "employee.manage", "grants": {"OWNER": "FULL", "DISPATCHER": "LTD", "FLEET_MANAGER": "LTD", "DRIVER": "OWN", "HELPER": "OWN", "HR_PAYROLL": "FULL"}},
     {"capability": "employee.activate", "grants": {"OWNER": "FULL"}},
     {"capability": "trip.progress", "grants": {"DISPATCHER": "VIEW", "DRIVER": "OWN"}},
+    {"capability": "trip.assignment_view", "grants": {"OWNER": "VIEW", "DISPATCHER": "VIEW", "DRIVER": "OWN", "HELPER": "OWN"}},
     {"capability": "or.upload", "grants": {"DISPATCHER": "VIEW", "DRIVER": "OWN", "HELPER": "OWN"}, "conditional": {"HELPER": "helper_or_upload_enabled"}},
     {"capability": "or.confirm_receipt", "grants": {"DISPATCHER": "VIEW", "DRIVER": "OWN"}},
     {"capability": "or.view_files", "grants": {"OWNER": "VIEW", "DISPATCHER": "VIEW", "DRIVER": "OWN", "HELPER": "OWN", "ACCOUNTING": "VIEW"}, "conditional": {"HELPER": "helper_or_upload_enabled"}},

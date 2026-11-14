@@ -24,6 +24,7 @@ from sqlalchemy import (
     Text,
     Uuid,
     func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -203,4 +204,87 @@ class DeliveryOrderRow(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
+    )
+
+
+class TripRow(Base):
+    __tablename__ = "trips"
+    __table_args__ = (
+        CheckConstraint("load_tons > 0", name="ck_trips_load_positive"),
+        CheckConstraint(
+            "status IN ('SCHEDULED', 'ACCEPTED', 'CLEARED_FOR_DISPATCH', 'IN_TRANSIT', "
+            "'DELIVERED_OR_PENDING', 'OR_UPLOADED', 'COMPLETED', 'FAILED', 'CANCELLED')",
+            name="ck_trips_status",
+        ),
+        Index("ix_trips_order", "order_id"),
+        Index("ix_trips_truck_status", "truck_id", "status"),
+        Index("ix_trips_status", "status"),
+    )
+
+    trip_id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    order_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("delivery_orders.order_id"), nullable=False)
+    truck_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("trucks.truck_id"), nullable=False)
+    load_tons: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="SCHEDULED")
+    accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cleared_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    departed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    closed_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("employees.employee_id"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
+    )
+
+
+class TripCrewRow(Base):
+    __tablename__ = "trip_crew"
+    __table_args__ = (
+        CheckConstraint("crew_role IN ('DRIVER', 'HELPER')", name="ck_trip_crew_role"),
+        Index("ix_trip_crew_employee", "employee_id"),
+        Index("ix_trip_crew_trip", "trip_id"),
+        Index(
+            "uq_trip_crew_one_active_driver",
+            "trip_id",
+            unique=True,
+            postgresql_where=text("crew_role = 'DRIVER' AND removed_at IS NULL"),
+            sqlite_where=text("crew_role = 'DRIVER' AND removed_at IS NULL"),
+        ),
+        Index(
+            "uq_trip_crew_active_member",
+            "trip_id",
+            "employee_id",
+            unique=True,
+            postgresql_where=text("removed_at IS NULL"),
+            sqlite_where=text("removed_at IS NULL"),
+        ),
+    )
+
+    crew_entry_id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    trip_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("trips.trip_id"), nullable=False)
+    employee_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("employees.employee_id"), nullable=False)
+    crew_role: Mapped[str] = mapped_column(String(8), nullable=False)
+    assigned_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
+    )
+    removed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class TruckReplacementRow(Base):
+    __tablename__ = "truck_replacements"
+
+    replacement_id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    trip_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("trips.trip_id"), nullable=False)
+    original_truck_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("trucks.truck_id"), nullable=False)
+    replacement_truck_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("trucks.truck_id"), nullable=False
+    )
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    effective_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=utc_now, server_default=func.now()
+    )
+    replaced_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("employees.employee_id"), nullable=True
     )

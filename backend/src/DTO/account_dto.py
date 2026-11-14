@@ -97,3 +97,4 @@ class ProblemDetailsResponse(BaseModel):
     code: str
     trace_id: str
     errors: list[FieldErrorResponse] | None = None
+    blocking_trip_ids: list[str] | None = None
