@@ -1,25 +1,36 @@
 # ===== AI GENERATED: database_setup =====
-# Purpose: Create SQLAlchemy engine, session and Base for ORM models
-# Inputs: Reads DATABASE_URL from environment
-# Returns: `engine`, `SessionLocal`, `Base` for repository use
+# Purpose: Build the SQLAlchemy engine, session factory and declarative base
+# Inputs: DATABASE_URL from application settings
+# Returns: engine factory, SessionLocal, Base
 # Flow:
-# 1. Read env DATABASE_URL
-# 2. Create engine and sessionmaker
-# 3. Export Base for model declarations
+# 1. Create engine (SQLite gets thread + foreign key settings)
+# 2. Expose a sessionmaker with explicit commit control
+# 3. Export Base for ORM table declarations
 
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import Engine, create_engine, event
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
+from .config import get_settings
 
-# Use SQLite for local dev by default; if a different DATABASE_URL is provided
-# (e.g. PostgreSQL in Docker), the engine will be created accordingly.
-if DATABASE_URL.startswith("sqlite"):
-	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-else:
-	engine = create_engine(DATABASE_URL)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+class Base(DeclarativeBase):
+    """Declarative base shared by every ORM table."""
 
+
+def build_engine(database_url: str) -> Engine:
+    """Create an engine; SQLite enforces foreign keys for parity with PostgreSQL."""
+    if database_url.startswith("sqlite"):
+        sqlite_engine = create_engine(database_url, connect_args={"check_same_thread": False})
+
+        @event.listens_for(sqlite_engine, "connect")
+        def enable_foreign_keys(dbapi_connection: object, _record: object) -> None:
+            cursor = dbapi_connection.cursor()  # type: ignore[attr-defined]
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
+
+        return sqlite_engine
+    return create_engine(database_url, pool_pre_ping=True)
+
+
+engine: Engine = build_engine(get_settings().database_url)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
