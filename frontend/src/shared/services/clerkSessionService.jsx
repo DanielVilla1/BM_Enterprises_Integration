@@ -7,13 +7,13 @@
 // 2. Expose signed-in / signed-out gates and the sign-in form
 // 3. Bridge getToken into the http client
 
+// AI MODIFIED: Use the supported Core 3 SDK and its Show authentication gates.
 import {
   ClerkProvider,
-  SignedIn,
-  SignedOut,
+  Show,
   SignIn,
   useAuth,
-} from '@clerk/clerk-react'
+} from '@clerk/react'
 import { useEffect } from 'react'
 import { CLERK_PUBLISHABLE_KEY } from './clerkConfig'
 import { registerSessionTokenProvider } from './httpClient'
@@ -49,7 +49,7 @@ export function SessionTokenBridge() {
  * @returns {import('react').ReactElement}
  */
 export function SignedInGate({ children }) {
-  return <SignedIn>{children}</SignedIn>
+  return <Show when="signed-in">{children}</Show>
 }
 
 /**
@@ -59,8 +59,8 @@ export function SignedInGate({ children }) {
  */
 export function SignedOutGate() {
   return (
-    <SignedOut>
+    <Show when="signed-out">
       <SignIn routing="hash" />
-    </SignedOut>
+    </Show>
   )
 }

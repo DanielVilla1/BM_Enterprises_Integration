@@ -14,7 +14,8 @@ Handover guide for the next developer. It says what exists, how it is built, how
 | 6 | Reports and dashboards, audit viewer, security review, load test, staging | **Not started** |
 
 Verified during sprint consolidation: 203 backend tests on Python 3.12/SQLite (6 PostgreSQL-only tests skipped), 208 application tests on Python 3.14/PostgreSQL 18.2, 25 frontend tests, backend/frontend lint, backend formatting, frontend production build, and runtime dependency audits. The OpenAPI snapshot was checked on Python 3.12, matching CI; that one test was excluded from the Python 3.14/PostgreSQL run because Python 3.14 changes the generated HTTP 422 description.
-**Never run:** Docker, live Clerk, live Supabase, the UI in a browser with real sign-in. See section 12.
+Browser follow-up verified live Clerk development sign-in for all seven business roles, including password entry, test-email verification, authenticated `/me` responses and the rendered workspace. The Owner-only permission-matrix endpoint returned 200 for Owner and 403 for the other six roles.
+**Still unverified:** Docker, live Supabase, real-inbox verification and mobile UI. See section 12.
 
 ## 2. Branches and pull request targets
 
@@ -97,6 +98,16 @@ Scripts must be run **from the repo root** with `-m backend.scripts...` (they im
 
 **Frontend** (from `frontend/`): `npm ci`, `npm run dev`, `npm run lint`, `npm test`, `npm run build`.
 `VITE_CLERK_PUBLISHABLE_KEY` **must be set at build time**; with it empty, Vite folds the check away and drops the whole app from the bundle.
+
+For local Vite development, create `frontend/.env` with the public settings `VITE_CLERK_PUBLISHABLE_KEY`, `VITE_API_BASE_URL` and optional `VITE_PUBLIC_FRONTEND_URL`; Vite does not load the repository-root `.env` with the current configuration. Keep backend secrets in the root file. Docker Compose supplies the frontend variables through the container environment instead.
+
+To share the local demo through one ngrok URL, set `VITE_API_BASE_URL=` and `VITE_PUBLIC_FRONTEND_URL=https://YOUR-DEV-DOMAIN.ngrok-free.dev` in the root and frontend environment files. Keep FastAPI on port 8000 and Vite on port 5173, then run `ngrok http 5173 --url https://YOUR-DEV-DOMAIN.ngrok-free.dev`. Vite serves the frontend at `/` and proxies `/api/v1` to FastAPI, so API calls and `/api/v1/webhooks/clerk` use the same public origin. Existing Clerk webhook URLs remain valid when the ngrok domain stays the same.
+
+Add that exact public origin to the backend's comma-separated `CORS_ALLOWED_ORIGINS` and `CLERK_AUTHORIZED_PARTIES`, preserving `http://localhost:5173`, then restart both servers. Vite reads the exact public hostname from `VITE_PUBLIC_FRONTEND_URL`; do not use an unrestricted hostname allowlist. The demo remains available while the PC, local services and ngrok agent are running. The ignored local `.venv/start-bm-public.cmd` helper starts this machine's configured public demo; it is not a deployment service or a file supplied by a fresh clone.
+
+Authentication uses Clerk Core 3 (`@clerk/react` 6) and `<Show when="signed-in">` / `<Show when="signed-out">` gates. Run `npm ci` after pulling SDK updates and restart Vite. The deprecated `@clerk/clerk-react` 5 package can be rejected by Clerk's minimum-version protection.
+
+For automated testing without real inboxes, Clerk supports test-email addresses such as `owner+clerk_test@example.com` with verification code `424242` in development Test mode. Regular Gmail role aliases such as `yourname+owner@gmail.com` use actual verification codes delivered to the base Gmail inbox; they are not Clerk test-email addresses. The local role accounts now use Gmail aliases while preserving their existing identity IDs, passwords and database roles. Current login details are kept in the ignored `.venv/development-role-logins.csv`, never in migrations or tracked source. See [Clerk test-email documentation](https://clerk.com/docs/guides/development/testing/test-emails-and-phones).
 
 **Accounts you need:** a Clerk application (dev instance), a Supabase project (dev, not Free in production) with a **private** bucket named `delivery-documents`. Use fake data and staging keys only. Never commit `.env`.
 
@@ -220,9 +231,9 @@ Auth: bearer Clerk session token. Source of truth: `backend/openapi.snapshot.jso
 - **PostgreSQL 16 in CI:** the application suite, including migrations, Row Level Security and audit-trigger tests, passed locally against an isolated PostgreSQL 18.2 instance. Check the workflow result for CI's PostgreSQL 16 environment after pushing.
 - **Spec proof of concept (section 12 of the spec):** Clerk token lifetime and outage behaviour (tokens last about 60 s), webhook bad-signature then double replay, Supabase public key cannot read or write any table, backup restore time (the 4 h target is unproven), 5 MB phone upload on mobile data and signed URL expiry.
 - **Live Supabase Storage:** `Infrastructure/Supabase/supabase_object_storage.py` is tested against a mock only; confirm upload, signing and delete against a real project.
-- **Browser check:** no screen has been seen with real Clerk sign-in; no mobile testing.
+- **Browser check:** desktop Chrome sign-in and the workspace were verified for all seven roles using the live Clerk development instance and test-email aliases. Mobile behavior and real-inbox verification still need testing.
 - **Docker:** `compose.yml` and `backend/Dockerfile` were edited, never run.
-- **Dependencies:** Pillow and python-multipart were added in Sprint 4 and Clerk/axios advisories were patched in Sprint 1; the spec asks for a human dependency review note.
+- **Dependencies:** Pillow and python-multipart were added in Sprint 4; the frontend Clerk SDK was migrated to `@clerk/react` 6.18.8 with Core 3 authentication gates after the old SDK was blocked at sign-in. Frontend lint, 25 tests, build and dependency audit passed after the upgrade. The spec asks for a human dependency review note.
 
 ## 13. Left to build
 
