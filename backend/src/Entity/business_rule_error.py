@@ -17,9 +17,11 @@ class BusinessRuleError(Exception):
         title: str,
         detail: str,
         headers: dict[str, str] | None = None,
+        extensions: dict[str, object] | None = None,
     ) -> None:
         super().__init__(detail)
         self.headers = headers or {}
+        self.extensions = extensions or {}
         self.status_code = status_code
         self.error_code = error_code
         self.title = title

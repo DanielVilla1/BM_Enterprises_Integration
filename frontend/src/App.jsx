@@ -10,10 +10,14 @@
 import { AccountSummary } from './components/AccountSummary'
 import { ClientsPanel } from './components/ClientsPanel'
 import { DeliveryOrdersPanel } from './components/DeliveryOrdersPanel'
+import { DispatchPanel } from './components/DispatchPanel'
 import { FleetPanel } from './components/FleetPanel'
+import { MyTripsPanel } from './components/MyTripsPanel'
 import { NavigationBar } from './components/NavigationBar'
 import { useClients } from './hooks/useClients'
 import { useCurrentAccount } from './hooks/useCurrentAccount'
+import { useDispatch } from './hooks/useDispatch'
+import { useMyTrips } from './hooks/useMyTrips'
 import { useOrders } from './hooks/useOrders'
 import { useTrucks } from './hooks/useTrucks'
 import { CLERK_PUBLISHABLE_KEY } from './shared/services/clerkConfig'
@@ -94,6 +98,53 @@ function FleetPage({ capabilities }) {
 }
 
 /**
+ * @function DispatchPage
+ * @description Dispatch screen container.
+ * @param {{capabilities: Object<string, string>}} componentProps
+ * @returns {import('react').ReactElement}
+ */
+function DispatchPage({ capabilities }) {
+  const dispatchState = useDispatch()
+  const orderState = useOrders()
+  return (
+    <DispatchPanel
+      loadState={dispatchState.loadState}
+      trips={dispatchState.trips}
+      orders={orderState.orders}
+      resources={dispatchState.resources}
+      failure={dispatchState.failure}
+      actionFailure={dispatchState.actionFailure}
+      isBusy={dispatchState.isBusy}
+      canWrite={hasWriteAccess(capabilities, 'dispatch.assign')}
+      onAssign={dispatchState.submitAssignment}
+      onClear={dispatchState.submitClearance}
+      onClose={dispatchState.submitClose}
+    />
+  )
+}
+
+/**
+ * @function MyTripsPage
+ * @description Crew trips screen container.
+ * @param {{employeeIdentifier: string}} componentProps
+ * @returns {import('react').ReactElement}
+ */
+function MyTripsPage({ employeeIdentifier }) {
+  const tripState = useMyTrips()
+  return (
+    <MyTripsPanel
+      loadState={tripState.loadState}
+      trips={tripState.trips}
+      employeeIdentifier={employeeIdentifier}
+      failure={tripState.failure}
+      actionFailure={tripState.actionFailure}
+      isBusy={tripState.isBusy}
+      onProgress={tripState.submitProgress}
+    />
+  )
+}
+
+/**
  * @function Workspace
  * @description Signed-in area: account load, navigation and the active page.
  * @returns {import('react').ReactElement}
@@ -110,6 +161,8 @@ function Workspace() {
   return (
     <div className="space-y-4">
       <NavigationBar items={pages} activePage={shownPage} onSelect={openPage} />
+      {shownPage === 'dispatch' ? <DispatchPage capabilities={account.capabilities} /> : null}
+      {shownPage === 'trips' ? <MyTripsPage employeeIdentifier={account.employee_id} /> : null}
       {shownPage === 'orders' ? <OrdersPage capabilities={account.capabilities} /> : null}
       {shownPage === 'clients' ? <ClientsPage capabilities={account.capabilities} /> : null}
       {shownPage === 'fleet' ? <FleetPage capabilities={account.capabilities} /> : null}

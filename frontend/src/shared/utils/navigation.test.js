@@ -1,22 +1,30 @@
 import { describe, expect, it } from 'vitest'
 import { hasWriteAccess, visibleNavigation } from './navigation'
 
+const pageKeys = (capabilities) => visibleNavigation(capabilities).map((page) => page.key)
+
 describe('visibleNavigation', () => {
   it('shows only the account page when nothing is granted', () => {
-    expect(visibleNavigation({}).map((page) => page.key)).toEqual(['account'])
+    expect(pageKeys({})).toEqual(['account'])
   })
 
-  it('shows orders and clients to a dispatcher and fleet to a view-only truck role', () => {
-    const keys = visibleNavigation({
+  it('shows dispatch, orders, clients and fleet to a dispatcher', () => {
+    const keys = pageKeys({
+      'dispatch.assign': 'FULL',
       'delivery_order.manage': 'FULL',
       'truck.manage': 'VIEW',
-    }).map((page) => page.key)
-    expect(keys).toEqual(['orders', 'clients', 'fleet', 'account'])
+      'trip.assignment_view': 'VIEW',
+    })
+    expect(keys).toEqual(['dispatch', 'orders', 'clients', 'fleet', 'account'])
+  })
+
+  it('shows My trips only at the OWN level (crew members)', () => {
+    expect(pageKeys({ 'trip.assignment_view': 'OWN' })).toEqual(['trips', 'account'])
+    expect(pageKeys({ 'trip.assignment_view': 'VIEW' })).toEqual(['account'])
   })
 
   it('hides fleet from a role without truck access', () => {
-    const keys = visibleNavigation({ 'delivery_order.manage': 'VIEW' }).map((page) => page.key)
-    expect(keys).not.toContain('fleet')
+    expect(pageKeys({ 'delivery_order.manage': 'VIEW' })).not.toContain('fleet')
   })
 })
 
