@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasWriteAccess, visibleNavigation } from './navigation'
+import { groupNavigation, hasWriteAccess, resolveActivePage, visibleNavigation } from './navigation'
 
 const pageKeys = (capabilities) => visibleNavigation(capabilities).map((page) => page.key)
 
@@ -8,14 +8,16 @@ describe('visibleNavigation', () => {
     expect(pageKeys({})).toEqual(['account'])
   })
 
-  it('shows dispatch, orders, clients and fleet to a dispatcher', () => {
+  it('gives a dispatcher the operations pages plus the preview finance and report pages', () => {
     const keys = pageKeys({
       'dispatch.assign': 'FULL',
       'delivery_order.manage': 'FULL',
       'truck.manage': 'VIEW',
       'trip.assignment_view': 'VIEW',
+      'expense.enter': 'FULL',
+      'report.view': 'FULL',
     })
-    expect(keys).toEqual(['dispatch', 'orders', 'clients', 'fleet', 'account'])
+    expect(keys).toEqual(['dashboard', 'dispatch', 'orders', 'clients', 'fleet', 'expenses', 'reports', 'account'])
   })
 
   it('shows My trips only at the OWN level (crew members)', () => {
@@ -23,8 +25,47 @@ describe('visibleNavigation', () => {
     expect(pageKeys({ 'trip.assignment_view': 'VIEW' })).toEqual(['account'])
   })
 
+  it('shows People only to full employee managers', () => {
+    expect(pageKeys({ 'employee.manage': 'FULL' })).toContain('people')
+    expect(pageKeys({ 'employee.manage': 'LTD' })).not.toContain('people')
+    expect(pageKeys({ 'employee.manage': 'OWN' })).not.toContain('people')
+  })
+
+  it('shows audit log and permissions to the Owner capability only', () => {
+    const keys = pageKeys({ 'audit_user.manage': 'FULL' })
+    expect(keys).toEqual(['audit', 'permissions', 'account'])
+  })
+
+  it('hides reports from crew members (OWN level) and accepts any matching capability', () => {
+    expect(pageKeys({ 'report.view': 'OWN' })).not.toContain('reports')
+    expect(pageKeys({ 'payroll.view_own': 'OWN' })).toContain('payroll')
+    expect(pageKeys({ 'cash_advance.request': 'OWN' })).toContain('advances')
+  })
+
   it('hides fleet from a role without truck access', () => {
     expect(pageKeys({ 'delivery_order.manage': 'VIEW' })).not.toContain('fleet')
+  })
+
+  it('flags finance and report pages as previews', () => {
+    const preview = visibleNavigation({ 'billing.manage': 'FULL', 'report.view': 'FULL' }).filter((page) => page.preview)
+    expect(preview.map((page) => page.key)).toEqual(['billing', 'reports'])
+  })
+})
+
+describe('groupNavigation', () => {
+  it('groups pages by sidebar section in order', () => {
+    const groups = groupNavigation(visibleNavigation({ 'dispatch.assign': 'FULL', 'employee.manage': 'FULL' }))
+    expect(groups.map((entry) => entry.group)).toEqual(['Operations', 'Administration', 'Account'])
+    expect(groups[0].items.map((page) => page.key)).toEqual(['dashboard', 'dispatch'])
+  })
+})
+
+describe('resolveActivePage', () => {
+  it('keeps an allowed page and otherwise falls back to the first one', () => {
+    const items = visibleNavigation({ 'dispatch.assign': 'FULL' })
+    expect(resolveActivePage(items, 'dispatch')).toBe('dispatch')
+    expect(resolveActivePage(items, 'people')).toBe('dashboard')
+    expect(resolveActivePage(items, null)).toBe('dashboard')
   })
 })
 

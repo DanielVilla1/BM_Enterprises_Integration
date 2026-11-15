@@ -7,7 +7,7 @@
 // 2. Create reloads the list
 
 import { useCallback, useEffect } from 'react'
-import { createClient, listClients } from '../services/clientService'
+import { createClient, listClients, updateClient } from '../services/clientService'
 import { loadIntoStore } from '../shared/utils/collectionLoader'
 import { useClientStore } from '../store/clientStore'
 import { useRecordActions } from './useRecordActions'
@@ -35,5 +35,6 @@ export function useClients() {
     actionFailure,
     isBusy,
     submitClient: (clientPayload) => runAction(() => createClient(clientPayload)),
+    submitUpdate: (clientIdentifier, changes) => runAction(() => updateClient(clientIdentifier, changes)),
   }
 }

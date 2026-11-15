@@ -75,6 +75,9 @@ export function dispatcherActions(tripRecord) {
     canClear: tripRecord.status === 'ACCEPTED',
     canCancel: PRE_DEPARTURE_TRIP_STATUSES.includes(tripRecord.status),
     canFail: FAILABLE_TRIP_STATUSES.includes(tripRecord.status),
+    canChangeCrew: PRE_DEPARTURE_TRIP_STATUSES.includes(tripRecord.status),
+    canReplaceTruck:
+      PRE_DEPARTURE_TRIP_STATUSES.includes(tripRecord.status) || tripRecord.status === 'IN_TRANSIT',
   }
 }
 
@@ -145,5 +148,5 @@ export function canCorrectConfirmation(tripRecord) {
  * @returns {string}
  */
 export function describeDocumentKind(documentKind) {
-  return documentKind === 'STAMPED_COPY' ? 'Stamped copy' : 'Signed OR'
+  return documentKind === 'STAMPED_COPY' ? 'stamped copy' : 'signed OR'
 }

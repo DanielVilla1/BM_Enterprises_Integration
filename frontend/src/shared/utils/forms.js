@@ -59,3 +59,24 @@ export function toLocalInputValue(moment) {
 export function localInputToIso(localValue) {
   return new Date(localValue).toISOString()
 }
+
+/**
+ * @function buildChanges
+ * @description Only the fields of a form that differ from the stored record (empty text becomes null).
+ * @param {Object} record The stored record
+ * @param {Object<string, string>} values Raw form values
+ * @param {Array<string>} fieldNames Fields the form edits
+ * @param {Array<string>} [numericFields] Fields to send as numbers
+ * @returns {Object}
+ */
+export function buildChanges(record, values, fieldNames, numericFields = []) {
+  const changes = {}
+  for (const fieldName of fieldNames) {
+    const raw = values[fieldName]
+    if (raw === undefined) continue
+    const next = numericFields.includes(fieldName) ? Number(raw) : String(raw).trim() || null
+    const current = record[fieldName] ?? null
+    if (next !== current) changes[fieldName] = next
+  }
+  return changes
+}

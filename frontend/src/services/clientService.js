@@ -27,3 +27,15 @@ export async function createClient(clientPayload) {
   const response = await apiClient.post('/clients', clientPayload)
   return response.data
 }
+
+/**
+ * @function updateClient
+ * @description Change a client's details or activate/deactivate it.
+ * @param {string} clientIdentifier Client id
+ * @param {Object} changes Fields to change
+ * @returns {Promise<Object>}
+ */
+export async function updateClient(clientIdentifier, changes) {
+  const response = await apiClient.patch(`/clients/${clientIdentifier}`, changes)
+  return response.data
+}

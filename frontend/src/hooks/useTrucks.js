@@ -10,8 +10,10 @@ import { useCallback, useEffect } from 'react'
 import {
   completeMaintenance,
   createTruck,
+  listMaintenance,
   listTrucks,
   startMaintenance,
+  updateTruck,
 } from '../services/truckService'
 import { loadIntoStore } from '../shared/utils/collectionLoader'
 import { useTruckStore } from '../store/truckStore'
@@ -29,6 +31,14 @@ export function useTrucks() {
   const reloadTrucks = useCallback(() => loadIntoStore(useTruckStore, listTrucks), [])
   const { runAction, actionFailure, isBusy } = useRecordActions(reloadTrucks)
 
+  const loadMaintenance = useCallback(async (truckIdentifier) => {
+    try {
+      return { records: await listMaintenance(truckIdentifier), failure: null }
+    } catch (requestFailure) {
+      return { records: [], failure: requestFailure }
+    }
+  }, [])
+
   useEffect(() => {
     reloadTrucks()
   }, [reloadTrucks])
@@ -40,6 +50,8 @@ export function useTrucks() {
     actionFailure,
     isBusy,
     submitTruck: (truckPayload) => runAction(() => createTruck(truckPayload)),
+    submitUpdate: (truckIdentifier, changes) => runAction(() => updateTruck(truckIdentifier, changes)),
+    loadMaintenance,
     submitMaintenanceStart: (truckIdentifier, maintenanceReason) =>
       runAction(() => startMaintenance(truckIdentifier, maintenanceReason)),
     submitMaintenanceComplete: (truckIdentifier) =>

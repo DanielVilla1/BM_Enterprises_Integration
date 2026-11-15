@@ -56,16 +56,22 @@ describe('dispatcherActions', () => {
       canClear: false,
       canCancel: true,
       canFail: false,
+      canChangeCrew: true,
+      canReplaceTruck: true,
     })
     expect(dispatcherActions({ status: 'IN_TRANSIT' })).toEqual({
       canClear: false,
       canCancel: false,
       canFail: true,
+      canChangeCrew: false,
+      canReplaceTruck: true,
     })
     expect(dispatcherActions({ status: 'COMPLETED' })).toEqual({
       canClear: false,
       canCancel: false,
       canFail: false,
+      canChangeCrew: false,
+      canReplaceTruck: false,
     })
   })
 })
@@ -107,7 +113,7 @@ describe('OR actions', () => {
   })
 
   it('names document kinds', () => {
-    expect(describeDocumentKind('SIGNED_OR')).toBe('Signed OR')
-    expect(describeDocumentKind('STAMPED_COPY')).toBe('Stamped copy')
+    expect(describeDocumentKind('SIGNED_OR')).toBe('signed OR')
+    expect(describeDocumentKind('STAMPED_COPY')).toBe('stamped copy')
   })
 })
