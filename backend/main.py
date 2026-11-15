@@ -1,64 +1,50 @@
-# AI MODIFIED: main.py
 # ===== AI GENERATED: main_app =====
-# Purpose: Wire FastAPI app, include routers and initialize DB tables
-# Inputs: registers `todo` router
-# Returns: running FastAPI app
+# Purpose: Create the BM Enterprises FastAPI application
+# Inputs: application settings
+# Returns: `app` (ASGI) serving /api/v1
 # Flow:
-# 1. Create app and CORS
-# 2. Include router
-# 3. Create DB tables at startup
+# 1. Docs/OpenAPI only when enabled (decision D-docs per spec section 11)
+# 2. Explicit CORS origins; problem+json handlers; routers
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .src.database import engine, Base
-from .src.Controller.todo_controller import router as todo_router
-from .src.database import SessionLocal
-from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
-from .src.Entity.todo import Todo as TodoModel
+
+from .src.config import get_settings
+from .src.Controller.account_controller import router as account_router
+from .src.Controller.administration_controller import router as administration_router
+from .src.Controller.employee_controller import router as employee_router
+from .src.Controller.health_controller import router as health_router
+from .src.Controller.webhook_controller import router as webhook_router
+from .src.problem_details import install_problem_details
 
 
-app = FastAPI(title="TechReserve API")
+def create_application() -> FastAPI:
+    settings = get_settings()
+    docs_enabled = settings.enable_api_docs
+    application = FastAPI(
+        title="BM Enterprises Hauling API",
+        version="1.0.0",
+        openapi_url="/api/v1/openapi.json" if docs_enabled else None,
+        docs_url="/api/v1/docs" if docs_enabled else None,
+        redoc_url=None,
+    )
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(settings.cors_allowed_origins),
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+        allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
+    )
+    install_problem_details(application)
+    for router in (
+        health_router,
+        account_router,
+        employee_router,
+        administration_router,
+        webhook_router,
+    ):
+        application.include_router(router)
+    return application
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
-@app.on_event("startup")
-def on_startup():
-    # create tables if they do not exist
-    Base.metadata.create_all(bind=engine)
-
-
-@app.get("/")
-def root():
-    return {"message": "TechReserve API is running"}
-
-
-app.include_router(todo_router)
-
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-
-@app.get("/health/db")
-def health_db():
-    try:
-        db = SessionLocal()
-        # try a lightweight query to ensure DB connectivity
-        _ = db.query(TodoModel).limit(1).all()
-        return JSONResponse({"db": True})
-    except SQLAlchemyError as e:
-        return JSONResponse({"db": False, "error": str(e)}, status_code=500)
-    finally:
-        try:
-            db.close()
-        except Exception:
-            pass
+app = create_application()

@@ -7,6 +7,25 @@ Professor Jocelyn Tejada — September 2026
 
 **Authors:** Adrian Aldave, Karmelo Cortes, Jefferson Petronio, John Patrick San Roque, Daniel Villa
 
+## Build status and local development
+
+Sprint 1 foundation is in place: Clerk token verification, employees, the seven roles, the permission matrix stored as data, forbidden role pairs, audit log, Clerk webhook receiver, `application/problem+json` errors and a committed OpenAPI 3.1 snapshot. Business requirements live in the *Consolidated Developer Specification* (9 Nov 2026); where it differs from the proposal below, the specification wins.
+
+**Backend** (Python 3.12, from `backend/`):
+
+```bash
+python -m venv .venv && .venv/Scripts/python -m pip install -r requirements-dev.txt
+.venv/Scripts/python -m pytest -q && .venv/Scripts/python -m ruff check . && .venv/Scripts/python -m black --check .
+```
+
+From the repository root: `python -m alembic -c backend/alembic.ini upgrade head`, then create the first Owner once with `python -m backend.scripts.bootstrap_owner --name ... --email ... --clerk-user-id user_...`. Schedule `python -m backend.scripts.reconcile_clerk` (for example hourly) to keep Clerk users and employees aligned; it aborts without changes if Clerk is unreachable or the result looks unsafe. Set `TEST_DATABASE_URL=postgresql+psycopg2://...` to run the whole suite, including the Row Level Security and audit-trigger tests, against PostgreSQL (CI does this). After any API change run `python -m backend.scripts.export_openapi` and commit `backend/openapi.snapshot.json`.
+
+**Frontend** (from `frontend/`): `npm ci`, `npm run lint`, `npm test`, `npm run build`. The frontend uses plain JavaScript with JSDoc (per `.github/copilot-instructions.md`), not TypeScript.
+
+Copy `.env.example` to `.env` (never commit it). Use fake data and staging keys only.
+
+Adding an endpoint: attach `Depends(require_capability("<capability>"))` and make sure the capability exists in `backend/src/Data/permission_matrix.json` (changes to the matrix ship as a new Alembic migration). A test fails for any route that has no permission entry.
+
 ## Proposal Scope
 
 A modular web application for a ten-truck subcontracted hauling company, with documented interfaces to authentication, document storage, and mapping services.
