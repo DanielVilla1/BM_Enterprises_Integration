@@ -7,6 +7,7 @@
 # 2. Assign trips through the real API
 # 3. Force later statuses (OR upload, completion) that arrive in Sprint 4
 
+from dataclasses import dataclass
 from datetime import timedelta
 from decimal import Decimal
 from uuid import UUID
@@ -117,7 +118,33 @@ class World:
             TruckRepository(session).set_status(UUID(str(truck_id)), status)
             session.commit()
 
+    def delivered_trip(self, load: float = 20, order_weight: str = "20") -> "DeliveredTrip":
+        """Assign a trip and drive it through the API to DELIVERED_OR_PENDING."""
+        order_id = self.make_order(order_weight)
+        truck, (driver, helpers) = self.make_truck(), self.crew()
+        trip = self.assign_ok(order_id, truck, driver, helpers, load)
+        base = f"/api/v1/trips/{trip['trip_id']}"
+        assert self.post(f"{base}/accept", driver).status_code == 200
+        assert self.post(f"{base}/clear-dispatch", self.dispatcher).status_code == 200
+        assert self.post(f"{base}/depart", driver).status_code == 200
+        delivered = self.post(f"{base}/deliver", driver)
+        assert delivered.status_code == 200
+        return DeliveredTrip(order_id, truck, driver, helpers, delivered.json())
+
     def order_status(self, order_id) -> str:
         with self.session_factory() as session:
             order = DeliveryOrderRepository(session).get_by_id(UUID(str(order_id)))
         return order.status.value
+
+
+@dataclass
+class DeliveredTrip:
+    order_id: UUID
+    truck: Truck
+    driver: Employee
+    helpers: list[Employee]
+    trip: dict
+
+    @property
+    def trip_id(self) -> str:
+        return self.trip["trip_id"]

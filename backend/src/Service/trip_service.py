@@ -14,6 +14,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from ..Contract.i_audit_repository import IAuditRepository
+from ..Contract.i_document_repositories import IOrDocumentRepository
 from ..Contract.i_employee_repository import IEmployeeRepository
 from ..Contract.i_fleet_repositories import IDriverLicenseRepository, ITruckRepository
 from ..Contract.i_operations_repositories import IDeliveryOrderRepository
@@ -35,12 +36,12 @@ from ..Entity.dispatch import (
     TripView,
     assigned_load,
     blocking_trips,
-    derive_order_status,
-    derive_truck_status,
 )
+from ..Entity.documents import OrDocument
 from ..Entity.employee import Employee, Principal
 from ..Entity.fleet import LicenseValidity, Truck, TruckStatus, license_validity
 from ..Entity.operations import DeliveryOrder, OrderStatus
+from .trip_state_synchronizer import TripStateSynchronizer
 
 DISPATCH_BLOCKED_MESSAGE = (
     "Dispatch blocked: The previous trip's OR has not yet been marked as received by the steel company."
@@ -68,6 +69,7 @@ class TripService:
         trucks: ITruckRepository,
         employees: IEmployeeRepository,
         licenses: IDriverLicenseRepository,
+        documents: IOrDocumentRepository,
         audit: IAuditRepository,
         unit_of_work: IUnitOfWork,
         today_provider: Callable[[], date] = manila_today,
@@ -75,8 +77,10 @@ class TripService:
         self._trips = trips
         self._orders = orders
         self._trucks = trucks
+        self._synchronizer = TripStateSynchronizer(trips, orders, trucks)
         self._employees = employees
         self._licenses = licenses
+        self._documents = documents
         self._audit = audit
         self._unit_of_work = unit_of_work
         self._today_provider = today_provider
@@ -412,20 +416,10 @@ class TripService:
         return None
 
     def _refresh_truck(self, truck_id: UUID) -> None:
-        truck = self._trucks.get_by_id(truck_id)
-        if truck is None or truck.status is TruckStatus.MAINTENANCE:
-            return
-        derived = derive_truck_status(self._trips.open_truck_statuses(truck_id))
-        if derived is not truck.status:
-            self._trucks.set_status(truck_id, derived)
+        self._synchronizer.refresh_truck(truck_id)
 
     def _refresh_order(self, order_id: UUID) -> None:
-        order = self._orders.get_by_id(order_id)
-        if order is None or order.status is OrderStatus.CANCELLED:
-            return
-        derived = derive_order_status(order.total_weight_tons, self._trips.list_for_order(order_id))
-        if derived is not order.status:
-            self._orders.set_status(order_id, derived)
+        self._synchronizer.refresh_order(order_id)
 
     def _driver_trip(self, principal: Principal, level: AccessLevel, trip_id: UUID) -> Trip:
         if level is not AccessLevel.OWN:
@@ -458,12 +452,22 @@ class TripService:
             raise _not_found("ORDER_NOT_FOUND", "The delivery order was not found.")
         return order
 
-    def _view(self, trip: Trip) -> TripView:
+    def _build_view(self, trip: Trip, documents: list[OrDocument]) -> TripView:
         order = self._require_order(trip.order_id)
-        return TripView(trip, order.scheduled_date, order.pickup_location, order.delivery_location)
+        return TripView(
+            trip, order.scheduled_date, order.pickup_location, order.delivery_location, tuple(documents)
+        )
+
+    def _view(self, trip: Trip) -> TripView:
+        return self._build_view(trip, self._documents.list_for_trip(trip.trip_id, False))
+
+    def view_for(self, trip: Trip) -> TripView:
+        """Public view builder shared with the OR and completion service."""
+        return self._view(trip)
 
     def _views(self, trips: list[Trip]) -> list[TripView]:
-        return [self._view(trip) for trip in trips]
+        grouped = self._documents.list_active_for_trips([trip.trip_id for trip in trips])
+        return [self._build_view(trip, grouped[trip.trip_id]) for trip in trips]
 
     def _record(
         self,

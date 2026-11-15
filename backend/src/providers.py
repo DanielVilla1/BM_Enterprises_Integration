@@ -16,6 +16,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from .config import get_settings
+from .Contract.i_storage import IImageSanitizer, IObjectStorage
 from .Contract.i_token_verifier import ITokenVerifier
 from .Contract.i_webhook_verifier import IWebhookVerifier
 from .database import SessionLocal
@@ -24,8 +25,11 @@ from .Entity.business_rule_error import BusinessRuleError
 from .Entity.employee import Principal
 from .Infrastructure.Clerk.clerk_token_verifier import ClerkTokenVerifier
 from .Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier
+from .Infrastructure.Imaging.pillow_image_sanitizer import PillowImageSanitizer
+from .Infrastructure.Supabase.supabase_object_storage import SupabaseObjectStorage
 from .rate_limiter import SlidingWindowLimiter
 from .Repository.audit_repository import AuditRepository
+from .Repository.document_repositories import IdempotencyRepository, OrDocumentRepository
 from .Repository.employee_repository import EmployeeRepository
 from .Repository.fleet_repositories import DriverLicenseRepository, TruckRepository
 from .Repository.operations_repositories import ClientRepository, DeliveryOrderRepository
@@ -41,7 +45,9 @@ from .Service.client_service import ClientService
 from .Service.delivery_order_service import DeliveryOrderService
 from .Service.driver_license_service import DriverLicenseService
 from .Service.employee_service import EmployeeService
+from .Service.or_service import OrService
 from .Service.trip_service import TripService
+from .Service.trip_state_synchronizer import TripStateSynchronizer
 from .Service.truck_service import TruckService
 
 bearer_scheme = HTTPBearer(auto_error=False, description="Clerk session token")
@@ -63,6 +69,17 @@ def get_token_verifier() -> ITokenVerifier:
         authorized_parties=settings.clerk_authorized_parties,
         clock_skew_seconds=settings.clerk_clock_skew_seconds,
     )
+
+
+def get_object_storage() -> IObjectStorage:
+    settings = get_settings()
+    return SupabaseObjectStorage(
+        settings.supabase_url, settings.supabase_service_key, settings.supabase_bucket
+    )
+
+
+def get_image_sanitizer() -> IImageSanitizer:
+    return PillowImageSanitizer()
 
 
 def get_webhook_verifier() -> IWebhookVerifier:
@@ -141,8 +158,31 @@ def get_trip_service(session: Session = Depends(get_session)) -> TripService:
         TruckRepository(session),
         EmployeeRepository(session),
         DriverLicenseRepository(session),
+        OrDocumentRepository(session),
         AuditRepository(session),
         SqlAlchemyUnitOfWork(session),
+    )
+
+
+def get_or_service(
+    session: Session = Depends(get_session),
+    storage: IObjectStorage = Depends(get_object_storage),
+    sanitizer: IImageSanitizer = Depends(get_image_sanitizer),
+) -> OrService:
+    settings = get_settings()
+    trips = TripRepository(session)
+    return OrService(
+        trips,
+        OrDocumentRepository(session),
+        IdempotencyRepository(session),
+        storage,
+        sanitizer,
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+        TripStateSynchronizer(trips, DeliveryOrderRepository(session), TruckRepository(session)),
+        get_trip_service(session),
+        settings.signed_url_ttl_seconds,
+        settings.max_upload_bytes,
     )
 
 

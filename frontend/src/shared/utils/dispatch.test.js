@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   assignableOrders,
+  canConfirmReceipt,
+  canCorrectConfirmation,
+  canUploadSignedOr,
+  canUploadStampedCopy,
+  describeDocumentKind,
   crewProgressAction,
   describeBlockReason,
   dispatcherActions,
@@ -70,5 +75,39 @@ describe('describeBlockReason', () => {
     expect(describeBlockReason('MAINTENANCE')).toBe('in maintenance')
     expect(describeBlockReason('SOMETHING_NEW')).toBe('unavailable')
     expect(describeBlockReason(null)).toBe('')
+  })
+})
+
+describe('OR actions', () => {
+  const trip = (status) => ({ status, driver_id: 'driver-1', helper_ids: ['helper-1'] })
+
+  it('lets crew upload the signed OR only between delivery and confirmation', () => {
+    expect(canUploadSignedOr(trip('DELIVERED_OR_PENDING'), 'helper-1')).toBe(true)
+    expect(canUploadSignedOr(trip('OR_UPLOADED'), 'driver-1')).toBe(true)
+    expect(canUploadSignedOr(trip('IN_TRANSIT'), 'driver-1')).toBe(false)
+    expect(canUploadSignedOr(trip('COMPLETED'), 'driver-1')).toBe(false)
+    expect(canUploadSignedOr(trip('OR_UPLOADED'), 'someone-else')).toBe(false)
+  })
+
+  it('allows the stamped copy after the signed OR', () => {
+    expect(canUploadStampedCopy(trip('OR_UPLOADED'), 'helper-1')).toBe(true)
+    expect(canUploadStampedCopy(trip('COMPLETED'), 'driver-1')).toBe(true)
+    expect(canUploadStampedCopy(trip('DELIVERED_OR_PENDING'), 'driver-1')).toBe(false)
+  })
+
+  it('lets only the driver confirm receipt once the OR is uploaded', () => {
+    expect(canConfirmReceipt(trip('OR_UPLOADED'), 'driver-1')).toBe(true)
+    expect(canConfirmReceipt(trip('OR_UPLOADED'), 'helper-1')).toBe(false)
+    expect(canConfirmReceipt(trip('DELIVERED_OR_PENDING'), 'driver-1')).toBe(false)
+  })
+
+  it('offers correction only for completed trips', () => {
+    expect(canCorrectConfirmation({ status: 'COMPLETED' })).toBe(true)
+    expect(canCorrectConfirmation({ status: 'OR_UPLOADED' })).toBe(false)
+  })
+
+  it('names document kinds', () => {
+    expect(describeDocumentKind('SIGNED_OR')).toBe('Signed OR')
+    expect(describeDocumentKind('STAMPED_COPY')).toBe('Stamped copy')
   })
 })

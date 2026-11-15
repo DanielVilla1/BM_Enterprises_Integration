@@ -116,9 +116,12 @@ function DispatchPage({ capabilities }) {
       actionFailure={dispatchState.actionFailure}
       isBusy={dispatchState.isBusy}
       canWrite={hasWriteAccess(capabilities, 'dispatch.assign')}
+      canCorrect={hasWriteAccess(capabilities, 'or.correct_confirmation')}
       onAssign={dispatchState.submitAssignment}
       onClear={dispatchState.submitClearance}
       onClose={dispatchState.submitClose}
+      onCorrect={dispatchState.submitCorrection}
+      onOpenDocument={dispatchState.openDocument}
     />
   )
 }
@@ -140,6 +143,9 @@ function MyTripsPage({ employeeIdentifier }) {
       actionFailure={tripState.actionFailure}
       isBusy={tripState.isBusy}
       onProgress={tripState.submitProgress}
+      onUpload={tripState.submitUpload}
+      onConfirm={tripState.submitConfirmation}
+      onOpenDocument={tripState.openDocument}
     />
   )
 }

@@ -13,6 +13,7 @@ from decimal import Decimal
 from enum import StrEnum
 from uuid import UUID
 
+from .documents import OrDocument
 from .fleet import TruckStatus
 from .operations import OrderStatus
 
@@ -71,6 +72,11 @@ class Trip:
     closed_reason: str | None
     created_by: UUID | None
     created_at: datetime
+    or_uploaded_at: datetime | None = None
+    or_uploaded_by: UUID | None = None
+    receipt_confirmed_at: datetime | None = None
+    receipt_confirmed_by: UUID | None = None
+    receipt_received_at: datetime | None = None
 
 
 @dataclass(frozen=True)
@@ -91,6 +97,7 @@ class TripView:
     scheduled_date: date
     pickup_location: str
     delivery_location: str
+    documents: tuple[OrDocument, ...] = ()
 
 
 @dataclass(frozen=True)

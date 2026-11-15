@@ -8,6 +8,7 @@
 # 3. Resource queries return open-trip facts for the dispatch rules
 
 from collections.abc import Iterable
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -76,6 +77,11 @@ class TripRepository:
                     closed_reason=row.closed_reason,
                     created_by=row.created_by,
                     created_at=row.created_at,
+                    or_uploaded_at=row.or_uploaded_at,
+                    or_uploaded_by=row.or_uploaded_by,
+                    receipt_confirmed_at=row.receipt_confirmed_at,
+                    receipt_confirmed_by=row.receipt_confirmed_by,
+                    receipt_received_at=row.receipt_received_at,
                 )
             )
         return trips
@@ -298,3 +304,42 @@ class TripRepository:
                 .where(EmployeeRow.employee_id.in_(ordered_people))
                 .with_for_update()
             ).all()
+
+    def lock_trip(self, trip_id: UUID) -> None:
+        self._session.execute(
+            select(TripRow.trip_id).where(TripRow.trip_id == trip_id).with_for_update()
+        ).all()
+
+    def mark_or_uploaded(self, trip_id: UUID, uploaded_by: UUID | None) -> Trip | None:
+        row = self._session.get(TripRow, trip_id)
+        if row is None:
+            return None
+        row.status = TripStatus.OR_UPLOADED.value
+        row.or_uploaded_at = utc_now()
+        row.or_uploaded_by = uploaded_by
+        self._session.flush()
+        return self._one(row)
+
+    def mark_receipt_confirmed(
+        self, trip_id: UUID, confirmed_by: UUID | None, received_at: datetime
+    ) -> Trip | None:
+        row = self._session.get(TripRow, trip_id)
+        if row is None:
+            return None
+        row.status = TripStatus.COMPLETED.value
+        row.receipt_confirmed_at = utc_now()
+        row.receipt_confirmed_by = confirmed_by
+        row.receipt_received_at = received_at
+        self._session.flush()
+        return self._one(row)
+
+    def clear_receipt_confirmation(self, trip_id: UUID) -> Trip | None:
+        row = self._session.get(TripRow, trip_id)
+        if row is None:
+            return None
+        row.status = TripStatus.OR_UPLOADED.value
+        row.receipt_confirmed_at = None
+        row.receipt_confirmed_by = None
+        row.receipt_received_at = None
+        self._session.flush()
+        return self._one(row)
