@@ -33,6 +33,12 @@ class ApplicationSettings(BaseSettings):
     clerk_api_base_url: str = "https://api.clerk.com"
     clerk_clock_skew_seconds: int = 5
 
+    supabase_url: str = ""
+    supabase_service_key: str = ""
+    supabase_bucket: str = "delivery-documents"
+    signed_url_ttl_seconds: int = 120
+    max_upload_bytes: int = 5 * 1024 * 1024
+
     helper_or_upload_enabled: bool = False
     rate_limit_failed_auth_per_minute: int = 20
     rate_limit_webhook_per_minute: int = 120

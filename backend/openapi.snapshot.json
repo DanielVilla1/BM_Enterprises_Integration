@@ -111,6 +111,653 @@
         "title": "AuditRecordResponse",
         "type": "object"
       },
+      "Body_upload_or_document_api_v1_trips__trip_id__or_documents_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OrDocumentKind",
+            "default": "SIGNED_OR"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_or_document_api_v1_trips__trip_id__or_documents_post",
+        "type": "object"
+      },
+      "ClientCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "contact_person": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Person"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ClientCreateRequest",
+        "type": "object"
+      },
+      "ClientPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ClientResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "ClientPageResponse",
+        "type": "object"
+      },
+      "ClientResponse": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "client_id": {
+            "format": "uuid",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "contact_person": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Person"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "name",
+          "address",
+          "contact_person",
+          "contact_phone",
+          "is_active",
+          "created_at"
+        ],
+        "title": "ClientResponse",
+        "type": "object"
+      },
+      "ClientUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "contact_person": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Person"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          }
+        },
+        "title": "ClientUpdateRequest",
+        "type": "object"
+      },
+      "DeliveryOrderCancelRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "DeliveryOrderCancelRequest",
+        "type": "object"
+      },
+      "DeliveryOrderCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "client_id": {
+            "format": "uuid",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_reference": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Reference"
+          },
+          "delivery_location": {
+            "maxLength": 300,
+            "minLength": 3,
+            "title": "Delivery Location",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "pickup_location": {
+            "maxLength": 300,
+            "minLength": 3,
+            "title": "Pickup Location",
+            "type": "string"
+          },
+          "scheduled_date": {
+            "format": "date",
+            "title": "Scheduled Date",
+            "type": "string"
+          },
+          "total_weight_tons": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100000.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Total Weight Tons"
+          }
+        },
+        "required": [
+          "client_id",
+          "pickup_location",
+          "delivery_location",
+          "scheduled_date",
+          "total_weight_tons"
+        ],
+        "title": "DeliveryOrderCreateRequest",
+        "type": "object"
+      },
+      "DeliveryOrderPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryOrderResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "DeliveryOrderPageResponse",
+        "type": "object"
+      },
+      "DeliveryOrderResponse": {
+        "properties": {
+          "cancellation_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancellation Reason"
+          },
+          "client_id": {
+            "format": "uuid",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Reference"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivery_location": {
+            "title": "Delivery Location",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "order_id": {
+            "format": "uuid",
+            "title": "Order Id",
+            "type": "string"
+          },
+          "pickup_location": {
+            "title": "Pickup Location",
+            "type": "string"
+          },
+          "scheduled_date": {
+            "format": "date",
+            "title": "Scheduled Date",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "total_weight_tons": {
+            "title": "Total Weight Tons",
+            "type": "number"
+          }
+        },
+        "required": [
+          "order_id",
+          "client_id",
+          "client_reference",
+          "pickup_location",
+          "delivery_location",
+          "scheduled_date",
+          "total_weight_tons",
+          "status",
+          "notes",
+          "cancellation_reason",
+          "created_at"
+        ],
+        "title": "DeliveryOrderResponse",
+        "type": "object"
+      },
+      "DeliveryOrderUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "client_reference": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Reference"
+          },
+          "delivery_location": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Location"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "pickup_location": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Location"
+          },
+          "scheduled_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled Date"
+          },
+          "total_weight_tons": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100000.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Weight Tons"
+          }
+        },
+        "title": "DeliveryOrderUpdateRequest",
+        "type": "object"
+      },
+      "DispatchResourcesResponse": {
+        "properties": {
+          "drivers": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceAvailabilityResponse"
+            },
+            "title": "Drivers",
+            "type": "array"
+          },
+          "helpers": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceAvailabilityResponse"
+            },
+            "title": "Helpers",
+            "type": "array"
+          },
+          "trucks": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceAvailabilityResponse"
+            },
+            "title": "Trucks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "trucks",
+          "drivers",
+          "helpers"
+        ],
+        "title": "DispatchResourcesResponse",
+        "type": "object"
+      },
+      "DocumentUrlResponse": {
+        "properties": {
+          "expires_in_seconds": {
+            "title": "Expires In Seconds",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "expires_in_seconds"
+        ],
+        "title": "DocumentUrlResponse",
+        "type": "object"
+      },
+      "DriverLicenseDetailResponse": {
+        "properties": {
+          "employee_id": {
+            "format": "uuid",
+            "title": "Employee Id",
+            "type": "string"
+          },
+          "expiry_date": {
+            "format": "date",
+            "title": "Expiry Date",
+            "type": "string"
+          },
+          "license_number": {
+            "title": "License Number",
+            "type": "string"
+          },
+          "validity": {
+            "$ref": "#/components/schemas/LicenseValidity"
+          }
+        },
+        "required": [
+          "employee_id",
+          "license_number",
+          "expiry_date",
+          "validity"
+        ],
+        "title": "DriverLicenseDetailResponse",
+        "type": "object"
+      },
+      "DriverLicenseLimitedResponse": {
+        "description": "Validity status only: no license number and no expiry date.",
+        "properties": {
+          "employee_id": {
+            "format": "uuid",
+            "title": "Employee Id",
+            "type": "string"
+          },
+          "validity": {
+            "$ref": "#/components/schemas/LicenseValidity"
+          }
+        },
+        "required": [
+          "employee_id",
+          "validity"
+        ],
+        "title": "DriverLicenseLimitedResponse",
+        "type": "object"
+      },
+      "DriverLicenseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expiry_date": {
+            "format": "date",
+            "title": "Expiry Date",
+            "type": "string"
+          },
+          "license_number": {
+            "maxLength": 32,
+            "minLength": 5,
+            "pattern": "^[A-Za-z0-9-]+$",
+            "title": "License Number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_number",
+          "expiry_date"
+        ],
+        "title": "DriverLicenseRequest",
+        "type": "object"
+      },
       "EmployeeCreateRequest": {
         "additionalProperties": false,
         "properties": {
@@ -373,6 +1020,75 @@
         "title": "IdentityLinkRequest",
         "type": "object"
       },
+      "LicenseValidity": {
+        "enum": [
+          "VALID",
+          "EXPIRING_SOON",
+          "EXPIRED"
+        ],
+        "title": "LicenseValidity",
+        "type": "string"
+      },
+      "MaintenanceRecordResponse": {
+        "properties": {
+          "ended_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "record_id": {
+            "format": "uuid",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "truck_id": {
+            "format": "uuid",
+            "title": "Truck Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "truck_id",
+          "reason",
+          "started_at",
+          "ended_at"
+        ],
+        "title": "MaintenanceRecordResponse",
+        "type": "object"
+      },
+      "MaintenanceStartRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "MaintenanceStartRequest",
+        "type": "object"
+      },
       "MeResponse": {
         "properties": {
           "capabilities": {
@@ -407,6 +1123,71 @@
         ],
         "title": "MeResponse",
         "type": "object"
+      },
+      "OrDocumentKind": {
+        "enum": [
+          "SIGNED_OR",
+          "STAMPED_COPY"
+        ],
+        "title": "OrDocumentKind",
+        "type": "string"
+      },
+      "OrDocumentResponse": {
+        "properties": {
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "document_id": {
+            "format": "uuid",
+            "title": "Document Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OrDocumentKind"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "superseded": {
+            "title": "Superseded",
+            "type": "boolean"
+          },
+          "trip_id": {
+            "format": "uuid",
+            "title": "Trip Id",
+            "type": "string"
+          },
+          "uploaded_at": {
+            "format": "date-time",
+            "title": "Uploaded At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "trip_id",
+          "kind",
+          "content_type",
+          "size_bytes",
+          "uploaded_at",
+          "superseded"
+        ],
+        "title": "OrDocumentResponse",
+        "type": "object"
+      },
+      "OrderStatus": {
+        "enum": [
+          "PENDING",
+          "PARTIALLY_ASSIGNED",
+          "SCHEDULED",
+          "IN_PROGRESS",
+          "COMPLETED",
+          "CANCELLED"
+        ],
+        "title": "OrderStatus",
+        "type": "string"
       },
       "PermissionGrantResponse": {
         "properties": {
@@ -460,6 +1241,20 @@
       "ProblemDetailsResponse": {
         "description": "RFC 9457 body returned for every error (application/problem+json).",
         "properties": {
+          "blocking_trip_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocking Trip Ids"
+          },
           "code": {
             "title": "Code",
             "type": "string"
@@ -510,6 +1305,81 @@
         "title": "ProblemDetailsResponse",
         "type": "object"
       },
+      "ReceiptConfirmationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "received_at"
+        ],
+        "title": "ReceiptConfirmationRequest",
+        "type": "object"
+      },
+      "ResourceAvailabilityResponse": {
+        "properties": {
+          "blocking_trip_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocking Trip Id"
+          },
+          "can_receive_assignment": {
+            "title": "Can Receive Assignment",
+            "type": "boolean"
+          },
+          "capacity_tons": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capacity Tons"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "resource_id": {
+            "format": "uuid",
+            "title": "Resource Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_id",
+          "name",
+          "can_receive_assignment",
+          "reason",
+          "blocking_trip_id"
+        ],
+        "title": "ResourceAvailabilityResponse",
+        "type": "object"
+      },
       "RoleAssignmentRequest": {
         "additionalProperties": false,
         "properties": {
@@ -554,6 +1424,537 @@
         ],
         "title": "RoleCode",
         "type": "string"
+      },
+      "TripAssignRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "driver_id": {
+            "format": "uuid",
+            "title": "Driver Id",
+            "type": "string"
+          },
+          "helper_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 2,
+            "minItems": 1,
+            "title": "Helper Ids",
+            "type": "array"
+          },
+          "load_tons": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100000.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Load Tons"
+          },
+          "truck_id": {
+            "format": "uuid",
+            "title": "Truck Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "truck_id",
+          "driver_id",
+          "helper_ids",
+          "load_tons"
+        ],
+        "title": "TripAssignRequest",
+        "type": "object"
+      },
+      "TripCrewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "driver_id": {
+            "format": "uuid",
+            "title": "Driver Id",
+            "type": "string"
+          },
+          "helper_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 2,
+            "minItems": 1,
+            "title": "Helper Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "driver_id",
+          "helper_ids"
+        ],
+        "title": "TripCrewRequest",
+        "type": "object"
+      },
+      "TripPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TripResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "TripPageResponse",
+        "type": "object"
+      },
+      "TripReasonRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "TripReasonRequest",
+        "type": "object"
+      },
+      "TripResponse": {
+        "properties": {
+          "accepted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "cleared_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cleared At"
+          },
+          "closed_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed Reason"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "delivery_location": {
+            "title": "Delivery Location",
+            "type": "string"
+          },
+          "departed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Departed At"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/OrDocumentResponse"
+            },
+            "title": "Documents",
+            "type": "array"
+          },
+          "driver_id": {
+            "format": "uuid",
+            "title": "Driver Id",
+            "type": "string"
+          },
+          "helper_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Helper Ids",
+            "type": "array"
+          },
+          "load_tons": {
+            "title": "Load Tons",
+            "type": "number"
+          },
+          "or_uploaded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Or Uploaded At"
+          },
+          "order_id": {
+            "format": "uuid",
+            "title": "Order Id",
+            "type": "string"
+          },
+          "pickup_location": {
+            "title": "Pickup Location",
+            "type": "string"
+          },
+          "receipt_confirmed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Confirmed At"
+          },
+          "receipt_received_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Received At"
+          },
+          "scheduled_date": {
+            "format": "date",
+            "title": "Scheduled Date",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TripStatus"
+          },
+          "trip_id": {
+            "format": "uuid",
+            "title": "Trip Id",
+            "type": "string"
+          },
+          "truck_id": {
+            "format": "uuid",
+            "title": "Truck Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trip_id",
+          "order_id",
+          "truck_id",
+          "load_tons",
+          "status",
+          "driver_id",
+          "helper_ids",
+          "scheduled_date",
+          "pickup_location",
+          "delivery_location",
+          "accepted_at",
+          "cleared_at",
+          "departed_at",
+          "delivered_at",
+          "closed_reason",
+          "created_at",
+          "or_uploaded_at",
+          "receipt_confirmed_at",
+          "receipt_received_at",
+          "documents"
+        ],
+        "title": "TripResponse",
+        "type": "object"
+      },
+      "TripStatus": {
+        "enum": [
+          "SCHEDULED",
+          "ACCEPTED",
+          "CLEARED_FOR_DISPATCH",
+          "IN_TRANSIT",
+          "DELIVERED_OR_PENDING",
+          "OR_UPLOADED",
+          "COMPLETED",
+          "FAILED",
+          "CANCELLED"
+        ],
+        "title": "TripStatus",
+        "type": "string"
+      },
+      "TruckCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "capacity_tons": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Capacity Tons"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "plate_number": {
+            "maxLength": 16,
+            "minLength": 2,
+            "pattern": "^[A-Za-z0-9 -]+$",
+            "title": "Plate Number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "plate_number",
+          "capacity_tons"
+        ],
+        "title": "TruckCreateRequest",
+        "type": "object"
+      },
+      "TruckPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TruckResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "TruckPageResponse",
+        "type": "object"
+      },
+      "TruckReplacementRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "original_truck_needs_maintenance": {
+            "title": "Original Truck Needs Maintenance",
+            "type": "boolean"
+          },
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          },
+          "replacement_truck_id": {
+            "format": "uuid",
+            "title": "Replacement Truck Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "replacement_truck_id",
+          "reason",
+          "original_truck_needs_maintenance"
+        ],
+        "title": "TruckReplacementRequest",
+        "type": "object"
+      },
+      "TruckResponse": {
+        "properties": {
+          "capacity_tons": {
+            "title": "Capacity Tons",
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "plate_number": {
+            "title": "Plate Number",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TruckStatus"
+          },
+          "truck_id": {
+            "format": "uuid",
+            "title": "Truck Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "truck_id",
+          "plate_number",
+          "description",
+          "capacity_tons",
+          "status",
+          "is_active",
+          "created_at"
+        ],
+        "title": "TruckResponse",
+        "type": "object"
+      },
+      "TruckStatus": {
+        "enum": [
+          "AVAILABLE",
+          "ASSIGNED",
+          "IN_TRANSIT",
+          "MAINTENANCE"
+        ],
+        "title": "TruckStatus",
+        "type": "string"
+      },
+      "TruckUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "capacity_tons": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capacity Tons"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "plate_number": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "minLength": 2,
+                "pattern": "^[A-Za-z0-9 -]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plate Number"
+          }
+        },
+        "title": "TruckUpdateRequest",
+        "type": "object"
       },
       "ValidationError": {
         "properties": {
@@ -687,6 +2088,901 @@
         "summary": "Read Audit Log",
         "tags": [
           "administration"
+        ]
+      }
+    },
+    "/api/v1/clients": {
+      "get": {
+        "operationId": "list_clients_api_v1_clients_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "active",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPageResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Clients",
+        "tags": [
+          "clients"
+        ]
+      },
+      "post": {
+        "operationId": "create_client_api_v1_clients_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Client",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/api/v1/clients/{client_id}": {
+      "get": {
+        "operationId": "read_client_api_v1_clients__client_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "client_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Client Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Client",
+        "tags": [
+          "clients"
+        ]
+      },
+      "patch": {
+        "operationId": "update_client_api_v1_clients__client_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "client_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Client Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Client",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/api/v1/delivery-orders": {
+      "get": {
+        "operationId": "list_delivery_orders_api_v1_delivery_orders_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OrderStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "client_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Client Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOrderPageResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Delivery Orders",
+        "tags": [
+          "delivery-orders"
+        ]
+      },
+      "post": {
+        "operationId": "create_delivery_order_api_v1_delivery_orders_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryOrderCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOrderResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Delivery Order",
+        "tags": [
+          "delivery-orders"
+        ]
+      }
+    },
+    "/api/v1/delivery-orders/{order_id}": {
+      "get": {
+        "operationId": "read_delivery_order_api_v1_delivery_orders__order_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOrderResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Delivery Order",
+        "tags": [
+          "delivery-orders"
+        ]
+      },
+      "patch": {
+        "operationId": "update_delivery_order_api_v1_delivery_orders__order_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryOrderUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOrderResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Delivery Order",
+        "tags": [
+          "delivery-orders"
+        ]
+      }
+    },
+    "/api/v1/delivery-orders/{order_id}/cancel": {
+      "post": {
+        "operationId": "cancel_delivery_order_api_v1_delivery_orders__order_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryOrderCancelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOrderResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Delivery Order",
+        "tags": [
+          "delivery-orders"
+        ]
+      }
+    },
+    "/api/v1/delivery-orders/{order_id}/trips": {
+      "post": {
+        "operationId": "assign_trip_api_v1_delivery_orders__order_id__trips_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripAssignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assign Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/dispatch/resources": {
+      "get": {
+        "operationId": "read_dispatch_resources_api_v1_dispatch_resources_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchResourcesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Dispatch Resources",
+        "tags": [
+          "dispatch"
         ]
       }
     },
@@ -1140,6 +3436,158 @@
         ]
       }
     },
+    "/api/v1/employees/{employee_id}/driver-license": {
+      "get": {
+        "operationId": "read_driver_license_api_v1_employees__employee_id__driver_license_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employee_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Employee Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/DriverLicenseDetailResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/DriverLicenseLimitedResponse"
+                    }
+                  ],
+                  "title": "Response Read Driver License Api V1 Employees  Employee Id  Driver License Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Driver License",
+        "tags": [
+          "driver-licenses"
+        ]
+      },
+      "put": {
+        "operationId": "save_driver_license_api_v1_employees__employee_id__driver_license_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employee_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Employee Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DriverLicenseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverLicenseDetailResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Driver License",
+        "tags": [
+          "driver-licenses"
+        ]
+      }
+    },
     "/api/v1/employees/{employee_id}/identity": {
       "put": {
         "operationId": "link_employee_identity_api_v1_employees__employee_id__identity_put",
@@ -1366,6 +3814,1990 @@
         "summary": "Read Permission Matrix",
         "tags": [
           "administration"
+        ]
+      }
+    },
+    "/api/v1/trips": {
+      "get": {
+        "operationId": "list_trips_api_v1_trips_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TripStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Order Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "truck_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Truck Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripPageResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Trips",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/assigned": {
+      "get": {
+        "operationId": "list_assigned_trips_api_v1_trips_assigned_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TripStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripPageResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Assigned Trips",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}": {
+      "get": {
+        "operationId": "read_trip_api_v1_trips__trip_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/accept": {
+      "post": {
+        "operationId": "accept_trip_api_v1_trips__trip_id__accept_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Accept Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/cancel": {
+      "post": {
+        "operationId": "cancel_trip_api_v1_trips__trip_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripReasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/clear-dispatch": {
+      "post": {
+        "operationId": "clear_trip_dispatch_api_v1_trips__trip_id__clear_dispatch_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Clear Trip Dispatch",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/confirm-receipt": {
+      "post": {
+        "operationId": "confirm_receipt_api_v1_trips__trip_id__confirm_receipt_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 8,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiptConfirmationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Confirm Receipt",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/crew": {
+      "put": {
+        "operationId": "change_trip_crew_api_v1_trips__trip_id__crew_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripCrewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Change Trip Crew",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/deliver": {
+      "post": {
+        "operationId": "deliver_trip_api_v1_trips__trip_id__deliver_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Deliver Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/depart": {
+      "post": {
+        "operationId": "depart_trip_api_v1_trips__trip_id__depart_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Depart Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/fail": {
+      "post": {
+        "operationId": "fail_trip_api_v1_trips__trip_id__fail_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripReasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Fail Trip",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/or-documents": {
+      "get": {
+        "operationId": "list_or_documents_api_v1_trips__trip_id__or_documents_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrDocumentResponse"
+                  },
+                  "title": "Response List Or Documents Api V1 Trips  Trip Id  Or Documents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Or Documents",
+        "tags": [
+          "or-documents"
+        ]
+      },
+      "post": {
+        "operationId": "upload_or_document_api_v1_trips__trip_id__or_documents_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_or_document_api_v1_trips__trip_id__or_documents_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrDocumentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upload Or Document",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/or-documents/{document_id}/url": {
+      "get": {
+        "operationId": "issue_or_document_url_api_v1_trips__trip_id__or_documents__document_id__url_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "document_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Document Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUrlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Issue Or Document Url",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/receipt-correction": {
+      "post": {
+        "operationId": "correct_receipt_confirmation_api_v1_trips__trip_id__receipt_correction_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripReasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Correct Receipt Confirmation",
+        "tags": [
+          "or-documents"
+        ]
+      }
+    },
+    "/api/v1/trips/{trip_id}/truck-replacement": {
+      "post": {
+        "operationId": "replace_trip_truck_api_v1_trips__trip_id__truck_replacement_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "trip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Trip Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TruckReplacementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Replace Trip Truck",
+        "tags": [
+          "dispatch"
+        ]
+      }
+    },
+    "/api/v1/trucks": {
+      "get": {
+        "operationId": "list_trucks_api_v1_trucks_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TruckStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "active",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TruckPageResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Trucks",
+        "tags": [
+          "trucks"
+        ]
+      },
+      "post": {
+        "operationId": "create_truck_api_v1_trucks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TruckCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TruckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Truck",
+        "tags": [
+          "trucks"
+        ]
+      }
+    },
+    "/api/v1/trucks/{truck_id}": {
+      "get": {
+        "operationId": "read_truck_api_v1_trucks__truck_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "truck_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Truck Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TruckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Truck",
+        "tags": [
+          "trucks"
+        ]
+      },
+      "patch": {
+        "operationId": "update_truck_api_v1_trucks__truck_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "truck_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Truck Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TruckUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TruckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Truck",
+        "tags": [
+          "trucks"
+        ]
+      }
+    },
+    "/api/v1/trucks/{truck_id}/maintenance": {
+      "get": {
+        "operationId": "list_truck_maintenance_api_v1_trucks__truck_id__maintenance_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "truck_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Truck Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MaintenanceRecordResponse"
+                  },
+                  "title": "Response List Truck Maintenance Api V1 Trucks  Truck Id  Maintenance Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Truck Maintenance",
+        "tags": [
+          "trucks"
+        ]
+      },
+      "post": {
+        "operationId": "start_truck_maintenance_api_v1_trucks__truck_id__maintenance_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "truck_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Truck Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRecordResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start Truck Maintenance",
+        "tags": [
+          "trucks"
+        ]
+      }
+    },
+    "/api/v1/trucks/{truck_id}/maintenance/complete": {
+      "post": {
+        "operationId": "complete_truck_maintenance_api_v1_trucks__truck_id__maintenance_complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "truck_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Truck Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRecordResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Complete Truck Maintenance",
+        "tags": [
+          "trucks"
         ]
       }
     },

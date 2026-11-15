@@ -63,6 +63,17 @@ class EmployeeRepository:
         statement = select(EmployeeRow).order_by(EmployeeRow.full_name, EmployeeRow.employee_id)
         return [self._to_entity(row) for row in self._session.scalars(statement).all()]
 
+    def list_by_role(self, role_code: RoleCode, only_active: bool) -> list[Employee]:
+        statement = (
+            select(EmployeeRow)
+            .join(EmployeeRoleRow, EmployeeRoleRow.employee_id == EmployeeRow.employee_id)
+            .where(EmployeeRoleRow.role_code == role_code.value)
+            .order_by(EmployeeRow.full_name, EmployeeRow.employee_id)
+        )
+        if only_active:
+            statement = statement.where(EmployeeRow.is_active.is_(True))
+        return [self._to_entity(row) for row in self._session.scalars(statement).all()]
+
     def create(self, full_name: str, email: str, phone: str | None) -> Employee:
         row = EmployeeRow(full_name=full_name, email=email, phone=phone, is_active=False)
         self._session.add(row)

@@ -60,6 +60,7 @@ def build_problem_response(
     detail: str,
     errors: list[dict[str, str]] | None = None,
     extra_headers: dict[str, str] | None = None,
+    extensions: dict[str, object] | None = None,
 ) -> JSONResponse:
     body: dict[str, object] = {
         "type": f"urn:bm-enterprises:problem:{error_code.lower().replace('_', '-')}",
@@ -71,6 +72,8 @@ def build_problem_response(
     }
     if errors:
         body["errors"] = errors
+    for extension_name, extension_value in (extensions or {}).items():
+        body.setdefault(extension_name, extension_value)
     trace_id = body["trace_id"]
     headers = {"X-Trace-Id": str(trace_id)}
     if status_code == 401:
@@ -82,7 +85,14 @@ def build_problem_response(
 async def handle_business_rule_error(request: Request, error: Exception) -> JSONResponse:
     error = cast(BusinessRuleError, error)
     return build_problem_response(
-        request, error.status_code, error.error_code, error.title, error.detail, None, error.headers
+        request,
+        error.status_code,
+        error.error_code,
+        error.title,
+        error.detail,
+        None,
+        error.headers,
+        error.extensions,
     )
 
 

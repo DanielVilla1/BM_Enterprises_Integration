@@ -16,6 +16,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from .config import get_settings
+from .Contract.i_storage import IImageSanitizer, IObjectStorage
 from .Contract.i_token_verifier import ITokenVerifier
 from .Contract.i_webhook_verifier import IWebhookVerifier
 from .database import SessionLocal
@@ -24,17 +25,30 @@ from .Entity.business_rule_error import BusinessRuleError
 from .Entity.employee import Principal
 from .Infrastructure.Clerk.clerk_token_verifier import ClerkTokenVerifier
 from .Infrastructure.Clerk.clerk_webhook_verifier import ClerkWebhookVerifier
+from .Infrastructure.Imaging.pillow_image_sanitizer import PillowImageSanitizer
+from .Infrastructure.Supabase.supabase_object_storage import SupabaseObjectStorage
 from .rate_limiter import SlidingWindowLimiter
 from .Repository.audit_repository import AuditRepository
+from .Repository.document_repositories import IdempotencyRepository, OrDocumentRepository
 from .Repository.employee_repository import EmployeeRepository
+from .Repository.fleet_repositories import DriverLicenseRepository, TruckRepository
+from .Repository.operations_repositories import ClientRepository, DeliveryOrderRepository
 from .Repository.permission_repository import PermissionRepository
+from .Repository.trip_repository import TripRepository
 from .Repository.unit_of_work import SqlAlchemyUnitOfWork
 from .Repository.webhook_event_repository import WebhookEventRepository
 from .Service.audit_service import AuditService
 from .Service.authentication_service import AuthenticationService
 from .Service.authorization_service import AuthorizationService
 from .Service.clerk_webhook_service import ClerkWebhookService
+from .Service.client_service import ClientService
+from .Service.delivery_order_service import DeliveryOrderService
+from .Service.driver_license_service import DriverLicenseService
 from .Service.employee_service import EmployeeService
+from .Service.or_service import OrService
+from .Service.trip_service import TripService
+from .Service.trip_state_synchronizer import TripStateSynchronizer
+from .Service.truck_service import TruckService
 
 bearer_scheme = HTTPBearer(auto_error=False, description="Clerk session token")
 
@@ -55,6 +69,17 @@ def get_token_verifier() -> ITokenVerifier:
         authorized_parties=settings.clerk_authorized_parties,
         clock_skew_seconds=settings.clerk_clock_skew_seconds,
     )
+
+
+def get_object_storage() -> IObjectStorage:
+    settings = get_settings()
+    return SupabaseObjectStorage(
+        settings.supabase_url, settings.supabase_service_key, settings.supabase_bucket
+    )
+
+
+def get_image_sanitizer() -> IImageSanitizer:
+    return PillowImageSanitizer()
 
 
 def get_webhook_verifier() -> IWebhookVerifier:
@@ -97,6 +122,67 @@ def get_trace_id(request: Request) -> str:
 def get_employee_service(session: Session = Depends(get_session)) -> EmployeeService:
     return EmployeeService(
         EmployeeRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session)
+    )
+
+
+def get_client_service(session: Session = Depends(get_session)) -> ClientService:
+    return ClientService(ClientRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session))
+
+
+def get_truck_service(session: Session = Depends(get_session)) -> TruckService:
+    return TruckService(TruckRepository(session), AuditRepository(session), SqlAlchemyUnitOfWork(session))
+
+
+def get_driver_license_service(session: Session = Depends(get_session)) -> DriverLicenseService:
+    return DriverLicenseService(
+        EmployeeRepository(session),
+        DriverLicenseRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+    )
+
+
+def get_delivery_order_service(session: Session = Depends(get_session)) -> DeliveryOrderService:
+    return DeliveryOrderService(
+        DeliveryOrderRepository(session),
+        ClientRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+    )
+
+
+def get_trip_service(session: Session = Depends(get_session)) -> TripService:
+    return TripService(
+        TripRepository(session),
+        DeliveryOrderRepository(session),
+        TruckRepository(session),
+        EmployeeRepository(session),
+        DriverLicenseRepository(session),
+        OrDocumentRepository(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+    )
+
+
+def get_or_service(
+    session: Session = Depends(get_session),
+    storage: IObjectStorage = Depends(get_object_storage),
+    sanitizer: IImageSanitizer = Depends(get_image_sanitizer),
+) -> OrService:
+    settings = get_settings()
+    trips = TripRepository(session)
+    return OrService(
+        trips,
+        OrDocumentRepository(session),
+        IdempotencyRepository(session),
+        storage,
+        sanitizer,
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+        TripStateSynchronizer(trips, DeliveryOrderRepository(session), TruckRepository(session)),
+        get_trip_service(session),
+        settings.signed_url_ttl_seconds,
+        settings.max_upload_bytes,
     )
 
 
@@ -153,15 +239,21 @@ class AccessContext:
     level: AccessLevel
 
 
-def require_capability(capability: str, minimum_level: AccessLevel | None = None):
-    """Dependency factory: 403 unless a role grants the capability (at the minimum level)."""
+def require_capability(
+    capability: str,
+    minimum_level: AccessLevel | None = None,
+    only_levels: tuple[AccessLevel, ...] | None = None,
+):
+    """Dependency factory: 403 unless a role grants the capability (at the required level)."""
 
     def check_capability(
         principal: Principal = Depends(get_principal),
         authorization: AuthorizationService = Depends(get_authorization_service),
     ) -> AccessContext:
         level = authorization.require_level(principal, capability)
-        if minimum_level is not None and level.rank < minimum_level.rank:
+        too_weak = minimum_level is not None and level.rank < minimum_level.rank
+        not_allowed = only_levels is not None and level not in only_levels
+        if too_weak or not_allowed:
             raise BusinessRuleError(
                 403, "PERMISSION_DENIED", "Forbidden", "Your role does not allow this action."
             )
@@ -169,4 +261,5 @@ def require_capability(capability: str, minimum_level: AccessLevel | None = None
 
     check_capability.capability = capability  # type: ignore[attr-defined]
     check_capability.minimum_level = minimum_level  # type: ignore[attr-defined]
+    check_capability.only_levels = only_levels  # type: ignore[attr-defined]
     return check_capability
