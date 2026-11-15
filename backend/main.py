@@ -12,8 +12,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from .src.config import get_settings
 from .src.Controller.account_controller import router as account_router
 from .src.Controller.administration_controller import router as administration_router
+from .src.Controller.client_controller import router as client_router
+from .src.Controller.delivery_order_controller import router as delivery_order_router
+from .src.Controller.driver_license_controller import router as driver_license_router
 from .src.Controller.employee_controller import router as employee_router
 from .src.Controller.health_controller import router as health_router
+from .src.Controller.truck_controller import router as truck_router
 from .src.Controller.webhook_controller import router as webhook_router
 from .src.problem_details import install_problem_details
 
@@ -40,6 +44,10 @@ def create_application() -> FastAPI:
         health_router,
         account_router,
         employee_router,
+        driver_license_router,
+        client_router,
+        truck_router,
+        delivery_order_router,
         administration_router,
         webhook_router,
     ):

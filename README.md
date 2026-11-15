@@ -9,7 +9,7 @@ Professor Jocelyn Tejada — September 2026
 
 ## Build status and local development
 
-Sprint 1 foundation is in place: Clerk token verification, employees, the seven roles, the permission matrix stored as data, forbidden role pairs, audit log, Clerk webhook receiver, `application/problem+json` errors and a committed OpenAPI 3.1 snapshot. Business requirements live in the *Consolidated Developer Specification* (9 Nov 2026); where it differs from the proposal below, the specification wins.
+Sprint 2 adds clients, trucks with maintenance status, driver license details (visibility follows the matrix: the dispatcher sees validity only) and delivery order encoding, with matching screens driven by backend-confirmed capabilities. Hauling rates are intentionally not stored yet (spec decision D5). Sprint 1 foundation is in place: Clerk token verification, employees, the seven roles, the permission matrix stored as data, forbidden role pairs, audit log, Clerk webhook receiver, `application/problem+json` errors and a committed OpenAPI 3.1 snapshot. Business requirements live in the *Consolidated Developer Specification* (9 Nov 2026); where it differs from the proposal below, the specification wins.
 
 **Backend** (Python 3.12, from `backend/`):
 
