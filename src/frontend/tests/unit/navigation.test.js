@@ -21,7 +21,7 @@ describe('visibleNavigation', () => {
     expect(pageKeys({})).toEqual(['account'])
   })
 
-  it('gives a dispatcher the operations pages plus the preview finance and report pages', () => {
+  it('gives a dispatcher the permitted operations, expense and report pages', () => {
     const keys = pageKeys({
       'dispatch.assign': 'FULL',
       'delivery_order.manage': 'FULL',

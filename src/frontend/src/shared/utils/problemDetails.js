@@ -60,5 +60,16 @@ export function normalizeApiError(requestError) {
     detail: String(responseBody.detail ?? 'The request failed.'),
     traceIdentifier: String(responseBody.trace_id ?? ''),
     fieldErrors: Array.isArray(responseBody.errors) ? responseBody.errors : [],
+    ...(responseStatus === 403 &&
+    responseBody.code === 'AUTH_NO_ACTIVE_EMPLOYEE' &&
+    ['identity_not_linked', 'employee_inactive'].includes(responseBody.account_setup?.reason) &&
+    typeof responseBody.account_setup?.clerk_user_id === 'string'
+      ? {
+          accountSetup: {
+            reason: responseBody.account_setup.reason,
+            clerkUserId: responseBody.account_setup.clerk_user_id,
+          },
+        }
+      : {}),
   }
 }

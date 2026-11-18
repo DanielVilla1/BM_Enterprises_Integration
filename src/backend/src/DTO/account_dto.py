@@ -87,6 +87,13 @@ class FieldErrorResponse(BaseModel):
     message: str
 
 
+class AccountSetupResponse(BaseModel):
+    """Diagnostics for the caller's own verified identity, without employee privileges."""
+
+    reason: Literal["identity_not_linked", "employee_inactive"]
+    clerk_user_id: str
+
+
 class ProblemDetailsResponse(BaseModel):
     """RFC 9457 body returned for every error (application/problem+json)."""
 
@@ -98,3 +105,4 @@ class ProblemDetailsResponse(BaseModel):
     trace_id: str
     errors: list[FieldErrorResponse] | None = None
     blocking_trip_ids: list[str] | None = None
+    account_setup: AccountSetupResponse | None = None

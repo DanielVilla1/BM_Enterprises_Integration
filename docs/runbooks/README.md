@@ -20,5 +20,6 @@
 - [Complete documentation reconciliation](documentation-audit.md)
 - [Create the first Owner in the hosted demo](hosted-demo-owner.md)
 - [Diagnose hosted demo connection failures](hosted-demo-connectivity.md)
+- [All-role hosted sign-in and recovery verification](hosted-role-verification.md)
 
 Persistent development features, fictional presentation records and pending production gates are separate. The hosted demo uses the Sprint 5–6 implementation already integrated into `main`; historical evidence retains its original branch context.

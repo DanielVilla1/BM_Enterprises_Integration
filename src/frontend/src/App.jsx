@@ -19,6 +19,8 @@ import { useTheme } from './hooks/useTheme'
 import { CLERK_PUBLISHABLE_KEY } from './shared/services/clerkConfig'
 import {
   SessionSignIn,
+  SessionSignOutButton,
+  SessionIdentity,
   SessionTokenBridge,
   SessionUserButton,
   SignedInGate,
@@ -41,6 +43,7 @@ function Workspace() {
 
   if (loadState === 'failed') {
     const notLinked = failure?.code === 'AUTH_NO_ACTIVE_EMPLOYEE'
+    const inactive = failure?.accountSetup?.reason === 'employee_inactive'
     return (
       <FullPageNotice
         tone={notLinked ? 'warning' : 'error'}
@@ -49,10 +52,18 @@ function Workspace() {
         }
         message={
           notLinked
-            ? 'You are signed in, but not linked to an active employee record. Ask the Owner to activate your account, then refresh this page.'
+            ? inactive
+              ? 'Your employee account is inactive. Ask the Owner to activate it, or sign out to use another account.'
+              : 'Your sign-in is not linked to an active employee in this system. Ask the Owner to link your account, or sign out to use another account.'
             : failure?.detail
         }
       >
+        <SessionIdentity />
+        {notLinked && failure?.accountSetup?.clerkUserId ? (
+          <p className="break-all text-xs text-base-content/70">
+            Sign-in account ID: {failure.accountSetup.clerkUserId}
+          </p>
+        ) : null}
         {failure?.traceIdentifier ? (
           <p className="text-xs text-base-content/50">Reference: {failure.traceIdentifier}</p>
         ) : null}
@@ -63,6 +74,7 @@ function Workspace() {
         >
           Try again
         </button>
+        <SessionSignOutButton />
       </FullPageNotice>
     )
   }
@@ -72,7 +84,9 @@ function Workspace() {
         busy
         title="Connecting to your workspace"
         message="The first connection can take up to 90 seconds. Please keep this page open."
-      />
+      >
+        <SessionSignOutButton />
+      </FullPageNotice>
     )
 
   const pages = visibleNavigation(account.capabilities)
