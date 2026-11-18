@@ -34,7 +34,7 @@ Each domain must be isolated.
 
 ### Backend Structure
 
-backend/
+src/backend/
 
 - Controller/
 - Service/
@@ -52,7 +52,7 @@ Descriptions:
 - `Entity/` : Domain model objects representing core business concepts and invariants. Entities are persistence-agnostic and used inside Services and Repositories.
 - `Contract/` : Interface definitions (ports) for repositories, services, and adapters. Use Contracts for dependency inversion and to make implementations swappable in tests.
 
-backend/endpoint/
+src/backend/endpoint/
 
 - Account/
 - Booking/
@@ -83,7 +83,7 @@ Rules:
 
 ### Frontend Structure
 
-frontend/src/
+src/frontend/src/
 
 - components/
 - hooks/
@@ -257,8 +257,8 @@ External libraries must be wrapped.
 
 Examples:
 
-backend/src/Infrastructure/Payment/XenditClient.php
-frontend/src/shared/services/barcodeScannerService.js
+src/backend/src/Infrastructure/Payment/XenditClient.php
+src/frontend/src/shared/services/barcodeScannerService.js
 
 No direct SDK usage inside domain modules.
 

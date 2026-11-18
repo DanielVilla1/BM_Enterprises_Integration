@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend Entity classes representing domain models"
-applyTo: "backend/**/Entity/**/*.py"
+applyTo: "src/backend/**/Entity/**/*.py"
 ---
 
 # Entity Folder Rules
@@ -16,7 +16,7 @@ Entities represent the core domain concepts and invariants. They should be persi
 
 ## 2. Modular Interaction Rules
 
-- Location: Place entities under `backend/src/Entity/<domain>/` or `backend/src/Entity/` for shared concepts.
+- Location: Place entities under `src/backend/src/Entity/<domain>/` or `src/backend/src/Entity/` for shared concepts.
 - Usage: Services operate primarily on Entities; Repositories convert between Entities and persistence representations.
 - No external SDKs: Entities must not import external SDKs or database modules.
 

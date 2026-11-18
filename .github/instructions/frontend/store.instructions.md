@@ -1,6 +1,6 @@
 ---
 description: "Rules for frontend stores (global state management)"
-applyTo: "frontend/**/store/**/*.{js,ts}"
+applyTo: "src/frontend/**/store/**/*.{js,ts}"
 ---
 
 # Store Folder Rules

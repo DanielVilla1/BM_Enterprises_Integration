@@ -1,6 +1,6 @@
 ---
 description: "Rules for frontend services (API clients and SDK wrappers)"
-applyTo: "frontend/**/services/**/*.{js,ts}"
+applyTo: "src/frontend/**/services/**/*.{js,ts}"
 ---
 
 # Services Folder Rules

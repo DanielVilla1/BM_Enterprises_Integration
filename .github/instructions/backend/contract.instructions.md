@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend Contract interfaces (ports) used to decouple layers"
-applyTo: "backend/**/Contract/**/*.py"
+applyTo: "src/backend/**/Contract/**/*.py"
 ---
 
 # Contract Folder Rules
@@ -17,7 +17,7 @@ This folder contains interface definitions (ports) used across backend layers to
 
 ## 2. Modular Interaction Rules
 
-- Location: Place contracts under `backend/src/Contract/<domain>/` or `backend/src/Contract/` for global ports.
+- Location: Place contracts under `src/backend/src/Contract/<domain>/` or `src/backend/src/Contract/` for global ports.
 - Direction: Services depend on Contracts (interfaces); repositories and infrastructure implement Contracts.
 - Testing: Tests should rely on Contract types and provide fakes/mocks implementing the Contract for unit tests.
 - No circular dependencies: Contracts must be dependency-light (no imports from `Service` or `Repository` implementations).
@@ -26,7 +26,7 @@ This folder contains interface definitions (ports) used across backend layers to
 
 - Use static typing: All functions and methods must have explicit Python type hints; avoid `Any`.
 - Prefer `typing.Protocol` or abstract base classes for Contracts to enable structural subtyping and mocks.
-- DTOs: Use DTO classes (from `backend/src/DTO/`) in method signatures rather than ORM `Entity` types for layer boundaries.
+- DTOs: Use DTO classes (from `src/backend/src/DTO/`) in method signatures rather than ORM `Entity` types for layer boundaries.
 - Return types: Declare precise return types (e.g., `Optional[ReservationDTO]`, `List[TodoDTO]`).
 
 ## 4. Data Fetching Rules
