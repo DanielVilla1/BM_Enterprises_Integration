@@ -1,0 +1,1007 @@
+{
+  "base_commit": "7b60667c1734ec2ced613704b3b6fdacaf125566",
+  "branch": "qa/acceptance-20261118",
+  "source_sha256": "c5c1aa4a6845ad0572ebfdda978f6328fd4dfabc83437de60435cb89e005f5b8",
+  "files": [
+    {
+      "path": ".env.example",
+      "sha256": "399779725ab187037421aa844a16df351a9210d363fb8b437e926c33d56b838a"
+    },
+    {
+      "path": "compose.yml",
+      "sha256": "9b1f25c48b8a1bcc78a4dbe9e77a0bfaaca0b55809215d0b4e8e3ccf620740cd"
+    },
+    {
+      "path": "src/backend/.dockerignore",
+      "sha256": "5e6e6a2793c02146aed71121244dd1103e857b1ec0e55bdd7ae7e36a220ed975"
+    },
+    {
+      "path": "src/backend/Dockerfile",
+      "sha256": "fee7b3014f934d8a6ff0c6ca5a00f60af89892e97147d3f9206b726cae03ed6e"
+    },
+    {
+      "path": "src/backend/__init__.py",
+      "sha256": "277aea5279d73f13b9b0ff0cb50b3b48a566e1213de76bf20afbc4cf2cf7aaa6"
+    },
+    {
+      "path": "src/backend/alembic.ini",
+      "sha256": "02a73ad2e2e8c96c721675dc629b6d24621f9945493d1a66e1dff25aa0c2a87d"
+    },
+    {
+      "path": "src/backend/main.py",
+      "sha256": "e193b73d828eca4abf6f8d09be6d30f09ab500c80233c20c49f61d113b1f7bc4"
+    },
+    {
+      "path": "src/backend/migrations/env.py",
+      "sha256": "bef72c6a6c59e0637716b22b450ce834ad334c7ddf33fbce4ab6dfdb5f95cc9c"
+    },
+    {
+      "path": "src/backend/migrations/script.py.mako",
+      "sha256": "67042994cfc495007c508ccae15e44d21057d90222461630f9bc04d3657f5f6d"
+    },
+    {
+      "path": "src/backend/migrations/versions/0001_initial_identity_and_audit.py",
+      "sha256": "0e734ea4ebbae0d613530f68cc2374f029a579973ad431b7dcb2c1a098cfe7ac"
+    },
+    {
+      "path": "src/backend/migrations/versions/0002_fleet_clients_orders.py",
+      "sha256": "a7ce9df49b1fcfbf798633615a5b4e887e19c392f39a726519f47e204b83c03c"
+    },
+    {
+      "path": "src/backend/migrations/versions/0003_trips_and_dispatch.py",
+      "sha256": "23d634fc72669c373af356476fbeded51a20be4485749e47fa917ae76e1e4550"
+    },
+    {
+      "path": "src/backend/migrations/versions/0004_or_documents_and_completion.py",
+      "sha256": "ec08cfe0eeba7e1f68f1ec0bff979fbe8a070876294adb6d541a7148ef2c4559"
+    },
+    {
+      "path": "src/backend/openapi.snapshot.json",
+      "sha256": "6840155db6301b354f0d5df35bde5bf26120f8c588cef15be350e83aed42d99d"
+    },
+    {
+      "path": "src/backend/pyproject.toml",
+      "sha256": "7e1ab24157256f0cd5a409d6a037abe320ec1f4b2c387b37a26e2abaa72a61e8"
+    },
+    {
+      "path": "src/backend/requirements-dev.txt",
+      "sha256": "5cd020e4436be658e5b951e138d3b4840e773f47478c82b68aedd8d80c17f76f"
+    },
+    {
+      "path": "src/backend/requirements.txt",
+      "sha256": "cd39731f63cf2b18695383ace212d3cc13372ee6c3b77db966d40e4ff80a2b56"
+    },
+    {
+      "path": "src/backend/scripts/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/scripts/bootstrap_owner.py",
+      "sha256": "5b2625df66f53cf81060e957666132ddf1b1eb8083a9df0e5ccfca351054ae22"
+    },
+    {
+      "path": "src/backend/scripts/export_openapi.py",
+      "sha256": "66214231329089ffc5b6b207d28c2c548f33cfc6a5aa51e0d4cce46bc33b9b8c"
+    },
+    {
+      "path": "src/backend/scripts/reconcile_clerk.py",
+      "sha256": "fe0463147969fafb03e9a0782cde45c8aed2297316e2771ac15026bd2f7ca5d1"
+    },
+    {
+      "path": "src/backend/src/Contract/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Contract/i_audit_repository.py",
+      "sha256": "a91c9b052e8a460d2e111535894f4a91e9f7e5ff8bdf8eb04ed9f2ca060ed201"
+    },
+    {
+      "path": "src/backend/src/Contract/i_document_repositories.py",
+      "sha256": "d8db167a336661c98092eb94aa9547707dc66bc503989db4014a09c5262431ab"
+    },
+    {
+      "path": "src/backend/src/Contract/i_employee_repository.py",
+      "sha256": "d232ddb691b7640956d0f6fb2bad3da4ea22bc0401fb9206ea41b7b38b48d431"
+    },
+    {
+      "path": "src/backend/src/Contract/i_fleet_repositories.py",
+      "sha256": "645964d7588ac4c0c5e8fdf600be37da24909d3d48a5209300735f16065c73fb"
+    },
+    {
+      "path": "src/backend/src/Contract/i_identity_directory.py",
+      "sha256": "11a385bbe4012ba4e724e2eceb4517c638466dba71153a22a635a057621bd1c5"
+    },
+    {
+      "path": "src/backend/src/Contract/i_operations_repositories.py",
+      "sha256": "1f1152cc01a435976cc31ddc1fc02b52be4bd847a2dc8af63beed1dc8c56a3b2"
+    },
+    {
+      "path": "src/backend/src/Contract/i_permission_repository.py",
+      "sha256": "abdc6546daeca0bc9cfff5d6e2e257cad5dbe7787e6cceb700e689ac7be0ae0c"
+    },
+    {
+      "path": "src/backend/src/Contract/i_storage.py",
+      "sha256": "a9998e0431d851a20402820fada38a4fca5f4df86b3eba46183142a1d64df713"
+    },
+    {
+      "path": "src/backend/src/Contract/i_token_verifier.py",
+      "sha256": "1cd1b14cc4beab697fe7bf1ddbb8ef408903139e116c38fee4428ac7bf2d0bd3"
+    },
+    {
+      "path": "src/backend/src/Contract/i_trip_repository.py",
+      "sha256": "9c5247148c0e7c600f575cb3ab7d00b77ce917835a74d2ffd5550f713481d1b0"
+    },
+    {
+      "path": "src/backend/src/Contract/i_unit_of_work.py",
+      "sha256": "5e5912aa85236d5bdf470c9f195912f5711f67f41ddf03172f4d907a635bcdb9"
+    },
+    {
+      "path": "src/backend/src/Contract/i_webhook_event_repository.py",
+      "sha256": "104b89b1824d0138b7d2d1054dbfcde7fa2c9fbcca8b53d9fa988103ff8f7ca8"
+    },
+    {
+      "path": "src/backend/src/Contract/i_webhook_verifier.py",
+      "sha256": "9726192410fa75d159a72eb451ccdaba022ed79961614122f795861e15095f13"
+    },
+    {
+      "path": "src/backend/src/Controller/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Controller/account_controller.py",
+      "sha256": "78ed5e4dd9425e12e9197da45eb9206879eb4811de43c0a9f666a526c91c4992"
+    },
+    {
+      "path": "src/backend/src/Controller/administration_controller.py",
+      "sha256": "b36060980681aa2b8156b66b7cf18708056ce32ae5044e8d48d1ab3b6efccb11"
+    },
+    {
+      "path": "src/backend/src/Controller/client_controller.py",
+      "sha256": "65774f66f27de888725ca45728376b7ae1b1c2a034039865f457b5fbd9f5fcc0"
+    },
+    {
+      "path": "src/backend/src/Controller/delivery_order_controller.py",
+      "sha256": "466c6a5ffb293ce629fdabb8cd8455a4ec3ea45399f63b44f62883ef595c2ec1"
+    },
+    {
+      "path": "src/backend/src/Controller/driver_license_controller.py",
+      "sha256": "4a43d5bf703d0d1f835f60113494c088c6204d48db0755aa816acc1631ea759f"
+    },
+    {
+      "path": "src/backend/src/Controller/employee_controller.py",
+      "sha256": "b51714245bba665c5ec2a5deddf65cbd69a0c964da721f7194c23ce57bf617aa"
+    },
+    {
+      "path": "src/backend/src/Controller/health_controller.py",
+      "sha256": "bea1de9d707c1f87938831a5d7bb88c5554d13922b650a41c62f1b07e3ee22fc"
+    },
+    {
+      "path": "src/backend/src/Controller/or_controller.py",
+      "sha256": "754f03406ccb35610ba668c130020475734aaac01bc1b317b6dc8f1878359e4e"
+    },
+    {
+      "path": "src/backend/src/Controller/trip_controller.py",
+      "sha256": "8c67265b531d576255f5f2a4a930dc5a6c579325e0f7efc6008e6f8ecbfad759"
+    },
+    {
+      "path": "src/backend/src/Controller/truck_controller.py",
+      "sha256": "35ad1dc5a023def1a0d249364f5b07b5d8454b94f4583f9f9c341d47e5ee688d"
+    },
+    {
+      "path": "src/backend/src/Controller/webhook_controller.py",
+      "sha256": "df564c2c4005bccf80a0995ce353771d80734ee53fd1adbdd47e1c801c2baad0"
+    },
+    {
+      "path": "src/backend/src/DTO/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/DTO/account_dto.py",
+      "sha256": "7fcb52b4e4d7e288d15fbbf2b1ceda01b870e0c9f43f075e7f827dacc44a95d2"
+    },
+    {
+      "path": "src/backend/src/DTO/employee_dto.py",
+      "sha256": "fc7f31ba8aef989233021154b753f52588172d8fd5fc6690cb4c1fb1ece3bc0f"
+    },
+    {
+      "path": "src/backend/src/DTO/fleet_dto.py",
+      "sha256": "696695b83214a6811509ce6bf49e03352bd9ccf798c322aef6fc2357b7dbfa5a"
+    },
+    {
+      "path": "src/backend/src/DTO/operations_dto.py",
+      "sha256": "6528cdf70fcb5e314a98ed1903db72393ed4b4ae304fce7368151b94dd7a06b1"
+    },
+    {
+      "path": "src/backend/src/DTO/or_dto.py",
+      "sha256": "8fafa263569011bdae72dffb1a8410c2e71f6394a526ecceef961112feb27744"
+    },
+    {
+      "path": "src/backend/src/DTO/partial_update.py",
+      "sha256": "73b2d8048fc7d5b482eb24d4b19c92a062a4c23083911141461407512216bd6a"
+    },
+    {
+      "path": "src/backend/src/DTO/trip_dto.py",
+      "sha256": "8da74f77f273547cf9000150f3a3a67fcd535d205181af5ef0a362adfaf3bd59"
+    },
+    {
+      "path": "src/backend/src/Data/permission_matrix.json",
+      "sha256": "e46adc59fabf0c199e98d94cbe3ec2f647e65a9fe6e07e6ea146bb94e63e57cd"
+    },
+    {
+      "path": "src/backend/src/Entity/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Entity/access.py",
+      "sha256": "43c22b4b0cd61d5d22122f05a755291a7d58ce921b59619ba19b24f0da0ec307"
+    },
+    {
+      "path": "src/backend/src/Entity/business_rule_error.py",
+      "sha256": "d75ca61c2d889053f9e3e3ea55151027636163913aa4a1a6855df002d71b8782"
+    },
+    {
+      "path": "src/backend/src/Entity/clerk_user.py",
+      "sha256": "5e293286e59d5246fad5455a9d82f34578eb72419cfa24603a91511913d37fef"
+    },
+    {
+      "path": "src/backend/src/Entity/clock.py",
+      "sha256": "5a3ee4ca6dfb48fbc7ed05b92b8d238b27bc5a89d824f1f56de84b722e80dc78"
+    },
+    {
+      "path": "src/backend/src/Entity/dispatch.py",
+      "sha256": "7f81c1ef72c4ea2ddf661779fe7e8a705d1b50b7d364505aa19a70192c08e076"
+    },
+    {
+      "path": "src/backend/src/Entity/documents.py",
+      "sha256": "8c460b26cf9fff3842797d699d641710363b6661c68be4fbeaa90428b0ab60e0"
+    },
+    {
+      "path": "src/backend/src/Entity/employee.py",
+      "sha256": "08774a088c6c85c2bcc099c617fb83d6307a1d466044966a8c5e4c7f373dc46b"
+    },
+    {
+      "path": "src/backend/src/Entity/fleet.py",
+      "sha256": "a77c01d5ec916007d3e6b84934c746925e20ffdcaf464cf4c7348f2164ec0f81"
+    },
+    {
+      "path": "src/backend/src/Entity/operations.py",
+      "sha256": "0af34a07a268c66a63b56a822d787035854874b30b8d639c0819defc58e7b1ce"
+    },
+    {
+      "path": "src/backend/src/Entity/reconciliation.py",
+      "sha256": "2705dea46fefb01d0d6fa06e7792bdffacb4ec46802fd1a2cca6dd1eec62e586"
+    },
+    {
+      "path": "src/backend/src/Entity/role_rules.py",
+      "sha256": "8b933ec04ed4059cf1cc3bd976558942cd92654247151f0fd5f2cbdc9bab4661"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Clerk/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Clerk/clerk_identity_directory.py",
+      "sha256": "5af3518c55f1780a05744d560229927d27e007eb5a141d486b3a1a19a43338f4"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Clerk/clerk_token_verifier.py",
+      "sha256": "b5c3fd87ffe9945de97bde53a4676fcf954825f84cb3c14a7f68a86158ee3c87"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Clerk/clerk_webhook_verifier.py",
+      "sha256": "0b24df58aee236b07362d37cdcea4dd5e806258e6a95432ebb032bbe70308290"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Imaging/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Imaging/pillow_image_sanitizer.py",
+      "sha256": "bc7271d2f4c49fccc899754ed0027f51256a674e3ceeab0634202a6476a65ecf"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Supabase/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/Supabase/supabase_object_storage.py",
+      "sha256": "10a22dece249830942642fc75d3208afb2f552f6f8c077abde5806de36798631"
+    },
+    {
+      "path": "src/backend/src/Infrastructure/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Repository/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Repository/audit_repository.py",
+      "sha256": "5a50280a34d127ac3185a369cc1a076db8a8ec913f8093689d32c253f87caab1"
+    },
+    {
+      "path": "src/backend/src/Repository/document_repositories.py",
+      "sha256": "a0d422491773aad080b063eb5f8ca5381791ea39151babde9ed1200e3c6aa02b"
+    },
+    {
+      "path": "src/backend/src/Repository/employee_repository.py",
+      "sha256": "c4696df5b0eac0762ecbd0be2eb75857e5533e76a2902ea3d9bec51fc5ac23c6"
+    },
+    {
+      "path": "src/backend/src/Repository/fleet_repositories.py",
+      "sha256": "e454045b0de70800e73b8e3c511d3821482c9b79952d215e2a1082029f186474"
+    },
+    {
+      "path": "src/backend/src/Repository/operations_repositories.py",
+      "sha256": "8ed65e2647d6330d68874dbcb78fe2c98055efcc74bdab8d1383c9fdf2f8edc2"
+    },
+    {
+      "path": "src/backend/src/Repository/orm_models.py",
+      "sha256": "554e2291e3d07587e93058e509e24b69a20601fc6b7330e9f66411ace3d28c51"
+    },
+    {
+      "path": "src/backend/src/Repository/permission_repository.py",
+      "sha256": "3d2e21d036130a073433d90ae55b3615a1095f2da58819d3cd420d64e1c2584f"
+    },
+    {
+      "path": "src/backend/src/Repository/trip_repository.py",
+      "sha256": "256e8d3213761f98f9b901a5b8ebe662deaeebb376f017e4e6856847506c83c3"
+    },
+    {
+      "path": "src/backend/src/Repository/unit_of_work.py",
+      "sha256": "535908e442d1135ec1742f532e81712fa1f90b10b247b0bccd2296ec0953886a"
+    },
+    {
+      "path": "src/backend/src/Repository/webhook_event_repository.py",
+      "sha256": "7675101a8bd7a0f884d94956a3d4c18bb4230056d1ac2ae3031dfbe9af575d4c"
+    },
+    {
+      "path": "src/backend/src/Service/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/Service/audit_service.py",
+      "sha256": "6292ca95ba497e4d062c94a408880dabd890790fe55943ca6b006209da36c57b"
+    },
+    {
+      "path": "src/backend/src/Service/authentication_service.py",
+      "sha256": "68baa8b5dade68aa1d8a7e218ac888673060e636f563096769d133bfc7a5f7fc"
+    },
+    {
+      "path": "src/backend/src/Service/authorization_service.py",
+      "sha256": "6817eddd8e43bec657a28060e125f1f29f7fb47ea79ab3a3fc765a3b43ce9576"
+    },
+    {
+      "path": "src/backend/src/Service/clerk_webhook_service.py",
+      "sha256": "aca2083267c3195951af16a038151ecfae52c50eadcefac1e413448ce95a0ca0"
+    },
+    {
+      "path": "src/backend/src/Service/client_service.py",
+      "sha256": "fd4eef0ffedd92b7c389e175c23ab96dbdfc6ae65be59b1c1c331cb6429bc841"
+    },
+    {
+      "path": "src/backend/src/Service/delivery_order_service.py",
+      "sha256": "0997ca029e7fe6b03d9230d08556f0bb5f0dbcde21117075033041d671279861"
+    },
+    {
+      "path": "src/backend/src/Service/driver_license_service.py",
+      "sha256": "2ca9fd544c72b06699f918fe7d797cb7347f2998e1e299ac793553ab24193320"
+    },
+    {
+      "path": "src/backend/src/Service/employee_service.py",
+      "sha256": "ea78be24cfb1b7e24f87c768877e51f4bdc50b6ff8297a3253dede8148d3cc3f"
+    },
+    {
+      "path": "src/backend/src/Service/or_service.py",
+      "sha256": "72d78e13fb18f21d698ec222c3197becf23d92af4576121d6c21e2929580e43c"
+    },
+    {
+      "path": "src/backend/src/Service/reconciliation_service.py",
+      "sha256": "8a037b7353885855fbfdb8060d7047d2bb7accebd363ab22d394285cbf50c718"
+    },
+    {
+      "path": "src/backend/src/Service/trip_service.py",
+      "sha256": "1b230054151526259028e9ce2522d512613d91075a492d0f9de6cee76813a29f"
+    },
+    {
+      "path": "src/backend/src/Service/trip_state_synchronizer.py",
+      "sha256": "61cca93a43331ecaa3c92cb0783fc35e79dee8a2d6057a95df2f393cd49a4648"
+    },
+    {
+      "path": "src/backend/src/Service/truck_service.py",
+      "sha256": "dde76674a96db725be57a87bace57889502705301457f4ec7079fc22ccd00adc"
+    },
+    {
+      "path": "src/backend/src/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/src/config.py",
+      "sha256": "9653c2e5106839695da0f289403f486a7f6b85678eea90b00dde3bc342008a88"
+    },
+    {
+      "path": "src/backend/src/database.py",
+      "sha256": "4f75bb5f0a6a2dbbc7ce03901b02344d0e194d641decf6d2561f3df02222df3c"
+    },
+    {
+      "path": "src/backend/src/problem_details.py",
+      "sha256": "572b9bc4f41f652e87bb59db0890f82117d74138ac8aea491290dfbe8a4b9d3b"
+    },
+    {
+      "path": "src/backend/src/providers.py",
+      "sha256": "56202c7e3fa61b056deccc7020e6c81507399353e77bffcfedef589949f824df"
+    },
+    {
+      "path": "src/backend/src/rate_limiter.py",
+      "sha256": "13270fa37c8f83ecc3d5800c7a18805c4a1dbf3506d6362094da96f2df5449a4"
+    },
+    {
+      "path": "src/backend/src/request_limits.py",
+      "sha256": "9ae92d3ea54a94282b1676fc0ffd4e42f8d176681f67f0789eda5ad8c445d9b2"
+    },
+    {
+      "path": "src/backend/tests/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/backend/tests/conftest.py",
+      "sha256": "5511d01d784cd58e973dd28ea1a769dc1c28a73bf4fb9dc5b82529d75fe553a6"
+    },
+    {
+      "path": "src/backend/tests/dispatch_support.py",
+      "sha256": "e1f085f3b2ebf5c2eee2dbb340ea8edf530382f7ea84d850c88388ed4f88e454"
+    },
+    {
+      "path": "src/backend/tests/image_support.py",
+      "sha256": "36138a75405f0ccdd70f20c695d1944315b44fd59c906578a33660fe52849099"
+    },
+    {
+      "path": "src/backend/tests/test_authentication.py",
+      "sha256": "6c629e70457c1e541e44ebe485963b26b86184fc18f83bae3555827f44a722e0"
+    },
+    {
+      "path": "src/backend/tests/test_contract_snapshot.py",
+      "sha256": "8f039365ab9d84bbb527411dae4a1b0b38381e2749be01904c0c001cca11d37b"
+    },
+    {
+      "path": "src/backend/tests/test_delivery_orders.py",
+      "sha256": "698c05fc9c4dbdb529d2b6ae388244d40a6a2563bcb768ce8ed310c806520c5a"
+    },
+    {
+      "path": "src/backend/tests/test_dispatch_assignment.py",
+      "sha256": "5796953975f2dbaea7e839aa7a828ccb768f500dd917c547441fb7615d26bdf4"
+    },
+    {
+      "path": "src/backend/tests/test_dispatch_flow.py",
+      "sha256": "b91e3601783a7aeaf151087d7a44d76ea36d8bed9e818732ac3760bf5f4962d4"
+    },
+    {
+      "path": "src/backend/tests/test_dispatch_revalidation.py",
+      "sha256": "67de6a6b5af598b19e0db65da03411f52a1d84218e525edb664412978980aba7"
+    },
+    {
+      "path": "src/backend/tests/test_employees.py",
+      "sha256": "ad76f387d1c43962493127f26d0ae77a9fca66160cfdc9b9858bd90aedd4ae01"
+    },
+    {
+      "path": "src/backend/tests/test_fleet.py",
+      "sha256": "6fcf0198a61428c0fcdb91b78433e8b77c7866aefa09a5b344c532e85eaa7d26"
+    },
+    {
+      "path": "src/backend/tests/test_or_completion.py",
+      "sha256": "1b6b50a027cc44a49c4cd0f3cb16f120b8a3ec3e631d81b74764b6a45be480cd"
+    },
+    {
+      "path": "src/backend/tests/test_or_documents.py",
+      "sha256": "d3a55d9f9ae3e16cb51db9516c9f71adc031189fae8cba9bbc348959a203d200"
+    },
+    {
+      "path": "src/backend/tests/test_permission_matrix.py",
+      "sha256": "041c3fbe31f9defc12ce503c014512fa656d392727d20683986f7b425e0e1db5"
+    },
+    {
+      "path": "src/backend/tests/test_platform.py",
+      "sha256": "87f1f3f13e901bb10d4c8936461d9a5849257d764cc8fde71374a9d975cc3ef4"
+    },
+    {
+      "path": "src/backend/tests/test_postgres_hardening.py",
+      "sha256": "a29c533f9dc1d6beb4ec0da804a6e06bd3b17183721dccfe8d8e06448bc2b372"
+    },
+    {
+      "path": "src/backend/tests/test_problem_details.py",
+      "sha256": "ada0b41327c4294512ede6aafd807ac1ebbf872f5248aa65590c7c20e3624e89"
+    },
+    {
+      "path": "src/backend/tests/test_rate_limits.py",
+      "sha256": "9bcf85ff1e59465d15c8793483bc2eeed2da914aa9071e10c721b63e0818e3d9"
+    },
+    {
+      "path": "src/backend/tests/test_reconciliation.py",
+      "sha256": "94f886fecadb0d636f1f33e3f3fed828ff4eb8dbe5cc8d3816a8509aaa7e6008"
+    },
+    {
+      "path": "src/backend/tests/test_storage_adapters.py",
+      "sha256": "dc542fa9b4605ad5ba5185e61059fb0f17584609cbc7c1a4ad90f5fddfef3b38"
+    },
+    {
+      "path": "src/backend/tests/test_webhooks.py",
+      "sha256": "7f4d54425f95ba2cf0f6709e187390e2554f473b2b2e29bd3c1cf23c789cb6b0"
+    },
+    {
+      "path": "src/frontend/.dockerignore",
+      "sha256": "495b21fe2ac71370e9fec0d83e188a1003e0aa01f6b52234437462f28e1913e6"
+    },
+    {
+      "path": "src/frontend/.gitignore",
+      "sha256": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8"
+    },
+    {
+      "path": "src/frontend/Dockerfile",
+      "sha256": "a0be263353921a8115171e2be069b1e1ea3a1ab84e6c936e616adffa97d0c05c"
+    },
+    {
+      "path": "src/frontend/README.md",
+      "sha256": "db8026ad72758467a4836786991c8ee3cd5dc02ca3a7a6b75653af5e4ad107c9"
+    },
+    {
+      "path": "src/frontend/design-preview/PreviewApp.jsx",
+      "sha256": "81d87b782903bc9713d015877ff4c57155740cf824eefa60956ea8ab5a91a81f"
+    },
+    {
+      "path": "src/frontend/design-preview/fixtures.js",
+      "sha256": "cb9d75ff4153d90e763a1db2a06e37f334a9583907d9faec1263284a1d79422f"
+    },
+    {
+      "path": "src/frontend/design-preview/main.jsx",
+      "sha256": "b0014c65eb4a8a7bce3d3f7353bf08bf52cdfa71c812bd8e5d891575a4a026c2"
+    },
+    {
+      "path": "src/frontend/eslint.config.js",
+      "sha256": "da0cbf3213f2994741024e2aa5165d017e0345f389dcd2f8a0db97fee7289d1b"
+    },
+    {
+      "path": "src/frontend/index.html",
+      "sha256": "8371d43abbbb5d021aac2ff8c87f1470857337267d2e17cc793185195e4fcd6f"
+    },
+    {
+      "path": "src/frontend/package-lock.json",
+      "sha256": "28a017dc324e1aa5ffc2c3e5e8f75777e66349a3da1869fcb6c9b3ffbbe8d3c5"
+    },
+    {
+      "path": "src/frontend/package.json",
+      "sha256": "fc83cb78bf414ec7faf6b6cf4d54625c88dc96f75dd0c5ceddd4fcc2506733ad"
+    },
+    {
+      "path": "src/frontend/preview.html",
+      "sha256": "4cd55d50be0e1ee61405d9f535ad95e718987c66aabfeb7df6494ff5c62d8bc5"
+    },
+    {
+      "path": "src/frontend/src/App.jsx",
+      "sha256": "5f9ac5dff696e9c8bb1370a0cab9a4a881e508423948403c6d84828f1b33d875"
+    },
+    {
+      "path": "src/frontend/src/components/account/AccountSummary.jsx",
+      "sha256": "15b5f61b5adaee778151fad53a7a154dec1c1d72b90eb0b1e04d2c93096f36d8"
+    },
+    {
+      "path": "src/frontend/src/components/administration/AuditPanel.jsx",
+      "sha256": "e536123448db80a47462ed47c674d86263f97d59b67cb8549d750835cfc47afe"
+    },
+    {
+      "path": "src/frontend/src/components/administration/PeoplePanel.jsx",
+      "sha256": "705805324be94568ef5715965738a86f283ed188c64f038db61416a7cf5c4340"
+    },
+    {
+      "path": "src/frontend/src/components/administration/PermissionsPanel.jsx",
+      "sha256": "19232b83269a992b99a443fb376ad628e4b02437e91073ff1014983facb44e3b"
+    },
+    {
+      "path": "src/frontend/src/components/clients/ClientsPanel.jsx",
+      "sha256": "6a840fd8b1dd0562a24cc7693857994b4c0335cb73eb3d91cb7d6d034a1a1472"
+    },
+    {
+      "path": "src/frontend/src/components/dashboard/DashboardPanel.jsx",
+      "sha256": "c4a3ab4aac7f35fedf7a15c11373094695d6cd2f1063460312c15bd23f15c324"
+    },
+    {
+      "path": "src/frontend/src/components/dispatch/DispatchPanel.jsx",
+      "sha256": "ac9a2a8182ba85f19a8bee1df7d7eb943d5b3ea02c762263b8a1b93abb58dd8e"
+    },
+    {
+      "path": "src/frontend/src/components/dispatch/TripCard.jsx",
+      "sha256": "9995c596e6cda7cd638c3a8b6c2fc304250a1ad203bbbea3362429fc33d83a15"
+    },
+    {
+      "path": "src/frontend/src/components/finance/AdvancesPreview.jsx",
+      "sha256": "8ed8d691f0b63f2975f31351473edcdee4cfb65b881f451ff0a460b8b930b00c"
+    },
+    {
+      "path": "src/frontend/src/components/finance/BillingPreview.jsx",
+      "sha256": "9e0301fb82159a77964e16960b022f61483a5e701412302a3eab998c3cdd1073"
+    },
+    {
+      "path": "src/frontend/src/components/finance/ExpensesPreview.jsx",
+      "sha256": "dc7fcbedc42c8dc0a55bb540c198cf83c6f930012102183b4705a81e5a1e7018"
+    },
+    {
+      "path": "src/frontend/src/components/finance/PayrollPreview.jsx",
+      "sha256": "2dd795f0c52c6c087ccee67b08735d03b9aea42e6f889e4d3d40284c4038ab3e"
+    },
+    {
+      "path": "src/frontend/src/components/fleet/FleetPanel.jsx",
+      "sha256": "5d22c5238bc0106ea4c31173b604359c1459b2fdfef9418c23c21e002f1e08ff"
+    },
+    {
+      "path": "src/frontend/src/components/orders/DeliveryOrdersPanel.jsx",
+      "sha256": "af24b6e2317e52e2f80a559ffae358dcdaa8bddbbd1541a7daf4f33a98342b83"
+    },
+    {
+      "path": "src/frontend/src/components/reports/ReportsPreview.jsx",
+      "sha256": "116b95f8219001881ba26338d7055bf8b10c3944ee700c06b08ead8270f3bed0"
+    },
+    {
+      "path": "src/frontend/src/components/trips/ConfirmReceiptForm.jsx",
+      "sha256": "3a52382c0849846761b5de36d6adf35ff02e2756d0d04c26fb08c3d674a2e4f1"
+    },
+    {
+      "path": "src/frontend/src/components/trips/MyTripsPanel.jsx",
+      "sha256": "6eccbb21a282fd29f5343157e285b1b8e9283160bcce2f0f7b0d03dc689fc8f6"
+    },
+    {
+      "path": "src/frontend/src/components/trips/OrUploadForm.jsx",
+      "sha256": "0831229be44de6ab724f62b4e6ebeff5f8aaa637f62a343f9e5799f0fd85b665"
+    },
+    {
+      "path": "src/frontend/src/components/trips/TripSteps.jsx",
+      "sha256": "031edc4498b2e3db0df0a01cf49d8189913e91bfa26464b6fb297acd2ae1ae19"
+    },
+    {
+      "path": "src/frontend/src/hooks/useAuditLog.js",
+      "sha256": "5dd6ab2323c178bac008f75550f0716bec24ad552040287dd4533a590950656d"
+    },
+    {
+      "path": "src/frontend/src/hooks/useClients.js",
+      "sha256": "c2922efc83358dc48cdea985bf2a7a730956f2b9d20a23ba1c3539733332a834"
+    },
+    {
+      "path": "src/frontend/src/hooks/useCurrentAccount.js",
+      "sha256": "ef9f33fbb42762408eb14cf61a45533fbf053583bdc937852628b248e0a605c3"
+    },
+    {
+      "path": "src/frontend/src/hooks/useDashboard.js",
+      "sha256": "e2e74410b5883dd697829f5b341cbf4e81cd9a92ab3f4db9a24bca4e953b87f9"
+    },
+    {
+      "path": "src/frontend/src/hooks/useDispatch.js",
+      "sha256": "fd8b2e3baa74f67ac31a811f97c50d82f5571acb1872da01ae7a3867c182bc81"
+    },
+    {
+      "path": "src/frontend/src/hooks/useEmployees.js",
+      "sha256": "04b205f136b82797902a85e05cf4de4b5de83b1b3204c74a04cdb97492ee2286"
+    },
+    {
+      "path": "src/frontend/src/hooks/useMyTrips.js",
+      "sha256": "0d7e6c3bb8fb37ceaab48d97b8395a37ab74d540c3ee9a74bd2d549d86a37ce8"
+    },
+    {
+      "path": "src/frontend/src/hooks/useOrders.js",
+      "sha256": "cd398bcc3be047b03bc64a0f6e69778f4e83b57fa3b8ca0cd5ec48c905701f5b"
+    },
+    {
+      "path": "src/frontend/src/hooks/usePermissionMatrix.js",
+      "sha256": "0c0eeb8084da8436cb758a083c830452a0cd6060989b00e4445e1f7f1726947c"
+    },
+    {
+      "path": "src/frontend/src/hooks/useRecordActions.js",
+      "sha256": "a6476ee46d73bacf7600a0e7b94e5c86fe413042d714fcbe3e5b178a5bb480be"
+    },
+    {
+      "path": "src/frontend/src/hooks/useTheme.js",
+      "sha256": "1a30d5c22009ff3bfac8aaa433db9fa7aa239eca2e87c0190dd47cd3c77f3564"
+    },
+    {
+      "path": "src/frontend/src/hooks/useToast.js",
+      "sha256": "a80b3d014c5c5a02cbf01c5d48fa9e8c06d240cf4295f8d99fc4e3a639f1c82b"
+    },
+    {
+      "path": "src/frontend/src/hooks/useTrucks.js",
+      "sha256": "893b6010d3f14d67a1bcfb4b7c1b9f6a16e6b373788d87d4c57c4485c0344d55"
+    },
+    {
+      "path": "src/frontend/src/index.css",
+      "sha256": "7d3734e7ea05d263103124abdedccf2eb9a4b0013731bf8e3b3018e6e412a115"
+    },
+    {
+      "path": "src/frontend/src/main.jsx",
+      "sha256": "e83f1f0c7fb21edc73702f29a59c843b343ca0cb0a4c9d7602356a2ab7dddd9c"
+    },
+    {
+      "path": "src/frontend/src/pages/AppPages.jsx",
+      "sha256": "f32b53f8e3899611fae9560aa4dbf2f3b457327fb22736fad95018495e071acc"
+    },
+    {
+      "path": "src/frontend/src/services/accountService.js",
+      "sha256": "640a1c941d6488a57861a2546118ff3f57a2fccd47b46eaa6db75718bf59bfe1"
+    },
+    {
+      "path": "src/frontend/src/services/administrationService.js",
+      "sha256": "2e11e39521d682dabbeb04cb4e8e4ffb60a0febaa447bfdd7879a4cb39f12547"
+    },
+    {
+      "path": "src/frontend/src/services/clientService.js",
+      "sha256": "6149a974142c81626015de23ffaf3c4b45bc7496303568013fc072a4a852820e"
+    },
+    {
+      "path": "src/frontend/src/services/employeeService.js",
+      "sha256": "c3f84198901f75cddbbe6092f64d4c79eb9355b1066585ac35a3a62a0267c9b7"
+    },
+    {
+      "path": "src/frontend/src/services/orService.js",
+      "sha256": "38eb7caf47b780e2fa019835665484f89eaad6802d11714b1b2c390ba0aaa29d"
+    },
+    {
+      "path": "src/frontend/src/services/orderService.js",
+      "sha256": "476eab46229df25d777243b41b23213f46fab272451d9055e8452ae9d37903da"
+    },
+    {
+      "path": "src/frontend/src/services/tripService.js",
+      "sha256": "86d7895ee0a4db8c05de7bbd1a62d75757c1c344c5f80c866e1327599e6e0e58"
+    },
+    {
+      "path": "src/frontend/src/services/truckService.js",
+      "sha256": "fea7c6e651f91b2f9d54f4f3e656015be39fed39d97a073bf1bfaed959563ea8"
+    },
+    {
+      "path": "src/frontend/src/shared/components/AppShell.jsx",
+      "sha256": "46b67e1a41bc48d7330671ffc53d98588c817c6b4a403e0c933cfac10fb286e3"
+    },
+    {
+      "path": "src/frontend/src/shared/components/DocumentLinks.jsx",
+      "sha256": "77bb9c3b36365e9eccea4d4a763fa7c3d2e34485d800e89443e3412d9eebda07"
+    },
+    {
+      "path": "src/frontend/src/shared/components/EmptyState.jsx",
+      "sha256": "337a57a96641e26abc903d831ae940507f8d8e5709c1c9aa0e303b77130ba2fb"
+    },
+    {
+      "path": "src/frontend/src/shared/components/ErrorNotice.jsx",
+      "sha256": "e009a96e37114cb888ef78b11e974b3ea2c406ccb0a534d7f49f9600410f1aca"
+    },
+    {
+      "path": "src/frontend/src/shared/components/FilterTabs.jsx",
+      "sha256": "7b5bacba32d362d3897f0ca5bc81bb9a1f7627b509e700705d445b613b23085e"
+    },
+    {
+      "path": "src/frontend/src/shared/components/FormField.jsx",
+      "sha256": "9f8de55e9df6caab64cac1f39297ba54659bcf6449f458fffdcd5ba5ef67b940"
+    },
+    {
+      "path": "src/frontend/src/shared/components/FullPageNotice.jsx",
+      "sha256": "9ce66f2ee1b2e7bd45ae29177e86a4c7e91ce5cd59d51f67c64dff1f68eafa2a"
+    },
+    {
+      "path": "src/frontend/src/shared/components/Icon.jsx",
+      "sha256": "4dd39327a85ba2199b778b526973551cbe34b9f339d7915b30182a9f614e2c2e"
+    },
+    {
+      "path": "src/frontend/src/shared/components/ListSkeleton.jsx",
+      "sha256": "da4a91d9ffff8add81be27e6936d8e399b552a5fda354e63cbf4d06181658baa"
+    },
+    {
+      "path": "src/frontend/src/shared/components/ModalDialog.jsx",
+      "sha256": "dac107fa71090cc398366ab7aba505ec9dd4f429ce8fe8a6a7f70871c4737054"
+    },
+    {
+      "path": "src/frontend/src/shared/components/PageHeader.jsx",
+      "sha256": "4ad32a8f501f6ceff7fde18b17442979ed52836c960b2bd605cff42772dd144d"
+    },
+    {
+      "path": "src/frontend/src/shared/components/PreviewBanner.jsx",
+      "sha256": "3bc9369874e534283aad86aa7a29ce809b9050f77606baf80970dca292e2bc1f"
+    },
+    {
+      "path": "src/frontend/src/shared/components/ReasonDialog.jsx",
+      "sha256": "6e42b4ba1f963f1249e590aed205cad9cbfab1a58f0be127aa4317359653343a"
+    },
+    {
+      "path": "src/frontend/src/shared/components/RowMenu.jsx",
+      "sha256": "3fb1356d890de6a7fdf26765b56def1bd589588dac02934d612791e5e3274b52"
+    },
+    {
+      "path": "src/frontend/src/shared/components/SearchField.jsx",
+      "sha256": "948222fcff404c592f6032e2f18a3fd3791622ffc05a507d383c756fc7684650"
+    },
+    {
+      "path": "src/frontend/src/shared/components/SignInScreen.jsx",
+      "sha256": "e12695103d94f933ec31762112cb3da39e4ab80a8966bd281662277d9c0f05d1"
+    },
+    {
+      "path": "src/frontend/src/shared/components/StatCard.jsx",
+      "sha256": "6398bc2a67fb1cf663540f4bc8e91a1b14f10d8f01d8a17e44ab6b999f11a08c"
+    },
+    {
+      "path": "src/frontend/src/shared/components/StatusBadge.jsx",
+      "sha256": "280a09990c7cf1464840fb1448c1dacfb311004a4ae7a7faaf0b6a349fda8656"
+    },
+    {
+      "path": "src/frontend/src/shared/components/Toast.jsx",
+      "sha256": "73da5a4215b44974758944adf476af551180f76c80b568f1dfed6a6d20f3c94c"
+    },
+    {
+      "path": "src/frontend/src/shared/mockups/sampleData.js",
+      "sha256": "9b862e5c6f7cd99ac4a48eb267b21155780669721546487422174dc63f653a53"
+    },
+    {
+      "path": "src/frontend/src/shared/services/clerkConfig.js",
+      "sha256": "7a6b7876855fc4305277ee43c08569e558692dc89378e23032956e53cdd4ffab"
+    },
+    {
+      "path": "src/frontend/src/shared/services/clerkSessionService.jsx",
+      "sha256": "2c9f6f727827773a069075ee2a8c4c930cb96f70f5ab050670990b55d03cbf3d"
+    },
+    {
+      "path": "src/frontend/src/shared/services/collectionLoader.js",
+      "sha256": "8b894ce03c8e621e4893ac14ea04289ad3978bbc99e5a78341c26b68944b32e4"
+    },
+    {
+      "path": "src/frontend/src/shared/services/httpClient.js",
+      "sha256": "c9b074a8a8fe5dc2ce8ddd90e28e2892b0f0b2feafd7a94da9c69b0eb2c58e09"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/dispatch.js",
+      "sha256": "fbcdb03607d11b4a1bd6121e6ba697e9282d146c0ee22e7a3226df47bee23920"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/formatting.js",
+      "sha256": "ba128940b1191a2ac3b6b793b4a0ca9bfed92e51d67588d6b0308794326a24ab"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/forms.js",
+      "sha256": "05f3ffc851603af0e7adbc66e47e2e9043a5d6359116fb6024f26a8d5e099552"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/navigation.js",
+      "sha256": "043226368e03768ed96b73f8aa1f93ab836ea55c5522db35a5329850170c9f37"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/operations.js",
+      "sha256": "93bf55f0a6a7d8f092cedeafe6c773328a2865cb4f20fbdb8c88e3229a7cc6be"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/people.js",
+      "sha256": "ef38b89502fcf37491daa27c954a62c24aa17753aa9b48d55abd586404f590cf"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/permissionMatrix.js",
+      "sha256": "3753b55dc6d2c6a277da06fa1536837a3105086677db8683195b16eb8c94f475"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/problemDetails.js",
+      "sha256": "d21c6fb840a8a279da10e2937c4fc32b091efad3ab721f0bcca09767f61503bf"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/statusLabels.js",
+      "sha256": "c549cca647c014b146ce95ddd8774c31b2c183d748c6c914594b04f9e4a90c98"
+    },
+    {
+      "path": "src/frontend/src/shared/utils/theme.js",
+      "sha256": "9560faf6bc731c4d9b5c16277f10c69c997bdd506719e860e54f1ea8940a4484"
+    },
+    {
+      "path": "src/frontend/src/store/accountStore.js",
+      "sha256": "c592cc917faddc14149ee0191e5df73ae6c76b41043e81cda3b70ebff281e99a"
+    },
+    {
+      "path": "src/frontend/src/store/auditStore.js",
+      "sha256": "d331cfca2b114e444ebc5b4260f2463c85b33fed4080bc088a6555f7b1c65d0b"
+    },
+    {
+      "path": "src/frontend/src/store/clientStore.js",
+      "sha256": "8fbe2038acbb6d7915b568dfb702cccbcb1163de29ffd4b6d1e1df113a86a08a"
+    },
+    {
+      "path": "src/frontend/src/store/collectionStore.js",
+      "sha256": "a6661d0110476c8e036ae836db6b41eec7471136d1450dc904877a9d7c4fb9ec"
+    },
+    {
+      "path": "src/frontend/src/store/dashboardStore.js",
+      "sha256": "793fa5d30e8c947b50c20c3a2a239cf4a8a071a95a38fc7bb83ac543256ffef8"
+    },
+    {
+      "path": "src/frontend/src/store/dispatchResourceStore.js",
+      "sha256": "bfe613043cb30edef3b0372f5095e4e90340671adbc48bf77213208cfdf9fd8f"
+    },
+    {
+      "path": "src/frontend/src/store/employeeStore.js",
+      "sha256": "9a62b9595322f2040c6d3668d93a5135a6eacee201d0fa0adb455c53360483ad"
+    },
+    {
+      "path": "src/frontend/src/store/navigationStore.js",
+      "sha256": "24274092ad31cb0a2fa03ec2e6e4994876c7b6bbb3435abfda57a2af3deb58f9"
+    },
+    {
+      "path": "src/frontend/src/store/orderStore.js",
+      "sha256": "800f1c676a3e8a46b1d33f7313a2827aed87b827216e6ec69f2627618928e4d4"
+    },
+    {
+      "path": "src/frontend/src/store/permissionStore.js",
+      "sha256": "5886ad0c4a57ec23119a728487b269b26bff43c202dfaf390626531ac78a3aeb"
+    },
+    {
+      "path": "src/frontend/src/store/themeStore.js",
+      "sha256": "b1d6b610b2810fa002b009a8df85dcf0122c127d5a9752e66cc7a6c6bfb97cb4"
+    },
+    {
+      "path": "src/frontend/src/store/tripStore.js",
+      "sha256": "8241aa055f4757d3d0d86a0f17f7ff52cb4ed938d0340a7e77167872dc9aada6"
+    },
+    {
+      "path": "src/frontend/src/store/truckStore.js",
+      "sha256": "b8581e30cb033cdec1a8082e332282009847576eef6dc39f9416f624fcc7a154"
+    },
+    {
+      "path": "src/frontend/tests/components/workflowRendering.test.jsx",
+      "sha256": "2b68b6abd20f2d0a312d6a6c2cd6e40420bf88a3eccc23d8ee091a88b023d519"
+    },
+    {
+      "path": "src/frontend/tests/unit/dispatch.test.js",
+      "sha256": "0d0c9498eea5cefd63ae5fbec8abc82cc5e5eeb8a55206998e60278fc845e718"
+    },
+    {
+      "path": "src/frontend/tests/unit/formatting.test.js",
+      "sha256": "3e228a13cef8693e0e3fa3bc34f424f9682f58f2f73bef20ea63f72ab20e1c7e"
+    },
+    {
+      "path": "src/frontend/tests/unit/forms.test.js",
+      "sha256": "92f495531faf7892f261324d0b741d5309d94c895081df107d489db2d0b0295b"
+    },
+    {
+      "path": "src/frontend/tests/unit/navigation.test.js",
+      "sha256": "d958ba3d18e59d6f6f2acf6d98d231dd7ee1f68335e07a633c992c38fc4cd48c"
+    },
+    {
+      "path": "src/frontend/tests/unit/operations.test.js",
+      "sha256": "85b444d4339bf9c6f78b22323757ea8b2eab8abe23e4da9efb1482e32ecb9d1c"
+    },
+    {
+      "path": "src/frontend/tests/unit/people.test.js",
+      "sha256": "d2ba79236dad770105b8fa090eba08ea2c0ef700d5b104c9edc39e44b9d9a70a"
+    },
+    {
+      "path": "src/frontend/tests/unit/permissionMatrix.test.js",
+      "sha256": "0c2771ebb9726c2c3280663b467ceef1d4fcd024ac549494bda421816dc817b0"
+    },
+    {
+      "path": "src/frontend/tests/unit/problemDetails.test.js",
+      "sha256": "30ef2c6d74d5e2ed56cd6fde497ebdb1da17b1f1f703c57823ec74cd1aaca939"
+    },
+    {
+      "path": "src/frontend/tests/unit/statusLabels.test.js",
+      "sha256": "2d0561d97fb827ff045c9667430291b4a9d8da34c69249b9a93b7f3ccf10f88d"
+    },
+    {
+      "path": "src/frontend/tests/unit/theme.test.js",
+      "sha256": "a31e340497a6f994af7be8b950e0edfe49b2f91e66c27c5c2b65eec36e95ab3f"
+    },
+    {
+      "path": "src/frontend/vite.config.js",
+      "sha256": "fa3e079a44603e68bc8e8122ca104a3ce6dc5f728a72b8c90e80e7100210304f"
+    },
+    {
+      "path": "tools/README.md",
+      "sha256": "9fafbc8655beb20ed53a1cc938b60bbba0d86dda31425c29b5b0e800eaedf6bc"
+    },
+    {
+      "path": "tools/scripts/backend.py",
+      "sha256": "a79e370227c75b83f09a9285f218ac6598811097eb73ef0e7785d96b3199d82c"
+    },
+    {
+      "path": "tools/scripts/check_docs.py",
+      "sha256": "0e2bba81911c7628f8ed49bff7fad8387d6489cfed0540f4fa42e61b28e5c6cb"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "ac57d69d5b1d624a9c8c9bd52581fd3186d190e232ed96e3c81ff9ab1c064485"
+    }
+  ]
+}

@@ -133,4 +133,6 @@ Deployment planning starts only when:
 | QA sign-off / business sign-off     | Pending                                                              |
 | Release decision                    | Not approved until required gates pass                               |
 
-**Current manual QA status: Not run by the QA team.** See [verification](verification.md) for developer-run checks and their limits.
+**Latest execution: 18 November 2026 — release Blocked.** The [fresh QA report](qa-results-2026-11-18.md) records 66 requirements: 53 Pass and 13 Blocked, two fixed and retested Medium defects, dependency findings, cleanup, and the remaining live/manual/reviewer prerequisites. [Complete result records and redacted evidence](qa-evidence-2026-11-18/results.json) use the section 8 fields for every requirement. The acceptance checklist above is unchanged.
+
+**Independent manual QA and business sign-off remain pending.** Desktop automation, development test-email verification, local restore/rollback and live private-storage evidence do not certify a real phone/inbox, deployed proxy, representative staging workload or human approval. Financial services remain previews; deployment is a separately approved next step. See [verification](verification.md) for historical developer checks and their limits.

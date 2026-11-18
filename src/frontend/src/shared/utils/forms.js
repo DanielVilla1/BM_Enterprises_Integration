@@ -38,16 +38,21 @@ export function isUploadTooLarge(chosenFile) {
 
 /**
  * @function toLocalInputValue
- * @description Format a date for a datetime-local input (local time, minutes precision).
+ * @description Format local input time, preserving milliseconds when the form needs them.
  * @param {Date} moment Date to format
+ * @param {'minutes'|'milliseconds'} [precision='minutes'] Required input precision
  * @returns {string}
  */
-export function toLocalInputValue(moment) {
+export function toLocalInputValue(moment, precision = 'minutes') {
+  // AI MODIFIED: Receipt defaults must preserve the actual instant after delivery.
   const pad = (number) => String(number).padStart(2, '0')
-  return (
+  const localMinutes =
     `${moment.getFullYear()}-${pad(moment.getMonth() + 1)}-${pad(moment.getDate())}` +
     `T${pad(moment.getHours())}:${pad(moment.getMinutes())}`
-  )
+  if (precision === 'milliseconds') {
+    return `${localMinutes}:${pad(moment.getSeconds())}.${String(moment.getMilliseconds()).padStart(3, '0')}`
+  }
+  return localMinutes
 }
 
 /**

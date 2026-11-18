@@ -1,0 +1,125 @@
+[
+  {
+    "identifier": "ENV",
+    "postgres_version": "18.2"
+  },
+  {
+    "identifier": "U05",
+    "step": "pg_dump",
+    "exit_code": 0,
+    "seconds": 0.422,
+    "bytes": 59451
+  },
+  {
+    "identifier": "U05",
+    "step": "restore comparison",
+    "status": "Pass",
+    "exit_code": 0,
+    "seconds": 0.625,
+    "tables": {
+      "alembic_version": {
+        "rows": 1,
+        "sha256": "3e47a66008103a1ba5aaeffea9c45a8d95bd61f15d1f827fe699c87f448fa38c"
+      },
+      "audit_log": {
+        "rows": 146,
+        "sha256": "5c93665e2543f0797843b258096e91859f0eeb0bcde90116443a5ef8d0345292"
+      },
+      "clients": {
+        "rows": 4,
+        "sha256": "384e45645712575db1438510e540be84c07934828ff653b5117d45b4efa5d045"
+      },
+      "delivery_orders": {
+        "rows": 12,
+        "sha256": "dcf1c083f78258b78e935dae1e1e7ac4065bbcd48a9d89abff6172cd865427ae"
+      },
+      "driver_licenses": {
+        "rows": 4,
+        "sha256": "906e870b6ae73e19a494788d6f67f1877a19f961d28d471461a473cd602f7f03"
+      },
+      "employee_roles": {
+        "rows": 15,
+        "sha256": "3067ee3261bac0df4eadb45a84a3e7da8fe2a0841aedafe1e8caa27df4478fa0"
+      },
+      "employees": {
+        "rows": 17,
+        "sha256": "960b1f568b9255d0163fc794d7807445106bb1e01f4bd7f4ab56102bdd78fb06"
+      },
+      "idempotency_keys": {
+        "rows": 6,
+        "sha256": "bb34c988aca3144671e6392d8f33eb387aa4933898db9ae9bafac0e223361794"
+      },
+      "or_documents": {
+        "rows": 7,
+        "sha256": "5897380e251b5026e9f57184c4f531dd5a955eab3086008b7a8dc75d7abd85b1"
+      },
+      "processed_webhook_events": {
+        "rows": 2,
+        "sha256": "e0fbdc3fb01f925fd7270d4e7980709a1282baae3a7cd4eb7c08a85ccb4ed877"
+      },
+      "role_permissions": {
+        "rows": 76,
+        "sha256": "4ea379cc6b5ee7729e6f593388e00c00997fbb08d510ae39f9005ab7866c2f91"
+      },
+      "roles": {
+        "rows": 7,
+        "sha256": "749b1d8b2232eb609834be698ed2b9d2622a7fb7a1f91209b02ff6b1d3da8ea5"
+      },
+      "trip_crew": {
+        "rows": 19,
+        "sha256": "14fae1c98bb68ac4e0b910fe875f82d3c85607611499b7111ac6a6b1bf4cfff9"
+      },
+      "trips": {
+        "rows": 8,
+        "sha256": "e7b05762edebc41a502cc7dace6aa49fea41b86797f6acf1b7b68b1b03a21e63"
+      },
+      "truck_maintenance_records": {
+        "rows": 5,
+        "sha256": "997e5d4f873b3b6513ffd9026e676e423d4d6d7dc87d094ba0a15ebb8f750a90"
+      },
+      "truck_replacements": {
+        "rows": 2,
+        "sha256": "6cf136de7760ceb969ce7b401d8e6de2a9a616360fd1bce6f47edd05865710c5"
+      },
+      "trucks": {
+        "rows": 8,
+        "sha256": "21bcdd6b55961b6104bfafaa0a8fdd4ed6d6ebf1182a7b03b5065516bb554bb7"
+      }
+    },
+    "all_tables_match": true
+  },
+  {
+    "identifier": "D01",
+    "status": "Pass",
+    "real_stored_images_inspected": 7,
+    "exif_gps_entries": 0,
+    "png_text_entries": 0
+  },
+  {
+    "identifier": "D09",
+    "status": "Pass",
+    "permanent_objects": 7,
+    "document_rows": 7,
+    "orphan_objects": 0,
+    "missing_objects": 0
+  },
+  {
+    "identifier": "U05",
+    "step": "restored metadata to live private storage",
+    "status": "Pass",
+    "successful_downloads": 7,
+    "private_bucket": true,
+    "limitation": "Database dump does not back up image bytes; a scheduled independent bucket backup/restore remains a hosting gate."
+  },
+  {
+    "identifier": "U06",
+    "status": "Pass",
+    "scope": "Separate local rollback rehearsal",
+    "revision": "7b60667c1734ec2ced613704b3b6fdacaf125566",
+    "schema_revision": "0004",
+    "migration_required": false,
+    "restored_database": "qa_restore_8dfc9665_3fbb",
+    "health_http": 200,
+    "instructions": "Stop candidate worker; restore QA backup to separate DB; launch archived base code with existing schema 0004; validate reads; restart candidate source against original QA DB. No production deployment performed."
+  }
+]

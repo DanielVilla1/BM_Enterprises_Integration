@@ -17,7 +17,7 @@ import tailwindcss from '@tailwindcss/vite'
  * @returns {import('vite').UserConfig}
  */
 function createDevelopmentConfiguration({ mode }) {
-  const environment = loadEnv(mode, '.', 'VITE_')
+  const environment = loadEnv(mode, '.', ['VITE_', 'DEV_'])
   const publicAddress = environment.VITE_PUBLIC_FRONTEND_URL ?? ''
   const allowedHostnames = publicAddress ? [new URL(publicAddress).hostname] : []
   return {
@@ -26,7 +26,7 @@ function createDevelopmentConfiguration({ mode }) {
       allowedHosts: allowedHostnames,
       proxy: {
         '/api/v1': {
-          target: 'http://127.0.0.1:8000',
+          target: environment.DEV_API_PROXY_TARGET || 'http://127.0.0.1:8000',
           changeOrigin: true,
         },
       },

@@ -1,0 +1,86 @@
+
+> frontend@0.0.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v5.1.0 [workspace]/src/frontend
+
+ ✓ tests/unit/forms.test.js > compactPayload > drops empty and whitespace-only values and trims the rest 4ms
+ ✓ tests/unit/forms.test.js > compactPayload > drops null and undefined but keeps false 0ms
+ ✓ tests/unit/forms.test.js > upload and date helpers > flags files over 5 MB only 1ms
+ ✓ tests/unit/forms.test.js > upload and date helpers > formats a local date for datetime-local inputs 2ms
+ ✓ tests/unit/forms.test.js > upload and date helpers > preserves the actual receipt instant when delivery occurred in the same minute 1ms
+ ✓ tests/unit/forms.test.js > upload and date helpers > converts a local input value to an ISO string with an offset 0ms
+ ✓ tests/unit/forms.test.js > buildChanges > returns only changed fields and turns empty text into null 0ms
+ ✓ tests/unit/forms.test.js > buildChanges > compares numeric fields as numbers 0ms
+ ✓ tests/unit/forms.test.js > buildChanges > ignores fields missing from the form 0ms
+ ✓ tests/unit/operations.test.js > matchesQuery > matches case-insensitively across values and accepts an empty query 2ms
+ ✓ tests/unit/operations.test.js > filterOrders > filters by status tab 2ms
+ ✓ tests/unit/operations.test.js > filterOrders > searches by client name, reference and location 0ms
+ ✓ tests/unit/operations.test.js > filterOrders > counts orders per tab 0ms
+ ✓ tests/unit/operations.test.js > summarizeTrucks > counts active trucks by state and retired ones apart 0ms
+ ✓ tests/unit/operations.test.js > dispatch board helpers > groups trips into board columns 0ms
+ ✓ tests/unit/operations.test.js > dispatch board helpers > lists what needs a person to act 0ms
+ ✓ tests/unit/operations.test.js > dispatch board helpers > builds id-to-name lookups for trucks and people 0ms
+ ✓ tests/unit/operations.test.js > dispatch board helpers > summarizes operations for the dashboard 0ms
+ ✓ tests/unit/operations.test.js > fleet helpers > filters trucks by tab, keeping retired trucks out of the other tabs 1ms
+ ✓ tests/unit/operations.test.js > fleet helpers > searches plate and description and counts tabs 0ms
+ ✓ tests/unit/operations.test.js > fleet helpers > summarizes the dispatch board 0ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > shows only the account page when nothing is granted 3ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > gives a dispatcher the operations pages plus the preview finance and report pages 0ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > shows My trips only at the OWN level (crew members) 0ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > lets limited employee viewers reach license actions without account management 1ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > shows audit log and permissions to the Owner capability only 0ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > hides reports from crew members (OWN level) and accepts any matching capability 1ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > hides fleet from a role without truck access 0ms
+ ✓ tests/unit/navigation.test.js > visibleNavigation > flags finance and report pages as previews 0ms
+ ✓ tests/unit/navigation.test.js > groupNavigation > groups pages by sidebar section in order 1ms
+ ✓ tests/unit/navigation.test.js > resolveActivePage > keeps an allowed page and otherwise falls back to the first one 1ms
+ ✓ tests/unit/navigation.test.js > hasWriteAccess > is true only for the FULL level 0ms
+ ✓ tests/unit/statusLabels.test.js > describeStatus > labels known statuses with a tone 5ms
+ ✓ tests/unit/statusLabels.test.js > describeStatus > falls back to a readable label for unknown codes 1ms
+ ✓ tests/unit/statusLabels.test.js > humanizeCode > handles underscores, dots and empty input 1ms
+ ✓ tests/unit/statusLabels.test.js > tripStepIndex > orders the normal flow and rejects closed-out trips 1ms
+ ✓ tests/unit/dispatch.test.js > assignableOrders > drops cancelled and completed orders 5ms
+ ✓ tests/unit/dispatch.test.js > crewProgressAction > offers the next step only to the assigned driver 1ms
+ ✓ tests/unit/dispatch.test.js > crewProgressAction > offers nothing when no step belongs to the driver 0ms
+ ✓ tests/unit/dispatch.test.js > dispatcherActions > allows clearing only accepted trips 0ms
+ ✓ tests/unit/dispatch.test.js > dispatcherActions > allows cancelling before departure and failing after it 1ms
+ ✓ tests/unit/dispatch.test.js > describeBlockReason > maps known codes and falls back for unknown ones 0ms
+ ✓ tests/unit/dispatch.test.js > OR actions > hides helper upload and document controls unless the backend enables them 1ms
+ ✓ tests/unit/dispatch.test.js > OR actions > lets crew upload the signed OR only between delivery and confirmation 0ms
+ ✓ tests/unit/dispatch.test.js > OR actions > allows the stamped copy after the signed OR 0ms
+ ✓ tests/unit/dispatch.test.js > OR actions > lets only the driver confirm receipt once the OR is uploaded 1ms
+ ✓ tests/unit/dispatch.test.js > OR actions > offers correction only for completed trips 0ms
+ ✓ tests/unit/dispatch.test.js > OR actions > names document kinds 0ms
+ ✓ tests/unit/permissionMatrix.test.js > buildMatrix > pivots grants into one row per capability with a cell for every role 20ms
+ ✓ tests/unit/permissionMatrix.test.js > buildMatrix > sorts rows by group then capability and labels them 1ms
+ ✓ tests/unit/permissionMatrix.test.js > groupCapabilities > groups a capability map by domain 1ms
+ ✓ tests/unit/permissionMatrix.test.js > roleLabel > names roles and falls back for unknown ones 1ms
+ ✓ tests/unit/theme.test.js > theme > toggles between dark and light 4ms
+ ✓ tests/unit/theme.test.js > theme > defaults to dark and remembers the light choice 1ms
+ ✓ tests/unit/theme.test.js > theme > survives unavailable or broken storage 2ms
+ ✓ tests/unit/theme.test.js > theme > applies the theme to the root element 1ms
+ ✓ tests/unit/problemDetails.test.js > normalizeApiError > reads an RFC 9457 problem body 4ms
+ ✓ tests/unit/problemDetails.test.js > normalizeApiError > keeps field errors for validation failures 0ms
+ ✓ tests/unit/problemDetails.test.js > normalizeApiError > maps an unreachable server to a network error 1ms
+ ✓ tests/unit/problemDetails.test.js > normalizeApiError > never throws on a non-object body 0ms
+ ✓ tests/unit/people.test.js > filterEmployees > supports limited employee records without exposing missing private fields 3ms
+ ✓ tests/unit/people.test.js > filterEmployees > filters by status tab 2ms
+ ✓ tests/unit/people.test.js > filterEmployees > searches name, email and readable role names 1ms
+ ✓ tests/unit/people.test.js > describeAuditAction > uses sentences for known actions and humanizes unknown ones 1ms
+ ✓ tests/unit/people.test.js > filterAuditRecords > searches the readable action, entity and trace id 1ms
+ ✓ tests/unit/formatting.test.js > formatting > formats date-only values without timezone shifts 3ms
+ ✓ tests/unit/formatting.test.js > formatting > builds calendar tile parts 2ms
+ ✓ tests/unit/formatting.test.js > formatting > formats tons and pesos 2ms
+ ✓ tests/unit/formatting.test.js > formatting > makes initials and short ids 1ms
+ ✓ tests/unit/formatting.test.js > greetings > greets by time of day and takes the first name 0ms
+ ✓ tests/components/workflowRendering.test.jsx > role-specific workflow screens > renders a receipt time input with milliseconds rather than minute truncation 9ms
+ ✓ tests/components/workflowRendering.test.jsx > role-specific workflow screens > renders limited employee records without claiming missing account or role information 5ms
+ ✓ tests/components/workflowRendering.test.jsx > role-specific workflow screens > does not render disabled helper upload, document or confirmation controls 2ms
+ ✓ tests/components/workflowRendering.test.jsx > role-specific workflow screens > renders upload and receipt actions for the assigned driver with backend grants 3ms
+
+ Test Files  11 passed (11)
+      Tests  74 passed (74)
+   Start at  21:19:57
+   Duration  837ms (transform 61%, import 24%, worker 7%, tests 7%)

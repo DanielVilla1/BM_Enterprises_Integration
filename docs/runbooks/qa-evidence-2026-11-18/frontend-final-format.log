@@ -1,0 +1,6 @@
+
+> frontend@0.0.0 format:check
+> prettier --ignore-path ../../.prettierignore --check . ../../docs ../../README.md ../../compose.yml ../../.github/workflows ../../.prettierrc.json ../../tools/README.md ../../.github/file-structure.md
+
+Checking formatting...
+All matched files use Prettier code style!

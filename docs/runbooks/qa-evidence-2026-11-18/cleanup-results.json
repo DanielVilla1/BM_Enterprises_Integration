@@ -1,0 +1,223 @@
+[
+  {
+    "identifier": "D09",
+    "status": "Pass",
+    "final_document_rows": 11,
+    "final_objects": 11,
+    "orphan_objects": 0,
+    "missing_objects": 0
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "delete QA objects",
+    "count": 11,
+    "http": 200
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "delete private QA bucket",
+    "http": 200,
+    "verification_http": 400
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "delete disposable Clerk development identities",
+    "count": 12
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 3184,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 6124,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 6864,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 14300,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 16980,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 22924,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 23208,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 26388,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 29816,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 32424,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 32876,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 33120,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 34720,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 36960,
+    "exit_code": 0,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 37104,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 37872,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 37900,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 39408,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 40040,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 40584,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "stop recorded QA process",
+    "pid": 42828,
+    "exit_code": 128,
+    "note": "Nonzero can mean its recorded parent already stopped it; ports checked afterward."
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "drop owned scratch databases",
+    "databases": ["qa_acceptance_8dfc9665", "qa_restore_8dfc9665", "qa_restore_8dfc9665_3fbb"],
+    "remaining": 0
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "remove private lifecycle state and disposable browser profiles",
+    "status": "Pass"
+  },
+  {
+    "identifier": "CLEANUP",
+    "operation": "dedicated listener check",
+    "open_ports": {
+      "5174": false,
+      "8011": false,
+      "8012": false,
+      "8013": false,
+      "8014": false,
+      "8015": false,
+      "8016": false,
+      "8017": false,
+      "8018": false,
+      "8019": false,
+      "8020": false
+    },
+    "status": "Pass"
+  },
+  {
+    "identifier": "NORMAL-SMOKE",
+    "endpoint": "http://localhost:5173/",
+    "http": 200
+  },
+  {
+    "identifier": "NORMAL-SMOKE",
+    "endpoint": "http://localhost:8000/api/v1/health",
+    "http": 200
+  },
+  {
+    "identifier": "NORMAL-SMOKE",
+    "endpoint": "http://localhost:8000/api/v1/docs",
+    "http": 200
+  },
+  {
+    "identifier": "CLEANUP",
+    "status": "Pass",
+    "configuration": "Original environment files were not changed; temporary quotas/feature flags existed only in terminated QA workers."
+  }
+]

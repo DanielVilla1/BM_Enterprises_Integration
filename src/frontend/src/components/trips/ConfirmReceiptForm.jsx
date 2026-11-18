@@ -34,8 +34,10 @@ export function ConfirmReceiptForm({ disabled, onConfirm }) {
         <input
           name="received_at"
           type="datetime-local"
+          // AI MODIFIED: Avoid rounding a receipt back before a same-minute delivery.
+          step="0.001"
           required
-          defaultValue={toLocalInputValue(new Date())}
+          defaultValue={toLocalInputValue(new Date(), 'milliseconds')}
           className="input w-full"
         />
         <p className="label text-xs">
