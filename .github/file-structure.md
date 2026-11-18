@@ -1,113 +1,44 @@
-# Project File Structure (React + FastAPI Strict Modular Architecture)
+# Project file structure
 
-Root structure:
+The [system folder architecture](../docs/architecture.md#repository-folder-architecture) documents the current repository tree, file ownership and root-file exceptions. Keep it current when modules move.
 
-- backend/
-- frontend/
+## Backend placement
 
-No cross-layer mixing.
-No structural drift.
-No flat architecture allowed.
+Application code belongs in `src/backend/src/`, within its established layer:
 
----
+- `Controller/`: HTTP input, authorization dependencies and DTO mapping.
+- `DTO/`: validated request and response shapes.
+- `Service/`: business workflow, ownership, audit and transaction boundaries.
+- `Entity/`: framework-independent domain values and rules.
+- `Contract/`: interfaces for persistence and external systems.
+- `Repository/`: ORM models, queries and unit of work.
+- `Infrastructure/`: Clerk, Supabase and imaging adapters.
+- `Data/`: permission seed data.
 
-# 1. Backend Structure
+Keep migrations in `src/backend/migrations/`, operator commands in `src/backend/scripts/`, and tests in `src/backend/tests/`. The app entry point, Python configuration, migration configuration and dependency files stay in `src/backend/`. Shared dependency wiring and request controls stay at `src/backend/src/`.
 
-backend/
+No database queries in controllers, business approvals in repositories, vendor SDKs in entities, or ORM entities in public API responses.
 
-- Controller/
-- Service/
-- Repository/
-- DTO/
-- Entity/
-- Contract/
+## Frontend placement
 
-Descriptions:
+- `src/frontend/src/pages/`: compose hooks and presentational screens.
+- `src/frontend/src/components/<feature>/`: UI owned by account, administration, clients, dashboard, dispatch, fleet, orders, trips, finance or reports.
+- `src/frontend/src/hooks/`: loading/action orchestration and lifecycle.
+- `src/frontend/src/services/`: feature API clients.
+- `src/frontend/src/store/`: Zustand state by feature.
+- `src/frontend/src/shared/components/`: reusable UI, application shell and sign-in layout.
+- `src/frontend/src/shared/services/`: HTTP, Clerk and shared asynchronous loaders.
+- `src/frontend/src/shared/utils/`: pure shared helpers.
+- `src/frontend/src/shared/mockups/`: fictional design-preview data.
+- `src/frontend/tests/unit/` and `src/frontend/tests/components/`: regression tests outside production source.
+- `src/frontend/design-preview/`: the sample-data preview harness.
 
-- `Controller/` : HTTP entry points and request/response mapping. Controllers validate incoming requests, transform to DTOs, call Services, and produce HTTP responses (no DB queries or business rules here).
-- `Service/` : Application/use-case orchestration and business rules. Services coordinate repositories, infrastructure adapters, and transactions; they contain the core application logic.
-- `Repository/` : Data-access layer. Repositories encapsulate all persistence concerns (ORM/SQL) and map between storage models and domain `Entity` objects.
-- `DTO/` : Data Transfer Objects used at layer boundaries. DTOs define request and response shapes and decouple API contracts from persistence models.
-- `Entity/` : Domain model objects representing core business concepts and invariants. Entities are persistence-agnostic and used inside Services and Repositories.
-- `Contract/` : Interface definitions (ports) for repositories, services, and adapters. Use Contracts for dependency inversion and to make implementations swappable in tests.
+Components use props and callbacks; network calls go through services. Shared logic belongs in `shared/`. Keep feature names descriptive across hooks, stores and services. Follow the same placement convention for every new feature.
 
-backend/endpoint/
+## Repository boundaries
 
-- Account/
-- Booking/
-- inspection/
-- Analytics/
-- Payment/ (Paymongo)
-- Dashboard/
+Keep documentation in `docs/`, role manuals in `docs/runbooks/roles/`, and historical documents in `docs/archive/`. Write diagrams as fenced Mermaid blocks inside Markdown.
 
-Descriptions:
+Only repository-wide files belong at the root: README, Compose, shared environment template, Git/editor/formatting configuration. Each app owns its dependency manifests, Dockerfile and tooling configuration. Framework entry files remain at their expected app locations.
 
-- `Account/` : Endpoints and controllers dealing with user accounts, authentication, profile management, and account settings.
-- `Booking/` : Reservation and booking-related endpoints, scheduling logic orchestration, and booking lifecycle handlers.
-- `inspection/` : Inspection workflows, checklists, and related domain orchestration for audit/inspection features.
-- `Analytics/` : Lightweight aggregation endpoints and read-only reporting APIs (no heavy ETL inside controllers).
-- `Payment/` : Payment endpoints and gateway adapters; wrap Paymongo SDK in the Infrastructure layer and call from services.
-- `Dashboard/` : Composite endpoints used by dashboard UIs, coordinating multiple services and read-model queries.
-
-Rules:
-
-- No external SDK inside Domain layer.
-- No database logic inside Controller.
-- No business logic inside Repository.
-- No entity exposure in API response.
-- All responses must use DTO or Contract.
-
----
-
-# 2. Frontend Structure
-
-frontend/src/
-
-- components/
-- hooks/
-- store/ ( Zustand )
-- services/
-- utils/
-
-Descriptions:
-
-- `components/` : Presentational React components. Components must remain pure UI; they should receive props and emit events (callbacks).
-- `hooks/` : Reusable React hooks for local logic, data fetching orchestration, and encapsulated behaviours.
-- `store/` : Global state management (Zustand). One store per domain; prefer explicit state shape and avoid business-rule branching here.
-- `services/` : API clients and adapters for network calls and external integrations. All HTTP and SDK usage must be wrapped here and exposed via small functions.
-- `utils/` : Pure, side-effect-free helper functions, formatters, and validators. Keep them small, well-documented, and platform-agnostic.
-
-Rules:
-
-- No API call inside `components/`.
-- No business rule inside `components/`.
-- API calls must go through `services/`.
-- State must go through `store/` (choose a library explicitly per project).
-- No cross-domain service chaining.
-- Shared logic must go under `shared/`.
-
----
-
-# 3. Structural Discipline
-
-If one backend domain adopts:
-
-- Controller/
-- Service/
-- Repository/
-- DTO/
-- Entity/
-- Contract/
-
-All backend domains must follow identical structure.
-
-If one frontend domain adopts:
-
-- components/
-- store/
-- utils/
-- services/
-
-All frontend domains must follow identical structure.
-
-No partial modular adoption.
+When moving files, update all imports, preview harnesses, tests and documentation together; remove old copies. Do not introduce unrelated endpoint folders or duplicate layer hierarchies. Private workstation data, credentials, caches, virtual environments, installed dependencies and build output are ignored and are not source files.

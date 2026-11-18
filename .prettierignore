@@ -1,0 +1,7 @@
+**/node_modules/
+**/dist/
+**/.venv/
+**/coverage/
+**/package-lock.json
+**/.env*
+backend/openapi.snapshot.json

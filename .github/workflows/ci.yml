@@ -27,19 +27,24 @@ jobs:
           --health-retries 10
     defaults:
       run:
-        working-directory: backend
+        working-directory: src/backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
           cache: pip
-          cache-dependency-path: backend/requirements-dev.txt
+          cache-dependency-path: src/backend/requirements-dev.txt
       - run: pip install -r requirements-dev.txt
       - name: Lint (includes bandit-style S rules)
         run: ruff check .
       - name: Format check
         run: black --check .
+      - name: Repository tools and documentation links
+        run: |
+          ruff check ../../tools/scripts --config pyproject.toml
+          black --check ../../tools/scripts --config pyproject.toml
+          python ../../tools/scripts/check_docs.py
       - name: Tests (unit, integration, interface, contract)
         run: python -m pytest -q
       - name: Tests on PostgreSQL (migrations, RLS lockdown, audit triggers)
@@ -53,16 +58,18 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
+        working-directory: src/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: src/frontend/package-lock.json
       - run: npm ci
       - run: npm run lint
+      - name: Source and documentation formatting
+        run: npm run format:check
       - run: npm test
       - run: npm run build
       - name: Dependency audit

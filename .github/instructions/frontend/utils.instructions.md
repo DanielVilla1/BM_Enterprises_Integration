@@ -1,6 +1,6 @@
 ---
 description: "Rules for frontend utility functions"
-applyTo: "frontend/**/utils/**/*.{js,ts}"
+applyTo: "src/frontend/**/utils/**/*.{js,ts}"
 ---
 
 # Utils Folder Rules

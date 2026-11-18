@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend Repository implementations (data access layer)"
-applyTo: "backend/**/Repository/**/*.py"
+applyTo: "src/backend/**/Repository/**/*.py"
 ---
 
 # Repository Folder Rules
@@ -16,7 +16,7 @@ Repositories encapsulate persistence concerns: queries, mapping, and transaction
 
 ## 2. Modular Interaction Rules
 
-- Location: Place repositories under `backend/src/Repository/<domain>/` or `backend/src/Repository/`.
+- Location: Place repositories under `src/backend/src/Repository/<domain>/` or `src/backend/src/Repository/`.
 - Contracts: Repositories should implement `Contract` interfaces where applicable to enable swapping in tests.
 - Session management: Keep session/connection handling explicit and minimal; prefer session injection rather than global sessions.
 - Return types: Repositories should return Entities or DTOs (avoid returning raw ORM internals like session-bound objects unless converted).

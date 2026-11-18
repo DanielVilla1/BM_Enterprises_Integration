@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend Services (business orchestration)"
-applyTo: "backend/**/Service/**/*.py"
+applyTo: "src/backend/**/Service/**/*.py"
 ---
 
 # Service Folder Rules
@@ -16,7 +16,7 @@ Services implement application use-cases and business rules. They orchestrate Re
 
 ## 2. Modular Interaction Rules
 
-- Location: Place services under `backend/src/Service/<domain>/` or `backend/src/Service/`.
+- Location: Place services under `src/backend/src/Service/<domain>/` or `src/backend/src/Service/`.
 - Dependencies: Services depend on Contracts (interfaces) or repository implementations injected via factories/providers.
 - No HTTP concerns: Services should not import FastAPI or handle HTTP specifics; that's a controller responsibility.
 - Transaction boundaries: Services should manage transactions and rollback semantics where appropriate.

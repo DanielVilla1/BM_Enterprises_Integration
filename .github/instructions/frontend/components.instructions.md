@@ -1,6 +1,6 @@
 ---
 description: "Rules for frontend presentational components (React)"
-applyTo: "frontend/**/components/**/*.{js,jsx,ts,tsx}"
+applyTo: "src/frontend/**/components/**/*.{js,jsx,ts,tsx}"
 ---
 
 # Components Folder Rules

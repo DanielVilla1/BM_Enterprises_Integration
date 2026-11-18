@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend DTOs (Pydantic models) used across layers"
-applyTo: "backend/**/DTO/**/*.py"
+applyTo: "src/backend/**/DTO/**/*.py"
 ---
 
 # DTO Folder Rules
@@ -16,7 +16,7 @@ DTOs (Data Transfer Objects) define the shapes of data exchanged between layers 
 
 ## 2. Modular Interaction Rules
 
-- Location: Place DTOs under `backend/src/DTO/<domain>/` or `backend/src/DTO/` for shared models.
+- Location: Place DTOs under `src/backend/src/DTO/<domain>/` or `src/backend/src/DTO/` for shared models.
 - Layer usage: Controllers accept request DTOs (Pydantic inputs) and return response DTOs; Services accept DTOs or domain Entities; Repositories should not depend on DTOs for internal persistence logic.
 - Mapping: Map Entity <-> DTO at service or repository boundaries; avoid leaking ORM models into controllers.
 

@@ -1,6 +1,6 @@
 ---
 description: "Rules for backend Controllers (FastAPI routers) defining HTTP entry points"
-applyTo: "backend/**/Controller/**/*.py"
+applyTo: "src/backend/**/Controller/**/*.py"
 ---
 
 # Controller Folder Rules
@@ -18,7 +18,7 @@ Controllers (FastAPI routers) are the HTTP orchestration layer. They accept requ
 
 ## 2. Modular Interaction Rules
 
-- Location: Place controllers under `backend/src/<domain>/Controller/` or `backend/src/Controller/` following repository conventions.
+- Location: Place controllers under `src/backend/src/<domain>/Controller/` or `src/backend/src/Controller/` following repository conventions.
 - Dependency injection: Use FastAPI `Depends` to inject `Service` instances or DB sessions via well-defined providers (factories in `Controller` or top-level providers module).
 - DTO boundaries: Convert incoming requests to `DTO` shapes (Pydantic models) before passing to services; services should expect DTOs or domain `Entity` objects as defined by Contracts.
 - Error handling: Controllers should translate service exceptions to appropriate HTTP responses (status codes and structured error DTOs). Business exceptions should originate from Services.

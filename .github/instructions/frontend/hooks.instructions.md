@@ -1,6 +1,6 @@
 ---
 description: "Rules for frontend reusable hooks (React)"
-applyTo: "frontend/**/hooks/**/*.{js,jsx,ts,tsx}"
+applyTo: "src/frontend/**/hooks/**/*.{js,jsx,ts,tsx}"
 ---
 
 # Hooks Folder Rules
@@ -31,7 +31,7 @@ Hooks encapsulate reusable logic for components: stateful behaviors, data fetchi
 
 ## 5. Consistency Enforcement
 
-- Location: Hooks should live under `frontend/src/hooks/` or per-domain under `frontend/src/modules/<domain>/hooks/`.
+- Location: Hooks should live under `src/frontend/src/hooks/` or per-domain under `src/frontend/src/modules/<domain>/hooks/`.
 - CI checks: Ensure JSDoc presence and exported name prefix `use` in lint rules.
 
 ---
