@@ -6,7 +6,7 @@
 // 1. GET /me
 // 2. Return the body; failures arrive already normalized
 
-import { apiClient } from '../shared/services/httpClient'
+import { apiClient, waitForApiStartup } from '../shared/services/httpClient'
 
 /**
  * @typedef {Object} CurrentAccount
@@ -22,6 +22,7 @@ import { apiClient } from '../shared/services/httpClient'
  * @returns {Promise<CurrentAccount>}
  */
 export async function fetchCurrentAccount() {
+  await waitForApiStartup()
   const response = await apiClient.get('/me')
   return response.data
 }

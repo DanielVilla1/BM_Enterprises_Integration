@@ -52,7 +52,26 @@ describe('normalizeApiError', () => {
     const failure = normalizeApiError({
       response: { status: 502, data: '<html>bad gateway</html>' },
     })
-    expect(failure.code).toBe('NETWORK_ERROR')
+    expect(failure.code).toBe('HTTP_ERROR')
     expect(failure.status).toBe(502)
+    expect(failure.title).toBe('Service temporarily unavailable')
+    expect(failure.detail).not.toContain('<html>')
+  })
+
+  it.each(['ECONNABORTED', 'ETIMEDOUT'])(
+    'distinguishes a %s timeout from network failures',
+    (code) => {
+      const failure = normalizeApiError({ code })
+      expect(failure.code).toBe('REQUEST_TIMEOUT')
+      expect(failure.title).toBe('Connection timed out')
+    },
+  )
+
+  it('rejects an HTML success response without claiming the network was unreachable', () => {
+    const failure = normalizeApiError({
+      response: { status: 200, data: '<html>wrong site</html>' },
+    })
+    expect(failure.code).toBe('UNEXPECTED_RESPONSE')
+    expect(failure.status).toBe(200)
   })
 })

@@ -10,6 +10,26 @@ import axios from 'axios'
 import { normalizeApiError } from '../utils/problemDetails'
 
 const API_ORIGIN = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
+const REQUEST_TIMEOUT_MS = 10000
+
+// Wake a sleeping demo API before requesting a short-lived sign-in token.
+// This client is for the public health endpoint and has no token interceptor.
+const startupClient = axios.create({
+  baseURL: `${API_ORIGIN}/api/v1`,
+  timeout: 90000,
+})
+
+/** @returns {Promise<void>} Wait for API startup without replaying business commands. */
+export async function waitForApiStartup() {
+  try {
+    const response = await startupClient.get('/health')
+    if (response.data?.status !== 'ok') {
+      throw { response: { status: response.status, data: null } }
+    }
+  } catch (failure) {
+    throw normalizeApiError(failure)
+  }
+}
 
 /** @type {function(): Promise<string|null>} */
 let sessionTokenProvider = async () => null
@@ -26,7 +46,7 @@ export function registerSessionTokenProvider(providerFunction) {
 
 export const apiClient = axios.create({
   baseURL: `${API_ORIGIN}/api/v1`,
-  timeout: 10000,
+  timeout: REQUEST_TIMEOUT_MS,
 })
 
 apiClient.interceptors.request.use(async (requestConfig) => {

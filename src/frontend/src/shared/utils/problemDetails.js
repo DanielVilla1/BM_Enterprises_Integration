@@ -25,12 +25,30 @@
 export function normalizeApiError(requestError) {
   const responseBody = requestError?.response?.data
   const responseStatus = requestError?.response?.status
-  if (responseStatus === undefined || responseBody === null || typeof responseBody !== 'object') {
+  if (responseStatus === undefined) {
+    const timedOut = ['ECONNABORTED', 'ETIMEDOUT'].includes(requestError?.code)
     return {
-      status: responseStatus ?? 0,
-      code: 'NETWORK_ERROR',
-      title: 'Service unreachable',
-      detail: 'The server could not be reached. Check your connection and try again.',
+      status: 0,
+      code: timedOut ? 'REQUEST_TIMEOUT' : 'NETWORK_ERROR',
+      title: timedOut ? 'Connection timed out' : 'Service unreachable',
+      detail: timedOut
+        ? 'The service took too long to respond. Please try again.'
+        : 'A connection to the service could not be established. Please try again.',
+      traceIdentifier: '',
+      fieldErrors: [],
+    }
+  }
+  if (responseBody === null || typeof responseBody !== 'object' || Array.isArray(responseBody)) {
+    const temporarilyUnavailable = [502, 503, 504].includes(responseStatus)
+    return {
+      status: responseStatus,
+      code: responseStatus >= 400 ? 'HTTP_ERROR' : 'UNEXPECTED_RESPONSE',
+      title: temporarilyUnavailable
+        ? 'Service temporarily unavailable'
+        : 'Unexpected server response',
+      detail: temporarilyUnavailable
+        ? 'The service is temporarily unavailable. Please try again shortly.'
+        : 'The service returned an unexpected response. Please try again.',
       traceIdentifier: '',
       fieldErrors: [],
     }
