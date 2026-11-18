@@ -1,0 +1,97 @@
+[
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:40:58.881Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/clients",
+    "http": 201,
+    "trace": "c28e08e697484169bd41bccb76123deb"
+  },
+  {
+    "identifier": "U07",
+    "at": "2026-11-18T13:41:11.877Z",
+    "status": "Blocked",
+    "expected_workload": "Documentation estimate: about 20 users, 30 trips/day, 10 requests/s peak",
+    "measured_scope": "Dedicated loopback single worker; 5 genuine QA identities, 20 concurrent request slots, 100 /me reads. Supplemental only.",
+    "requests": 100,
+    "concurrency": 20,
+    "http_statuses": {
+      "200": 100
+    },
+    "elapsed_seconds": 11.570750899999998,
+    "requests_per_second": 8.64248144863269,
+    "latency_ms": {
+      "p50": 182.45560000000114,
+      "p95": 305.5730000000003,
+      "max": 350.05029999999897
+    },
+    "worker_before": {
+      "cpu_seconds": 38.671875,
+      "working_set_bytes": 124436480,
+      "peak_working_set_bytes": 129421312,
+      "handles": 341,
+      "threads": 5
+    },
+    "worker_after": {
+      "cpu_seconds": 40.28125,
+      "working_set_bytes": 120905728,
+      "peak_working_set_bytes": 129421312,
+      "handles": 456,
+      "threads": 23
+    },
+    "missing": "Approved staging topology and representative multi-user business workload/resource monitoring; no multi-worker certification"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:41:11.934Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "cd9b21cda15d4c0fa21759acd10ed636"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:41:11.951Z",
+    "actor": "DISPATCHER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "5eb3b197811f4bc1aad4c6f4e2f0049f"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:41:11.968Z",
+    "actor": "DRIVER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "8708002d3aff45f59edb3c58e2641777"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:41:11.986Z",
+    "actor": "DRIVER2",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "37b30d6f33294bd88896f3e6cc541b64"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:41:12.004Z",
+    "actor": "FLEET_MANAGER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "084597c2791141dda48013dbce6ba372"
+  },
+  {
+    "identifier": "NORMAL-SMOKE",
+    "at": "2026-11-18T13:41:12.009Z",
+    "status": "Pass",
+    "roles": ["OWNER", "DISPATCHER", "DRIVER", "DRIVER2", "FLEET_MANAGER"],
+    "operational_health": 200
+  }
+]

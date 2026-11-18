@@ -1,0 +1,637 @@
+[
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:26.790Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/clients",
+    "http": 201,
+    "trace": "151d6ac31ed6450ea948ae000618eeb9"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:26.885Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks",
+    "http": 201,
+    "trip_status": "AVAILABLE",
+    "trace": "e886a5b6f00a4fcc87c881cbdfc49230"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:26.939Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders",
+    "http": 201,
+    "trip_status": "PENDING",
+    "trace": "ce057561ff184926b93111be39186310"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.022Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders/935a8e61-a865-4152-a213-054c02581131/trips",
+    "http": 201,
+    "trip_status": "SCHEDULED",
+    "trace": "36227364aeb045c1969a325f736189db"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.046Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks/5bc05b0c-c5b9-49d0-821b-399824299cde/maintenance",
+    "http": 409,
+    "code": "TRUCK_BUSY",
+    "trip_status": 409,
+    "trace": "16ca5a8db93749b1817d51985926ee59"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.069Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks/5bc05b0c-c5b9-49d0-821b-399824299cde/maintenance/complete",
+    "http": 409,
+    "code": "NOT_IN_MAINTENANCE",
+    "trip_status": 409,
+    "trace": "6718fbb5e61f4f9d895da6e4e028c679"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.099Z",
+    "actor": "DISPATCHER",
+    "method": "GET",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd",
+    "http": 200,
+    "trip_status": "SCHEDULED",
+    "trace": "d359dd1d07b641bda02e1aa1e6985854"
+  },
+  {
+    "identifier": "W14",
+    "at": "2026-11-18T13:38:27.100Z",
+    "status": "Pass",
+    "subcheck": "busy truck cannot enter or complete ordinary maintenance",
+    "reservation_preserved": true
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.218Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/accept",
+    "http": 200,
+    "trip_status": "ACCEPTED",
+    "trace": "f6926fe6269a4857aaf180ca38ce847e"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.286Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/clear-dispatch",
+    "http": 200,
+    "trip_status": "CLEARED_FOR_DISPATCH",
+    "trace": "648fb81f68d24c14a39439a1a6082a58"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.353Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/depart",
+    "http": 200,
+    "trip_status": "IN_TRANSIT",
+    "trace": "c3e3a94f1f42416abdd46394defb6947"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:27.402Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/deliver",
+    "http": 200,
+    "trip_status": "DELIVERED_OR_PENDING",
+    "trace": "0ceb3627edf6437eb70948a9923a33c6"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.578Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/or-documents",
+    "http": 201,
+    "trace": "2ce32e3e611f435c8840aedf49d15c60"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.657Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "bff1458e160447849a421d1e8f8f5d92"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.701Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "ff359075f8fb41309796d861f2cd4ce0"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.736Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/audit-logs?limit=100",
+    "http": 200,
+    "trace": "b14dce8bd1ef4bb48c8353eb011d65a2"
+  },
+  {
+    "identifier": "D05",
+    "at": "2026-11-18T13:38:28.738Z",
+    "status": "Pass",
+    "trip_id": "dd4966e3-860e-4485-bf5f-cb3c170f61bd",
+    "receipt_audit_events": 1
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.785Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders",
+    "http": 201,
+    "trip_status": "PENDING",
+    "trace": "1c0045feef394d1da6a8769c157b9649"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.853Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders/74e7bbe7-e4a6-44dd-bd15-4fc9a51a88ba/trips",
+    "http": 201,
+    "trip_status": "SCHEDULED",
+    "trace": "64ab80a6784141dc9664166bd94cef40"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.897Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/accept",
+    "http": 200,
+    "trip_status": "ACCEPTED",
+    "trace": "a404546585bf4f158850f7ca592610a2"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:28.960Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/clear-dispatch",
+    "http": 200,
+    "trip_status": "CLEARED_FOR_DISPATCH",
+    "trace": "fa850c4f9dc7483db00db4d349ae37aa"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:29.027Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/depart",
+    "http": 200,
+    "trip_status": "IN_TRANSIT",
+    "trace": "31f043ca6fef4d8aacc44399b6526904"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:29.079Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/deliver",
+    "http": 200,
+    "trip_status": "DELIVERED_OR_PENDING",
+    "trace": "e7a76437570240828d1b1e5bd1826fbb"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.003Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/or-documents",
+    "http": 201,
+    "trace": "c69a922ff71b4a2da6f75338518d53a3"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.104Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "445af938692a43dcb61ca2c0b8adaa25"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.154Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "82c407c404244c2bb48f3544170da8f1"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.197Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/audit-logs?limit=100",
+    "http": 200,
+    "trace": "81537ab8421343fc8f398f0596bc0352"
+  },
+  {
+    "identifier": "D05",
+    "at": "2026-11-18T13:38:30.200Z",
+    "status": "Pass",
+    "trip_id": "4cd5a9b0-d3e8-4293-8e50-fb98c6a02cca",
+    "receipt_audit_events": 1
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.254Z",
+    "actor": "OWNER",
+    "method": "POST",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd/receipt-correction",
+    "http": 409,
+    "code": "CORRECTION_NOT_POSSIBLE",
+    "trip_status": 409,
+    "trace": "3b606f0f571b46e884f290c2457a9ea3"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.289Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/trips/dd4966e3-860e-4485-bf5f-cb3c170f61bd",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "53d33d7be9014ac7ac0c36412da5ebad"
+  },
+  {
+    "identifier": "D08",
+    "at": "2026-11-18T13:38:30.291Z",
+    "status": "Pass",
+    "variant": "later shared-resource trip Completed",
+    "history_preserved": true
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.373Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks",
+    "http": 201,
+    "trip_status": "AVAILABLE",
+    "trace": "3d1c3c6a05d646a7bd38eb799d84bf9f"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.411Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders",
+    "http": 201,
+    "trip_status": "PENDING",
+    "trace": "c79a96cffd1c44389d395672e9380952"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.500Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders/0837a465-2eb4-49e3-b62f-3994bb523868/trips",
+    "http": 201,
+    "trip_status": "SCHEDULED",
+    "trace": "fba8730738594d39bab7c0548e658667"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.548Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/accept",
+    "http": 200,
+    "trip_status": "ACCEPTED",
+    "trace": "141e048eceb747ae8130aaf9e1bcf8f1"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.622Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/clear-dispatch",
+    "http": 200,
+    "trip_status": "CLEARED_FOR_DISPATCH",
+    "trace": "30e7c1e53317447f8827e7f4c7396015"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.699Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/depart",
+    "http": 200,
+    "trip_status": "IN_TRANSIT",
+    "trace": "7e4b1e520f7e461d8fc9095adb3bc7fa"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:30.760Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/deliver",
+    "http": 200,
+    "trip_status": "DELIVERED_OR_PENDING",
+    "trace": "64ad8142e9f2486cb2483380375f2281"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.157Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/or-documents",
+    "http": 201,
+    "trace": "72aa281cf0ee4e0eb8894768ee92f466"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.268Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "dde45d6ed31f4ffd963218528ff2a90b"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.315Z",
+    "actor": "DRIVER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/confirm-receipt",
+    "http": 200,
+    "trip_status": "COMPLETED",
+    "trace": "908cee96e47e498bbecd0e1dcc2d68cf"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.352Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/audit-logs?limit=100",
+    "http": 200,
+    "trace": "f71e50383f354ca6a307aadf4e80d747"
+  },
+  {
+    "identifier": "D05",
+    "at": "2026-11-18T13:38:32.353Z",
+    "status": "Pass",
+    "trip_id": "b43c63ef-9059-45f4-a896-8cddd571d68a",
+    "receipt_audit_events": 1
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.442Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders",
+    "http": 201,
+    "trip_status": "PENDING",
+    "trace": "0b719f1dddd244f3a01079c1e8efa86c"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.512Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/delivery-orders/63202803-8957-4715-be83-c845e0791a22/trips",
+    "http": 201,
+    "trip_status": "SCHEDULED",
+    "trace": "b1dc317a23054877be468cbc5e1326d3"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.566Z",
+    "actor": "DRIVER2",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/accept",
+    "http": 200,
+    "trip_status": "ACCEPTED",
+    "trace": "aa191bbec2da4714bba171b89e20e891"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.627Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/clear-dispatch",
+    "http": 200,
+    "trip_status": "CLEARED_FOR_DISPATCH",
+    "trace": "fe7948d68c604f00ad2f43021e810b9b"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.698Z",
+    "actor": "DRIVER2",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/depart",
+    "http": 200,
+    "trip_status": "IN_TRANSIT",
+    "trace": "3612b01d43174a3fb90797e9025b4094"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.730Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks",
+    "http": 201,
+    "trip_status": "AVAILABLE",
+    "trace": "f6265f69904b46dda9f0cbd3edcf6193"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.781Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/truck-replacement",
+    "http": 409,
+    "code": "CAPACITY_EXCEEDED",
+    "trip_status": 409,
+    "trace": "5ed5296513554e178a15604139fa1a63"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.810Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks",
+    "http": 201,
+    "trip_status": "AVAILABLE",
+    "trace": "f85922f6f7e044cd989aa86d63f3edd3"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.875Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/truck-replacement",
+    "http": 200,
+    "trip_status": "IN_TRANSIT",
+    "trace": "290f1c05cdae4c5faf5e682a7ffde45e"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.923Z",
+    "actor": "DISPATCHER",
+    "method": "POST",
+    "endpoint": "/trips/59cf9c7b-3406-42b3-b985-3551ef9f62c2/fail",
+    "http": 200,
+    "trip_status": "FAILED",
+    "trace": "6f1e0de1848943c0ae7de4d800fcfd93"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.962Z",
+    "actor": "OWNER",
+    "method": "POST",
+    "endpoint": "/trips/b43c63ef-9059-45f4-a896-8cddd571d68a/receipt-correction",
+    "http": 409,
+    "code": "CORRECTION_NOT_POSSIBLE",
+    "trip_status": 409,
+    "trace": "fe2450784f714213a05d0c534dd722db"
+  },
+  {
+    "identifier": "D08",
+    "at": "2026-11-18T13:38:32.963Z",
+    "status": "Pass",
+    "variant": "later Failed with distinct crew and historical original truck only",
+    "history_preserved": true
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:32.995Z",
+    "actor": "FLEET_MANAGER",
+    "method": "POST",
+    "endpoint": "/trucks/c6ec61bc-3edf-49a1-b0de-245f252cab8c/maintenance/complete",
+    "http": 200,
+    "trace": "5e75125165b54622ae076768404ed885"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:33.019Z",
+    "actor": "FLEET_MANAGER",
+    "method": "GET",
+    "endpoint": "/trucks/c6ec61bc-3edf-49a1-b0de-245f252cab8c",
+    "http": 200,
+    "trip_status": "AVAILABLE",
+    "trace": "d91a24e2bc554413ad79c01029623181"
+  },
+  {
+    "identifier": "U07",
+    "at": "2026-11-18T13:38:46.378Z",
+    "status": "Blocked",
+    "expected_workload": "Documentation estimate: about 20 users, 30 trips/day, 10 requests/s peak",
+    "measured_scope": "Dedicated loopback single worker; 5 genuine QA identities, 20 concurrent request slots, 100 /me reads. Supplemental only.",
+    "requests": 100,
+    "concurrency": 20,
+    "http_statuses": {
+      "200": 100
+    },
+    "elapsed_seconds": 11.7265634,
+    "requests_per_second": 8.527647580023316,
+    "latency_ms": {
+      "p50": 166.96370000000024,
+      "p95": 373.8009999999995,
+      "max": 525.8193000000028
+    },
+    "worker_before": {
+      "cpu_seconds": 0.03125,
+      "working_set_bytes": 4317184,
+      "peak_working_set_bytes": 4468736,
+      "handles": 56,
+      "threads": 1
+    },
+    "worker_after": {
+      "cpu_seconds": 0.03125,
+      "working_set_bytes": 4317184,
+      "peak_working_set_bytes": 4468736,
+      "handles": 56,
+      "threads": 1
+    },
+    "missing": "Approved staging topology and representative multi-user business workload/resource monitoring; no multi-worker certification"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:46.403Z",
+    "actor": "OWNER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "16fbc1977010455c95f1187b12022a5c"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:46.427Z",
+    "actor": "DISPATCHER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "e9ad7f74052f41879e2561bd52314430"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:46.447Z",
+    "actor": "DRIVER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "111445bf3dab44f8a9c1ac661bab5620"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:46.465Z",
+    "actor": "DRIVER2",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "87a04ee11d514e7da22ae860fd530148"
+  },
+  {
+    "identifier": "HTTP",
+    "at": "2026-11-18T13:38:46.484Z",
+    "actor": "FLEET_MANAGER",
+    "method": "GET",
+    "endpoint": "/me",
+    "http": 200,
+    "trace": "d52c15b608c44a98a3cff68df7b947a2"
+  },
+  {
+    "identifier": "NORMAL-SMOKE",
+    "at": "2026-11-18T13:38:46.491Z",
+    "status": "Pass",
+    "roles": ["OWNER", "DISPATCHER", "DRIVER", "DRIVER2", "FLEET_MANAGER"],
+    "operational_health": 200
+  }
+]

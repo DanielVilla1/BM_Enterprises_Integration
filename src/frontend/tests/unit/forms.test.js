@@ -38,6 +38,16 @@ describe('upload and date helpers', () => {
     expect(toLocalInputValue(new Date(2026, 10, 14, 9, 5))).toBe('2026-11-14T09:05')
   })
 
+  // AI MODIFIED: A receipt recorded after delivery must not round back before it.
+  it('preserves the actual receipt instant when delivery occurred in the same minute', () => {
+    const deliveredAt = new Date(2026, 10, 18, 9, 5, 42, 100)
+    const receivedAt = new Date(2026, 10, 18, 9, 5, 45, 321)
+    const inputValue = toLocalInputValue(receivedAt, 'milliseconds')
+    const submittedAt = new Date(localInputToIso(inputValue))
+    expect(submittedAt.getTime()).toBe(receivedAt.getTime())
+    expect(submittedAt.getTime()).toBeGreaterThan(deliveredAt.getTime())
+  })
+
   it('converts a local input value to an ISO string with an offset', () => {
     const iso = localInputToIso('2026-11-14T09:05')
     expect(iso.endsWith('Z')).toBe(true)

@@ -10,6 +10,7 @@
 import pytest
 
 from backend.src import providers
+from backend.src.Contract.i_storage import StorageError
 from backend.src.Entity.access import RoleCode
 from backend.src.Repository.document_repositories import OrDocumentRepository
 from backend.tests.conftest import auth_headers
@@ -167,6 +168,31 @@ def test_storage_outage_changes_nothing(world: World, fake_storage) -> None:
     assert response.status_code == 503 and response.json()["code"] == "STORAGE_UNAVAILABLE"
     trip = world.get(f"/api/v1/trips/{delivered.trip_id}", delivered.driver).json()
     assert trip["status"] == "DELIVERED_OR_PENDING" and trip["documents"] == []
+
+
+# AI MODIFIED: A lost upload acknowledgement can leave a stored object despite a 503.
+def test_storage_timeout_after_accepting_upload_removes_orphan_before_retry(
+    world: World, fake_storage, monkeypatch
+) -> None:
+    """Clean an ambiguously successful put and permit one clean retry."""
+    delivered = world.delivered_trip()
+    original_put = fake_storage.put
+
+    def accepted_then_timed_out(path: str, content: bytes, content_type: str) -> None:
+        original_put(path, content, content_type)
+        raise StorageError("upload acknowledgement was lost")
+
+    monkeypatch.setattr(fake_storage, "put", accepted_then_timed_out)
+    response = _upload(world, delivered.trip_id, delivered.driver, make_jpeg())
+    assert response.status_code == 503 and response.json()["code"] == "STORAGE_UNAVAILABLE"
+    assert fake_storage.objects == {} and len(fake_storage.deleted) == 1
+    trip = world.get(f"/api/v1/trips/{delivered.trip_id}", delivered.driver).json()
+    assert trip["status"] == "DELIVERED_OR_PENDING" and trip["documents"] == []
+    monkeypatch.setattr(fake_storage, "put", original_put)
+    assert _upload(world, delivered.trip_id, delivered.driver, make_jpeg()).status_code == 201
+    assert len(fake_storage.objects) == 1
+    documents = world.get(f"/api/v1/trips/{delivered.trip_id}/or-documents", delivered.driver).json()
+    assert len(documents) == 1 and documents[0]["superseded"] is False
 
 
 def test_database_failure_after_storing_removes_the_orphaned_object(

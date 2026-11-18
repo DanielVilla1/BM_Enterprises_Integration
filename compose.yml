@@ -13,44 +13,52 @@ services:
       - '${POSTGRES_EXTERNAL_PORT}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   backend:
     build:
       context: ./src/backend
     container_name: bm_backend
-    volumes:
-      - ./src:/app
     env_file:
       - .env
     ports:
       - '${BACKEND_EXTERNAL_PORT}:8000'
     environment:
-      DATABASE_URL: 'postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
+      DATABASE_URL: 'postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}'
     command: sh -c "alembic -c backend/alembic.ini upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --no-proxy-headers"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     develop:
       watch:
         - action: sync
           path: ./src/backend
           target: /app/backend
-        - action: sync+restart
+          initial_sync: true
+          ignore:
+            - requirements.txt
+            - Dockerfile
+            - .dockerignore
+        - action: rebuild
           path: ./src/backend/requirements.txt
-          target: /app/backend/requirements.txt
+        - action: rebuild
+          path: ./src/backend/Dockerfile
+        - action: rebuild
+          path: ./src/backend/.dockerignore
 
   frontend:
     build:
       context: ./src/frontend
     container_name: bm_frontend
-    volumes:
-      - ./src/frontend:/app
-      - frontend_node_modules:/app/node_modules
-    env_file:
-      - .env
     environment:
-      CHOKIDAR_USEPOLLING: 'true'
-      CHOKIDAR_INTERVAL: '100'
-      VITE_API_BASE_URL: 'http://localhost:${BACKEND_EXTERNAL_PORT}'
+      VITE_CLERK_PUBLISHABLE_KEY: '${VITE_CLERK_PUBLISHABLE_KEY}'
+      VITE_PUBLIC_FRONTEND_URL: '${VITE_PUBLIC_FRONTEND_URL:-}'
+      VITE_API_BASE_URL: ''
+      DEV_API_PROXY_TARGET: 'http://backend:8000'
     ports:
       - '${FRONTEND_EXTERNAL_PORT}:5173'
     depends_on:
@@ -60,12 +68,20 @@ services:
         - action: sync
           path: ./src/frontend
           target: /app
-        - action: sync+restart
+          initial_sync: true
+          ignore:
+            - package.json
+            - package-lock.json
+            - Dockerfile
+            - .dockerignore
+        - action: rebuild
           path: ./src/frontend/package.json
-          target: /app/package.json
-        - action: sync+restart
+        - action: rebuild
           path: ./src/frontend/package-lock.json
-          target: /app/package-lock.json
+        - action: rebuild
+          path: ./src/frontend/Dockerfile
+        - action: rebuild
+          path: ./src/frontend/.dockerignore
 
   pgadmin:
     image: dpage/pgadmin4
@@ -81,4 +97,3 @@ services:
 
 volumes:
   pgdata:
-  frontend_node_modules:

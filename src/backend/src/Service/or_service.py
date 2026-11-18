@@ -105,6 +105,8 @@ class OrService:
         try:
             self._storage.put(storage_path, image.content, image.content_type)
         except StorageError as storage_error:
+            # AI MODIFIED: Storage may have accepted the object before its response was lost.
+            self._storage.delete(storage_path)
             raise _error(
                 503,
                 "STORAGE_UNAVAILABLE",

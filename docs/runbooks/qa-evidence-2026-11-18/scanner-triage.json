@@ -1,0 +1,48 @@
+{
+  "initial_findings": 6,
+  "confirmed_credential_leaks": 0,
+  "triage": [
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/openapi.snapshot.json",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/scripts/export_openapi.py",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/src/Contract/i_token_verifier.py",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/src/Entity/access.py",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/src/Infrastructure/Clerk/clerk_token_verifier.py",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "source-manifest.json",
+      "source_path": "src/backend/tests/test_authentication.py",
+      "classification": "False positive: verified SHA256 file digest, not a credential",
+      "resolution": "Manifest now uses separate path/sha256 fields; raw scanner rerun passed without any allowlist or disabled rules."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "identifier": "S08/S09",
+  "public_bundle_backend_secret_matches": 0,
+  "backend_values_checked": 6,
+  "bundle_files_checked": 3,
+  "acceptance_sections_1_to_7_unchanged": true,
+  "acceptance_sha256": "84a6680313171e9ef3ebc0949722eb8bd82fa06e74a9e359bd5165e46f1adde4",
+  "source_snapshot_files": 307
+}

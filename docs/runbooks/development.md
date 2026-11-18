@@ -64,7 +64,7 @@ For file placement, use the visible [repository folder architecture](../architec
 
 Verified during sprint consolidation: 203 backend tests on Python 3.12/SQLite (6 PostgreSQL-only tests skipped), 208 application tests on Python 3.14/PostgreSQL 18.2, 25 frontend tests, backend/frontend lint, backend formatting, frontend production build, and runtime dependency audits. The OpenAPI snapshot was checked on Python 3.12, matching CI; that one test was excluded from the Python 3.14/PostgreSQL run because Python 3.14 changes the generated HTTP 422 description.
 Browser follow-up verified live Clerk development sign-in for all seven business roles, including password entry, test-email verification, authenticated `/me` responses and the rendered workspace. The Owner-only permission-matrix endpoint returned 200 for Owner and 403 for the other six roles.
-**Still unverified:** Docker, live Supabase, real-inbox verification and mobile UI. See section 12.
+**Still unverified:** live Supabase, real-inbox verification and mobile UI. See section 12.
 
 </details>
 
@@ -138,7 +138,7 @@ src/frontend/src/
 src/frontend/tests/              unit/ and components/ regression suites
 .github/                     CI workflow, PR template, Copilot governance and per-layer rules
 docs/runbooks/development.md      this file
-compose.yml                  Postgres, backend, frontend, pgAdmin (never run)
+compose.yml                  Postgres, backend, frontend, pgAdmin with Compose Watch
 ```
 
 </details>
@@ -167,7 +167,7 @@ flowchart TB
 <details>
 <summary><strong>Commands and setup instructions</strong></summary>
 
-Requirements: Python 3.12, Node 20+ (22 in CI), Git. Docker is optional (and untested).
+Requirements: Python 3.12, Node 22+, Git. Docker Desktop is optional; see the [Compose Watch instructions](../../src/frontend/README.md) to run Vite and FastAPI in containers.
 
 **Backend** (from `src/backend/`; on Linux/macOS use `.venv/bin/python`):
 
@@ -394,7 +394,7 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 - **Spec proof of concept (section 12 of the spec):** Clerk token lifetime and outage behaviour (tokens last about 60 s), webhook bad-signature then double replay, Supabase public key cannot read or write any table, backup restore time (the 4 h target is unproven), 5 MB phone upload on mobile data and signed URL expiry.
 - **Live Supabase Storage:** `Infrastructure/Supabase/supabase_object_storage.py` is tested against a mock only; confirm upload, signing and delete against a real project.
 - **Browser check:** desktop Chrome sign-in and the workspace were verified for all seven roles using the live Clerk development instance and test-email aliases. Mobile behavior and real-inbox verification still need testing.
-- **Docker:** `compose.yml` and `src/backend/Dockerfile` were edited, never run.
+- **Docker development:** Compose Watch was verified on Docker Desktop: fresh PostgreSQL migrations, frontend source sync and browser reload, Clerk sign-in rendering and API health through Vite and ngrok. Docker uses a separate persistent database; bootstrap the Owner before using a fresh database. This does not verify production deployment or migration of existing local records.
 - **Dependencies:** Pillow and python-multipart were added in Sprint 4; the frontend Clerk SDK was migrated to `@clerk/react` 6.18.8 with Core 3 authentication gates after the old SDK was blocked at sign-in. Frontend lint, 25 tests, build and dependency audit passed after the upgrade. The spec asks for a human dependency review note.
 
 </details>
