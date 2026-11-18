@@ -29,6 +29,29 @@ export async function createTruck(truckPayload) {
 }
 
 /**
+ * @function updateTruck
+ * @description Change a truck's plate, description, capacity or retire it.
+ * @param {string} truckIdentifier Truck id
+ * @param {Object} changes Fields to change
+ * @returns {Promise<Object>}
+ */
+export async function updateTruck(truckIdentifier, changes) {
+  const response = await apiClient.patch(`/trucks/${truckIdentifier}`, changes)
+  return response.data
+}
+
+/**
+ * @function listMaintenance
+ * @description A truck's maintenance history, newest first.
+ * @param {string} truckIdentifier Truck id
+ * @returns {Promise<Array<Object>>}
+ */
+export async function listMaintenance(truckIdentifier) {
+  const response = await apiClient.get(`/trucks/${truckIdentifier}/maintenance`)
+  return response.data
+}
+
+/**
  * @function startMaintenance
  * @description Put an available truck into maintenance.
  * @param {string} truckIdentifier Truck id

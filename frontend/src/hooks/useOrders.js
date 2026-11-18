@@ -7,7 +7,7 @@
 // 2. Mutations reload the list
 
 import { useCallback, useEffect } from 'react'
-import { cancelOrder, createOrder, listOrders } from '../services/orderService'
+import { cancelOrder, createOrder, listOrders, updateOrder } from '../services/orderService'
 import { loadIntoStore } from '../shared/utils/collectionLoader'
 import { useOrderStore } from '../store/orderStore'
 import { useRecordActions } from './useRecordActions'
@@ -35,6 +35,7 @@ export function useOrders() {
     actionFailure,
     isBusy,
     submitOrder: (orderPayload) => runAction(() => createOrder(orderPayload)),
+    submitUpdate: (orderIdentifier, changes) => runAction(() => updateOrder(orderIdentifier, changes)),
     submitCancel: (orderIdentifier, cancelReason) =>
       runAction(() => cancelOrder(orderIdentifier, cancelReason)),
   }

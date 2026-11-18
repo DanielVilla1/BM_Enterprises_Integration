@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compactPayload, isUploadTooLarge, localInputToIso, toLocalInputValue } from './forms'
+import { buildChanges, compactPayload, isUploadTooLarge, localInputToIso, toLocalInputValue } from './forms'
 
 describe('compactPayload', () => {
   it('drops empty and whitespace-only values and trims the rest', () => {
@@ -28,5 +28,23 @@ describe('upload and date helpers', () => {
     const iso = localInputToIso('2026-11-14T09:05')
     expect(iso.endsWith('Z')).toBe(true)
     expect(new Date(iso).getTime()).toBe(new Date(2026, 10, 14, 9, 5).getTime())
+  })
+})
+
+describe('buildChanges', () => {
+  const record = { name: 'Acme', address: null, weight: 48.5, phone: '123' }
+
+  it('returns only changed fields and turns empty text into null', () => {
+    const changes = buildChanges(record, { name: 'Acme', address: '  Plant Road ', phone: '' }, ['name', 'address', 'phone'])
+    expect(changes).toEqual({ address: 'Plant Road', phone: null })
+  })
+
+  it('compares numeric fields as numbers', () => {
+    expect(buildChanges(record, { weight: '48.50' }, ['weight'], ['weight'])).toEqual({})
+    expect(buildChanges(record, { weight: '60' }, ['weight'], ['weight'])).toEqual({ weight: 60 })
+  })
+
+  it('ignores fields missing from the form', () => {
+    expect(buildChanges(record, {}, ['name'])).toEqual({})
   })
 })

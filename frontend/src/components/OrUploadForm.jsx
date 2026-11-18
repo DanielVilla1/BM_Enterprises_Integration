@@ -3,12 +3,13 @@
 // Inputs: label, disabled flag, onUpload callback (props only)
 // Returns: small form markup
 // Flow:
-// 1. File input limited to JPEG and PNG; size hint shown
-// 2. Oversized files are caught before sending; the backend still enforces the rule
+// 1. File input limited to JPEG and PNG; opens the camera on phones
+// 2. Oversized or missing files are caught before sending; the backend still enforces the rule
 // 3. The parent performs the upload
 
 import { useState } from 'react'
 import { isUploadTooLarge } from '../shared/utils/forms'
+import { Icon } from './Icon'
 
 /**
  * @function OrUploadForm
@@ -20,7 +21,7 @@ export function OrUploadForm({ label, disabled, onUpload }) {
   const [localProblem, setLocalProblem] = useState('')
   return (
     <form
-      className="space-y-1"
+      className="space-y-2"
       onSubmit={async (event) => {
         event.preventDefault()
         const formElement = event.currentTarget
@@ -37,24 +38,18 @@ export function OrUploadForm({ label, disabled, onUpload }) {
         if (await onUpload(chosenFile)) formElement.reset()
       }}
     >
-      <label className="block text-sm font-medium">
-        {label}
-        <input
-          name="file"
-          type="file"
-          accept="image/jpeg,image/png"
-          capture="environment"
-          className="mt-1 block text-sm"
-        />
-      </label>
-      <p className="text-xs text-gray-600">JPEG or PNG, up to 5 MB.</p>
+      <fieldset className="fieldset">
+        <legend className="fieldset-legend">{label}</legend>
+        <input name="file" type="file" accept="image/jpeg,image/png" capture="environment" className="file-input file-input-sm w-full" />
+        <p className="label text-xs">JPEG or PNG, up to 5 MB. Location data is removed automatically.</p>
+      </fieldset>
       {localProblem ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-error">
           {localProblem}
         </p>
       ) : null}
-      <button type="submit" disabled={disabled} className="rounded bg-gray-900 px-3 py-1 text-sm text-white">
-        Upload
+      <button type="submit" disabled={disabled} className="btn btn-primary btn-sm">
+        <Icon name="upload" className="h-4 w-4" /> Upload
       </button>
     </form>
   )

@@ -29,6 +29,18 @@ export async function createOrder(orderPayload) {
 }
 
 /**
+ * @function updateOrder
+ * @description Change a pending order.
+ * @param {string} orderIdentifier Order id
+ * @param {Object} changes Fields to change
+ * @returns {Promise<Object>}
+ */
+export async function updateOrder(orderIdentifier, changes) {
+  const response = await apiClient.patch(`/delivery-orders/${orderIdentifier}`, changes)
+  return response.data
+}
+
+/**
  * @function cancelOrder
  * @description Cancel a pending delivery order.
  * @param {string} orderIdentifier Order id

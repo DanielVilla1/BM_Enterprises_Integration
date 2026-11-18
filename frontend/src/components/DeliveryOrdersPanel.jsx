@@ -1,20 +1,106 @@
 // ===== AI GENERATED: DeliveryOrdersPanel =====
-// Purpose: Delivery order list, encode form and cancel action
+// Purpose: Delivery orders: search, filter, record, edit and cancel
 // Inputs: list state, clients, permissions and callbacks (props only)
-// Returns: panel markup
+// Returns: page markup
 // Flow:
-// 1. List orders with status and weight
-// 2. Encode form only when writing is allowed; clients come from props
-// 3. Pending orders can be cancelled with a reason
+// 1. Tabs and search narrow the list; each row shows date, client, route, weight and status
+// 2. New and edit open in a dialog; cancelling asks for a reason
+// 3. Success shows a toast; failures stay visible in the dialog
 
-import { compactPayload } from '../shared/utils/forms'
+import { useState } from 'react'
+import { useToast } from '../hooks/useToast'
+import { buildChanges, compactPayload, toLocalInputValue } from '../shared/utils/forms'
+import { dateBlock, formatTons } from '../shared/utils/formatting'
+import { ORDER_TABS, countOrdersByTab, filterOrders } from '../shared/utils/operations'
+import { EmptyState } from './EmptyState'
 import { ErrorNotice } from './ErrorNotice'
-import { ReasonForm } from './ReasonForm'
+import { FilterTabs } from './FilterTabs'
+import { FormField } from './FormField'
+import { Icon } from './Icon'
+import { ListSkeleton } from './ListSkeleton'
+import { ModalDialog } from './ModalDialog'
+import { PageHeader } from './PageHeader'
+import { ReasonDialog } from './ReasonDialog'
+import { RowMenu } from './RowMenu'
+import { SearchField } from './SearchField'
+import { StatusBadge } from './StatusBadge'
+import { Toast } from './Toast'
+
+const EDITABLE_FIELDS = ['client_reference', 'pickup_location', 'delivery_location', 'scheduled_date', 'total_weight_tons', 'notes']
+
+/**
+ * @function OrderForm
+ * @description Create or edit form for an order.
+ * @param {Object} componentProps Props: clients, order, isBusy, failure, onSubmit, onClose
+ * @returns {import('react').ReactElement}
+ */
+function OrderForm({ clients, order, isBusy, failure, onSubmit, onClose }) {
+  const isEdit = order !== null
+  const today = toLocalInputValue(new Date()).slice(0, 10)
+  const clientName = clients.find((clientRecord) => clientRecord.client_id === order?.client_id)?.name ?? ''
+  return (
+    <form
+      className="grid gap-x-4 sm:grid-cols-2"
+      onSubmit={async (event) => {
+        event.preventDefault()
+        await onSubmit(Object.fromEntries(new FormData(event.currentTarget)))
+      }}
+    >
+      <FormField label="Client" className="sm:col-span-2">
+        {isEdit ? (
+          <input className="input w-full" value={clientName} disabled readOnly />
+        ) : (
+          <select name="client_id" required defaultValue="" className="select w-full">
+            <option value="" disabled>
+              Choose a client
+            </option>
+            {clients
+              .filter((clientRecord) => clientRecord.is_active)
+              .map((clientRecord) => (
+                <option key={clientRecord.client_id} value={clientRecord.client_id}>
+                  {clientRecord.name}
+                </option>
+              ))}
+          </select>
+        )}
+      </FormField>
+      <FormField label="Pickup location" className="sm:col-span-2">
+        <input name="pickup_location" required minLength={3} maxLength={300} defaultValue={order?.pickup_location} className="input w-full" placeholder="Where the steel is loaded" />
+      </FormField>
+      <FormField label="Delivery location" className="sm:col-span-2">
+        <input name="delivery_location" required minLength={3} maxLength={300} defaultValue={order?.delivery_location} className="input w-full" placeholder="Where it is delivered" />
+      </FormField>
+      <FormField label="Scheduled date">
+        <input name="scheduled_date" type="date" required min={isEdit ? undefined : today} defaultValue={order?.scheduled_date} className="input w-full" />
+      </FormField>
+      <FormField label="Weight (metric tons)">
+        <input name="total_weight_tons" type="number" required min="0.001" max="100000" step="0.001" defaultValue={order?.total_weight_tons} className="input w-full" />
+      </FormField>
+      <FormField label="Client reference (optional)">
+        <input name="client_reference" maxLength={64} defaultValue={order?.client_reference ?? ''} className="input w-full" placeholder="Their PO number" />
+      </FormField>
+      <FormField label="Notes (optional)">
+        <input name="notes" maxLength={1000} defaultValue={order?.notes ?? ''} className="input w-full" />
+      </FormField>
+      <div className="sm:col-span-2">
+        <ErrorNotice failure={failure} />
+      </div>
+      <div className="modal-action sm:col-span-2">
+        <button type="button" className="btn btn-ghost" onClick={onClose}>
+          Back
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={isBusy}>
+          {isEdit ? 'Save changes' : 'Record order'}
+        </button>
+      </div>
+    </form>
+  )
+}
 
 /**
  * @function DeliveryOrdersPanel
  * @description Pure UI for delivery orders.
- * @param {Object} componentProps Props: loadState, orders, clients, failure, actionFailure, isBusy, canWrite, onCreate, onCancel
+ * @param {Object} componentProps Props: loadState, orders, clients, failure, actionFailure, isBusy, canWrite, onCreate, onUpdate, onCancel
  * @returns {import('react').ReactElement}
  */
 export function DeliveryOrdersPanel({
@@ -26,73 +112,149 @@ export function DeliveryOrdersPanel({
   isBusy,
   canWrite,
   onCreate,
+  onUpdate,
   onCancel,
 }) {
+  const [tabKey, setTabKey] = useState('open')
+  const [query, setQuery] = useState('')
+  const [formState, setFormState] = useState(null)
+  const [reasonRequest, setReasonRequest] = useState(null)
+  const { toast, showToast } = useToast()
+
   const clientNames = Object.fromEntries(clients.map((clientRecord) => [clientRecord.client_id, clientRecord.name]))
-  const activeClients = clients.filter((clientRecord) => clientRecord.is_active)
+  const visibleOrders = filterOrders(orders, clients, tabKey, query)
+  const counts = countOrdersByTab(orders)
+  const modalIsOpen = formState !== null || reasonRequest !== null
+
+  const submitForm = async (values) => {
+    const editing = formState.order
+    let succeeded
+    if (editing) {
+      const changes = buildChanges(editing, values, EDITABLE_FIELDS, ['total_weight_tons'])
+      succeeded = Object.keys(changes).length === 0 ? true : await onUpdate(editing.order_id, changes)
+    } else {
+      succeeded = await onCreate(compactPayload({ ...values, total_weight_tons: Number(values.total_weight_tons) }))
+    }
+    if (succeeded) {
+      setFormState(null)
+      showToast(editing ? 'Order updated' : 'Order recorded')
+    }
+  }
+
   return (
-    <section className="space-y-4">
-      <h2 className="text-xl font-semibold">Delivery orders</h2>
+    <section className="space-y-5">
+      <PageHeader
+        title="Delivery orders"
+        subtitle={`${orders.length} orders recorded`}
+        actions={
+          canWrite ? (
+            <button type="button" className="btn btn-primary" onClick={() => setFormState({ order: null })}>
+              <Icon name="plus" className="h-4 w-4" /> New order
+            </button>
+          ) : null
+        }
+      />
       <ErrorNotice failure={failure} />
-      {loadState === 'loading' ? <p role="status">Loading…</p> : null}
-      <ul className="divide-y rounded border">
-        {orders.map((orderRecord) => (
-          <li key={orderRecord.order_id} className="space-y-1 p-2">
-            <div className="flex flex-wrap justify-between gap-2">
-              <span className="font-medium">
-                {clientNames[orderRecord.client_id] ?? 'Client'} · {orderRecord.scheduled_date}
-              </span>
-              <span className="font-mono text-sm">{orderRecord.status}</span>
-            </div>
-            <p className="text-sm">
-              {orderRecord.pickup_location} → {orderRecord.delivery_location} · {orderRecord.total_weight_tons} t
-            </p>
-            {canWrite && orderRecord.status === 'PENDING' ? (
-              <ReasonForm
-                label="Cancel order"
-                disabled={isBusy}
-                onSubmit={(reasonText) => onCancel(orderRecord.order_id, reasonText)}
-              />
-            ) : null}
-          </li>
-        ))}
-      </ul>
-      {canWrite ? (
-        <form
-          className="grid gap-2 sm:grid-cols-2"
-          onSubmit={async (event) => {
-            event.preventDefault()
-            const formElement = event.currentTarget
-            const values = Object.fromEntries(new FormData(formElement))
-            const payload = compactPayload({
-              ...values,
-              total_weight_tons: Number(values.total_weight_tons),
-            })
-            if (await onCreate(payload)) formElement.reset()
-          }}
-        >
-          <select name="client_id" required aria-label="Client" className="rounded border px-2 py-1">
-            <option value="">Select client</option>
-            {activeClients.map((clientRecord) => (
-              <option key={clientRecord.client_id} value={clientRecord.client_id}>
-                {clientRecord.name}
-              </option>
-            ))}
-          </select>
-          <input name="client_reference" maxLength={64} placeholder="Client reference" aria-label="Client reference" className="rounded border px-2 py-1" />
-          <input name="pickup_location" required minLength={3} maxLength={300} placeholder="Pickup location" aria-label="Pickup location" className="rounded border px-2 py-1" />
-          <input name="delivery_location" required minLength={3} maxLength={300} placeholder="Delivery location" aria-label="Delivery location" className="rounded border px-2 py-1" />
-          <input name="scheduled_date" type="date" required aria-label="Scheduled date" className="rounded border px-2 py-1" />
-          <input name="total_weight_tons" type="number" required min="0.001" step="0.001" placeholder="Weight (tons)" aria-label="Weight in tons" className="rounded border px-2 py-1" />
-          <input name="notes" maxLength={1000} placeholder="Notes" aria-label="Notes" className="rounded border px-2 py-1 sm:col-span-2" />
-          <button type="submit" disabled={isBusy} className="rounded bg-gray-900 px-3 py-1 text-white sm:col-span-2">
-            Record order
-          </button>
-          <div className="sm:col-span-2">
-            <ErrorNotice failure={actionFailure} />
-          </div>
-        </form>
+      {!modalIsOpen ? <ErrorNotice failure={actionFailure} /> : null}
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FilterTabs tabs={ORDER_TABS} activeKey={tabKey} counts={counts} onChange={setTabKey} label="Order status" />
+        <SearchField value={query} onChange={setQuery} placeholder="Search client, reference, place" />
+      </div>
+
+      {loadState === 'loading' && orders.length === 0 ? <ListSkeleton /> : null}
+      {loadState !== 'loading' && visibleOrders.length === 0 ? (
+        <EmptyState
+          icon="clipboard"
+          title={orders.length === 0 ? 'No delivery orders yet' : 'No orders match'}
+          description={
+            orders.length === 0
+              ? 'Record the first order from the steel company to start planning trips.'
+              : 'Try another tab or clear the search.'
+          }
+          action={
+            canWrite && orders.length === 0 ? (
+              <button type="button" className="btn btn-primary btn-sm" onClick={() => setFormState({ order: null })}>
+                Record an order
+              </button>
+            ) : null
+          }
+        />
       ) : null}
+
+      {visibleOrders.length > 0 ? (
+        <ul className="list card card-border bg-base-100">
+          {visibleOrders.map((orderRecord) => {
+            const { month, day } = dateBlock(orderRecord.scheduled_date)
+            const menuItems =
+              canWrite && orderRecord.status === 'PENDING'
+                ? [
+                    { label: 'Edit order', onSelect: () => setFormState({ order: orderRecord }) },
+                    {
+                      label: 'Cancel order',
+                      danger: true,
+                      onSelect: () =>
+                        setReasonRequest({
+                          title: 'Cancel this order?',
+                          description: 'The order stays on record as cancelled.',
+                          confirmLabel: 'Cancel order',
+                          onConfirm: async (reason) => {
+                            const succeeded = await onCancel(orderRecord.order_id, reason)
+                            if (succeeded) showToast('Order cancelled')
+                            return succeeded
+                          },
+                        }),
+                    },
+                  ]
+                : []
+            return (
+              <li key={orderRecord.order_id} className="list-row items-center">
+                <div className="flex h-12 w-12 flex-col items-center justify-center rounded-box bg-base-200 leading-none">
+                  <span className="text-[10px] font-bold text-primary">{month}</span>
+                  <span className="text-lg font-bold">{day}</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{clientNames[orderRecord.client_id] ?? 'Client'}</span>
+                    {orderRecord.client_reference ? (
+                      <span className="badge badge-ghost badge-sm">{orderRecord.client_reference}</span>
+                    ) : null}
+                  </div>
+                  <p className="truncate text-sm text-base-content/70">
+                    {orderRecord.pickup_location} → {orderRecord.delivery_location}
+                  </p>
+                  {orderRecord.cancellation_reason ? (
+                    <p className="truncate text-xs text-base-content/50">Cancelled: {orderRecord.cancellation_reason}</p>
+                  ) : null}
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <span className="font-semibold tabular-nums">{formatTons(orderRecord.total_weight_tons)}</span>
+                  <StatusBadge kind="order" status={orderRecord.status} />
+                </div>
+                {menuItems.length > 0 ? <RowMenu label="Order actions" items={menuItems} /> : <span className="w-8" />}
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
+
+      <ModalDialog
+        title={formState?.order ? 'Edit order' : 'Record a delivery order'}
+        isOpen={formState !== null}
+        onClose={() => setFormState(null)}
+        wide
+      >
+        <OrderForm
+          clients={clients}
+          order={formState?.order ?? null}
+          isBusy={isBusy}
+          failure={actionFailure}
+          onSubmit={submitForm}
+          onClose={() => setFormState(null)}
+        />
+      </ModalDialog>
+      <ReasonDialog request={reasonRequest} isBusy={isBusy} failure={actionFailure} onClose={() => setReasonRequest(null)} />
+      <Toast toast={toast} />
     </section>
   )
 }

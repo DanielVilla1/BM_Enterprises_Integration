@@ -62,6 +62,30 @@ export async function runTripAction(tripIdentifier, actionName) {
 }
 
 /**
+ * @function changeTripCrew
+ * @description Replace the driver and helpers of a trip that has not departed.
+ * @param {string} tripIdentifier Trip id
+ * @param {{driver_id: string, helper_ids: Array<string>}} crew New crew
+ * @returns {Promise<Object>}
+ */
+export async function changeTripCrew(tripIdentifier, crew) {
+  const response = await apiClient.put(`/trips/${tripIdentifier}/crew`, crew)
+  return response.data
+}
+
+/**
+ * @function replaceTripTruck
+ * @description Swap the truck of a trip (breakdown or maintenance).
+ * @param {string} tripIdentifier Trip id
+ * @param {{replacement_truck_id: string, reason: string, original_truck_needs_maintenance: boolean}} replacement
+ * @returns {Promise<Object>}
+ */
+export async function replaceTripTruck(tripIdentifier, replacement) {
+  const response = await apiClient.post(`/trips/${tripIdentifier}/truck-replacement`, replacement)
+  return response.data
+}
+
+/**
  * @function closeTrip
  * @description Cancel (before departure) or fail (after departure) a trip.
  * @param {string} tripIdentifier Trip id

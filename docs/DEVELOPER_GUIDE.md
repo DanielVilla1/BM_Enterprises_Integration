@@ -248,9 +248,19 @@ Auth: bearer Clerk session token. Source of truth: `backend/openapi.snapshot.jso
 
 **Sprint 6:** reports and dashboards (spec 10.1, including "completed without a stamped copy" spot-check flag and ORs awaiting receipt), audit-log viewer, security review, load test (the plan assumes ~30 trips/day, ~20 users, ~10 req/s peak), staging validation.
 
-**Screens not built:** employee/role/account-link admin, driver license entry, crew change and truck replacement on the Dispatch page, audit-log and permission-matrix viewers, and the **PWA** (manifest, service worker, installability, mobile tuning) for drivers.
+**Screens not built:** the real Expenses, Payroll, Advances, Billing and Reports screens (design previews exist, see 13a), and the **PWA** (manifest, service worker, installability) for drivers. The People, Audit, Permissions, crew-change and truck-replacement screens now exist.
 
 **Platform and operations:** hosting and deploy pipeline (D12), Clerk/Supabase production plans (D11), MFA and recovery for Owner/HR/Accounting (D17), scheduled receipt-bucket backup, scheduling `reconcile_clerk` (e.g. hourly), HTTPS scan, decide whether `/docs` is public in production, data-privacy incident procedure and region (spec 11.3), branch protection and required reviewers on GitHub, a shared rate-limit store if more than one server process runs.
+
+## 13a. Frontend design system (daisyUI + Tailwind)
+
+- **Stack:** Tailwind 4 with **daisyUI 5.8.1** (pinned). Two custom themes live in `frontend/src/index.css`: `bm-dark` (bold dark navy + orange, default) and `bm-light`. The shell's sun/moon button toggles them and remembers the choice (`shared/utils/theme.js`, `store/themeStore.js`).
+- **Shell:** `components/AppShell.jsx` is a responsive frame: sidebar on large screens, slide-in menu plus a bottom dock on phones. Pages, their groups and the capability each needs are declared once in `shared/utils/navigation.js`; pages marked `preview: true` show a "Soon" badge.
+- **Building blocks** (all pure components): `PageHeader`, `StatCard`, `StatusBadge` (labels and colours from `shared/utils/statusLabels.js`), `FilterTabs`, `SearchField`, `FormField`, `ModalDialog`, `ReasonDialog`, `RowMenu`, `Toast` (+ `hooks/useToast`), `EmptyState`, `ListSkeleton`, `ErrorNotice`, `Icon` (inline SVGs, no icon package).
+- **Live screens:** Dashboard, Dispatch board (assign, clear, change crew, replace truck, cancel, fail, correct), Delivery orders (edit/cancel), Clients, Fleet (edit, maintenance history), My trips, People (roles, sign-in link, activation, driver licenses), Audit log, Permissions, My account. Page containers are in `src/AppPages.jsx`; `src/App.jsx` is the root.
+- **Design previews (not real yet):** Trip expenses, Payroll, Cash advances, Billing and Reports (`components/*Preview.jsx`) use invented data from `shared/mockups/sampleData.js` behind a "Design preview" banner. Replace each with a real screen when Sprints 5 and 6 land, and remove its preview entry.
+- **Design preview page:** run `npm run dev` and open `http://localhost:5173/preview.html`. It renders the real shell and every screen with sample data (no Clerk or backend), with role and state pickers (normal, loading, error, empty). Resize the window to test phones. It lives in `frontend/design-preview/` and is not part of the production build.
+- **Rules:** keep components pure (props in, callbacks out); put new colours in the theme, not in components; every new status needs a label and tone in `statusLabels.js`; add unit tests for new helpers in `shared/utils/`.
 
 ## 14. Gotchas found while building
 

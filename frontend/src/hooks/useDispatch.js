@@ -10,9 +10,11 @@ import { useCallback, useEffect } from 'react'
 import { correctConfirmation, fetchOrDocumentUrl } from '../services/orService'
 import {
   assignTrip,
+  changeTripCrew,
   closeTrip,
   fetchDispatchResources,
   listTrips,
+  replaceTripTruck,
   runTripAction,
 } from '../services/tripService'
 import { loadIntoStore } from '../shared/utils/collectionLoader'
@@ -59,6 +61,9 @@ export function useDispatch() {
     submitClearance: (tripIdentifier) => runAction(() => runTripAction(tripIdentifier, 'clear-dispatch')),
     submitClose: (tripIdentifier, closeAction, closeReason) =>
       runAction(() => closeTrip(tripIdentifier, closeAction, closeReason)),
+    submitCrewChange: (tripIdentifier, crew) => runAction(() => changeTripCrew(tripIdentifier, crew)),
+    submitTruckReplacement: (tripIdentifier, replacement) =>
+      runAction(() => replaceTripTruck(tripIdentifier, replacement)),
     submitCorrection: (tripIdentifier, correctionReason) =>
       runAction(() => correctConfirmation(tripIdentifier, correctionReason)),
     openDocument: (tripIdentifier, documentIdentifier) =>

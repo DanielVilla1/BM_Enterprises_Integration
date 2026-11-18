@@ -8,6 +8,7 @@
 // 3. Confirming completes the trip; there is no dispatcher approval
 
 import { localInputToIso, toLocalInputValue } from '../shared/utils/forms'
+import { Icon } from './Icon'
 
 /**
  * @function ConfirmReceiptForm
@@ -18,25 +19,26 @@ import { localInputToIso, toLocalInputValue } from '../shared/utils/forms'
 export function ConfirmReceiptForm({ disabled, onConfirm }) {
   return (
     <form
-      className="flex flex-wrap items-end gap-2"
+      className="space-y-2"
       onSubmit={async (event) => {
         event.preventDefault()
         const receivedAt = new FormData(event.currentTarget).get('received_at')
         await onConfirm(localInputToIso(receivedAt))
       }}
     >
-      <label className="text-sm">
-        Steel company received the OR at
+      <fieldset className="fieldset">
+        <legend className="fieldset-legend">When did the steel company receive the OR?</legend>
         <input
           name="received_at"
           type="datetime-local"
           required
           defaultValue={toLocalInputValue(new Date())}
-          className="mt-1 block rounded border px-2 py-1"
+          className="input w-full"
         />
-      </label>
-      <button type="submit" disabled={disabled} className="rounded bg-gray-900 px-3 py-1 text-white">
-        Confirm receipt
+        <p className="label text-xs">Confirming completes the trip and frees the truck and crew for the next dispatch.</p>
+      </fieldset>
+      <button type="submit" disabled={disabled} className="btn btn-primary btn-sm">
+        <Icon name="check" className="h-4 w-4" /> Confirm receipt
       </button>
     </form>
   )
