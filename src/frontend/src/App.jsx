@@ -67,7 +67,13 @@ function Workspace() {
     )
   }
   if (loadState !== 'ready')
-    return <FullPageNotice busy title="Loading your workspace" message="One moment…" />
+    return (
+      <FullPageNotice
+        busy
+        title="Connecting to your workspace"
+        message="The first connection can take up to 90 seconds. Please keep this page open."
+      />
+    )
 
   const pages = visibleNavigation(account.capabilities)
   const shownPage = resolveActivePage(pages, activePage)
