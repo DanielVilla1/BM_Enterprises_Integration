@@ -59,6 +59,15 @@ def _order(row: DeliveryOrderRow) -> DeliveryOrder:
 
 
 class ClientRepository:
+    # AI MODIFIED: Batch display-only financial/report lookups.
+    def get_many(self, identifiers: list[UUID]) -> list[Client]:
+        if not identifiers:
+            return []
+        return [
+            _client(row)
+            for row in self._session.scalars(select(ClientRow).where(ClientRow.client_id.in_(identifiers)))
+        ]
+
     def __init__(self, session: Session) -> None:
         self._session = session
 
@@ -105,6 +114,16 @@ class ClientRepository:
 
 
 class DeliveryOrderRepository:
+    def get_many(self, identifiers: list[UUID]) -> list[DeliveryOrder]:
+        if not identifiers:
+            return []
+        return [
+            _order(row)
+            for row in self._session.scalars(
+                select(DeliveryOrderRow).where(DeliveryOrderRow.order_id.in_(identifiers))
+            )
+        ]
+
     def __init__(self, session: Session) -> None:
         self._session = session
 

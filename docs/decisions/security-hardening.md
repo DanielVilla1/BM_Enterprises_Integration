@@ -2,7 +2,7 @@
 
 [QA acceptance](../runbooks/qa.md) · [Verification](../runbooks/verification.md) · [Architecture](../architecture.md)
 
-**Review date: 18 November 2026.** Scope: rate-limit implementation, authenticated API/upload entry points, request size controls, JWT/role boundaries, private storage, response headers and dependency results. This is a focused developer review; it does not replace manual QA or hosting validation.
+**Review date: 18 November 2026.** Scope: the recorded rate-limit review plus Sprint 5–6 financial authorization, transaction/idempotency controls, private-data responses, presentation isolation and dependency results. This is a focused developer review; it does not replace manual QA or hosting validation.
 
 ## Findings addressed
 
@@ -12,11 +12,26 @@
 | Medium   | Separate record/count operations were non-atomic; rejected webhook traffic could keep growing event deques | Locked atomic admission; rejected requests add no events; total key/event memory caps; concurrent-admission and event-capacity regressions                  |
 | Medium   | Successful API requests and image-processing/storage attempts had no dedicated quotas                      | Per-peer and verified-employee API budgets; separate upload budgets before file decoding/storage; independent-account and upload regressions                |
 | Medium   | Trusting forwarding headers through the local Vite proxy could let a client choose its apparent address    | Shipped development launchers and container commands disable Uvicorn proxy headers by default; application quota keys never directly use forwarding headers |
-| Low      | Sensitive API responses lacked explicit cache/sniffing/frame restrictions                                  | API trace middleware adds no-store, nosniff, frame denial and no-referrer; success/throttle response regression                                             |
+| Low      | Sensitive API responses lacked explicit cache/sniffing/frame restrictions                                  | Problem-details/response-security middleware supplies no-store, nosniff, frame denial and no-referrer; success/throttle/financial regression checks         |
 
-Implementation: [limiter](../../src/backend/src/rate_limiter.py), [dependency gates](../../src/backend/src/providers.py), [upload route](../../src/backend/src/Controller/or_controller.py), [response middleware](../../src/backend/src/problem_details.py), [regression tests](../../src/backend/tests/test_rate_limits.py).
+Implementation: [limiter](../../src/backend/src/rate_limiter.py), [dependency gates](../../src/backend/src/providers.py), [upload route](../../src/backend/src/Controller/or_controller.py), [problem-details middleware](../../src/backend/src/problem_details.py), [response-security middleware](../../src/backend/src/response_security.py), [regression tests](../../src/backend/tests/test_rate_limits.py).
 
 JWT verification remains RS256-only with issuer, expiry, required claims and configured authorized-party checks. Local employee activation, capability grants, record ownership and trip state are enforced by the backend. Existing authentication, permission, OR-access, image-validation and PostgreSQL hardening tests remain part of the full suites. No authentication bypass was added for testing.
+
+## Financial and presentation controls
+
+| Boundary                     | Current protection / evidence                                                                                                                                                                                                            |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Function and property access | Separate read/write capabilities; explicit response DTOs; Owner expenses Full, Owner billing View and no Owner payroll-payment grant. Matrix inventory equals OpenAPI, including FastAPI included routers and conditional Helper grants. |
+| Ownership and independence   | Own crew records only; no self-/beneficiary/prior-contributor approval even with combined roles. Variance/hold release and unpaid-payroll reversal have additional independence checks.                                                  |
+| Financial integrity          | Decimal strings and fixed precision; immutable original earnings/rates; transaction lock, retry fingerprints and SQL uniqueness for earnings, active bills, repayments and reversals.                                                    |
+| Operational corrections      | Receipt correction holds dependent finance atomically. Financial generation follows successful receipt completion in a separate transaction.                                                                                             |
+| Data API                     | New finance tables are RLS-enabled with anon/authenticated grants revoked in migration 0005. Migration 0006 repairs missing grants in existing app databases and records expense contributors.                                           |
+| Presentation isolation       | Explicit CLI, local nonproduction host/environment guards, fictional labels and unlinked demo employees; authenticated demo-image access disabled outside development/test/presentation.                                                 |
+| Browser data                 | Financial API responses are no-store. Per-account stores clear prior-account snapshots; the service worker caches only a public allowlist, not identity/business data or writes.                                                         |
+| Query growth                 | Batched report facts/display directory; query-growth regression and separate local 30-trip/20-user load evidence.                                                                                                                        |
+
+See [financial regressions](../../src/backend/tests/test_finance_workflows.py), [presentation/concurrency checks](../../src/backend/tests/test_presentation_and_financial_controls.py), [readiness/query checks](../../src/backend/tests/test_financial_readiness_and_query_budget.py), and [load evidence](../runbooks/sprint-5-6-evidence/load-postgres.json). No real provider traffic, internet/TLS capacity or public-key live Supabase probe is certified by this local evidence.
 
 ## Request budgets
 
@@ -45,10 +60,12 @@ The repository backend launcher defaults to `--no-proxy-headers`. An operator ca
 
 ## Dependency and hosting follow-up
 
-The frontend production-only npm audit returned **0 vulnerabilities** on the review date. The full development audit still reports **5 High findings** rooted in `picomatch`; the reviewed advisory lists no patched version. The automatic npm suggestion changes major Vite/Vitest versions, so it was not applied as a security fix. Track this as an open build-tool release decision; never use the Vite development server as production hosting. See the [upstream advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf).
+The Sprint 5–6 frontend production-only npm audit reported **0 vulnerabilities** and the backend requirements audit reported **no known vulnerabilities** on 18 November 2026. This is audit evidence, not a guarantee against undiscovered vulnerabilities. [Recorded results](../runbooks/sprint-5-6-evidence/verification.md) include scope and limits.
 
-Record the backend dependency audit and automated results in [verification](../runbooks/verification.md). Keep `.env`, credentials, real JWTs, sign-in tickets and development-account CSV files out of QA evidence and Git.
+A pre-Sprint-5 full development audit recorded five High findings rooted in `picomatch` and did not force the suggested major tooling change. Treat that as historical toolchain evidence, not a refreshed count or current claim that no patch exists. Rerun the full development audit and review upstream guidance before release; see [historical verification](../runbooks/verification.md#historical-record-before-sprint-56).
+
+Keep `.env`, credentials, real JWTs, sign-in tickets and account CSV files out of QA evidence and Git. Financial command payload/reference history is stored in the private append-only audit trail; Owner alone can read that audit API. Do not enter unrelated personal data or secrets into financial reasons/evidence references.
 
 Before release, QA must still verify real private-bucket upload/signing/expiry, phone usability, real inbox verification, backups/restores, rollback, and the host's TLS, frontend CSP/security headers, database isolation, monitoring and trusted-proxy/shared-limiter configuration. Disable public API docs in production unless approved. Compose/ngrok/Vite commands remain development tooling.
 
-**Release status: pending QA and hosting design.** Financial modules remain previews and are excluded from real financial processing until implemented and reviewed.
+**Release status: pending human review, manual/staging QA, D16 and hosting approval.** Core financial services persist on this branch; DEMO data is fictional. [Policy coverage](financial-policies.md#implementation-coverage-and-limits) lists unsupported correction/refund flows. No real-payroll or production approval is inferred from local checks.

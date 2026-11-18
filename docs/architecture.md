@@ -21,7 +21,7 @@ BM_Enterprises_Integration/
 │   └── archive/            Superseded proposal; historical reference only
 ├── tools/
 │   ├── README.md           Maintenance and launch commands
-│   └── scripts/            Backend module launcher and documentation checker
+│   └── scripts/            Backend launcher, docs checker and isolated PostgreSQL verifier
 ├── src/
 │   ├── backend/            FastAPI, Python dependencies, migrations and tests
 │   └── frontend/           React/Vite, npm dependencies and frontend tests
@@ -35,7 +35,7 @@ BM_Enterprises_Integration/
 └── .gitignore               Git exclusions
 ```
 
-Local-only folders such as `.venv/`, `node_modules/`, `dist/`, caches and `.git/` are not application source. Dependencies and build output belong inside the relevant application directory. The existing root `.venv/` contains workstation tools, local database files and private development-account records; it is ignored and must not be published.
+Local-only folders such as `.venv/`, `node_modules/`, `dist/`, caches and `.git/` are not application source. Dependencies and build output belong inside the relevant application directory. Any ignored workstation helper, virtual environment, database or private development-account file is local-only; supported setup uses the tracked launch commands and configuration templates.
 
 ### Backend: business rules and persistence
 
@@ -59,7 +59,9 @@ src/backend/
 │   ├── providers.py         Dependency wiring and capability gates
 │   ├── problem_details.py   Shared API error format
 │   ├── rate_limiter.py      Shared request-rate control
-│   └── request_limits.py    Request body limits
+│   ├── request_limits.py    Request body limits
+│   ├── response_security.py Private-response headers
+│   └── openapi_contract.py  Stable RFC 9457 error schema
 ├── migrations/versions/     Versioned database changes
 ├── scripts/                 Owner bootstrap, reconciliation and API export
 ├── tests/                   Backend unit, integration and contract tests
@@ -79,7 +81,7 @@ src/frontend/
 │   ├── main.jsx             Browser entry point
 │   ├── App.jsx              Session gate and workspace composition
 │   ├── index.css            Global theme and Tailwind entry
-│   ├── pages/AppPages.jsx   Joins hooks to feature screens
+│   ├── pages/               AppPages.jsx + lazy FinancePage.jsx containers
 │   ├── components/          Feature-specific presentation
 │   │   ├── account/         Current employee profile
 │   │   ├── administration/  People, permissions and audit screens
@@ -89,8 +91,8 @@ src/frontend/
 │   │   ├── fleet/           Trucks and maintenance
 │   │   ├── orders/          Delivery orders
 │   │   ├── trips/           Crew progress, OR upload and receipt forms
-│   │   ├── finance/         Financial preview screens
-│   │   └── reports/         Reports preview
+│   │   ├── finance/         Persistent finance panels plus isolated design references
+│   │   └── reports/         Persistent role-scoped reports plus design reference
 │   ├── hooks/               Loading, action orchestration and UI lifecycle
 │   ├── services/            Feature API clients
 │   ├── store/               Zustand state by feature
@@ -102,6 +104,7 @@ src/frontend/
 ├── tests/
 │   ├── unit/                Pure-helper regression tests
 │   └── components/          Role-specific screen rendering tests
+├── public/                  Manifest, offline-help worker, icons and public help page
 ├── design-preview/          Isolated sample-data preview harness
 ├── index.html               Main Vite HTML entry
 ├── preview.html             Sample preview HTML entry
@@ -197,7 +200,7 @@ flowchart TB
 | `migrations/`                     | Versioned schema, seeds, constraints and lockdown             | Editing already applied migration history      |
 | `tests/`                          | Contract, ownership, lifecycle, retries and database controls | Real personal data or live account credentials |
 
-A trip references one order/truck and retained crew entries. OR documents and receipt fields belong to trips. Replacement records preserve original/replacement identities. Order and truck state is derived after changes. Audit records are append-only. Prospective financial records need separate models; do not overload operational statuses or add money calculations to controllers.
+A trip references one order/truck and retained crew entries. OR documents and receipt fields belong to trips. Replacement records preserve original/replacement identities. Order and truck state is derived after changes. Audit records are append-only. Financial models and ledgers are separate from operational status; see the financial implementation map below. Do not add money calculations to controllers.
 
 </details>
 
@@ -267,10 +270,74 @@ flowchart LR
 <details>
 <summary><strong>Directories, conventions and implementation notes</strong></summary>
 
-For finance: first add typed domain values and fixed-precision persistence, then contracts/repositories, transactional services, explicit DTOs/controllers, permission checks, migrations and regression tests; finally service/hook/store/screen integration. Implement [financial policies](decisions/financial-policies.md) as versioned configuration/ledger rules, not UI-only branches.
+For changes to finance, extend the existing typed values, fixed-precision persistence, ports, transactional services, explicit DTOs, capability checks and regression tests; update the corresponding frontend service/hook/store/screen integration. Implement [financial policies](decisions/financial-policies.md) as versioned configuration/ledger rules, not UI-only branches.
 
-Test changed rules before broad formatting and preserve an API snapshot baseline. No API response shape changed in this workflow correction, so the snapshot should remain unchanged. PostgreSQL checks must use a dedicated test database because the suite recreates its public schema.
+Test changed rules before broad formatting and preserve an API snapshot baseline. Financial routes and response shapes are included in the committed OpenAPI snapshot; regenerate it when changing the API. PostgreSQL checks must use a dedicated test database because the suite recreates its public schema.
 
 Prettier is pinned as a development dependency following its [official installation guidance](https://prettier.io/docs/install.html); it is not bundled as a runtime application feature. Record runtime and development dependency audit results separately. Do not force an unrelated major downgrade to silence an audit finding.
 
 </details>
+
+## Financial implementation map
+
+Paths below are relative to the repository root. This extends the layer-level folder map above.
+
+| Area                   | Current files / responsibility                                                                                                                                                                                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain                 | `src/backend/src/Entity/finance.py` defines financial records, exact rounding and payroll periods; `finance_query.py` defines bounded batch facts.                                                                                                                      |
+| Ports and persistence  | `Contract/i_financial_repository.py`, `Repository/financial_repository.py`, and `Repository/finance_models.py` separate services from SQL. Existing order/client/document/employee/fleet/trip ports include bulk reads for reports.                                     |
+| Schema                 | `migrations/versions/0005_financial_ledgers.py` creates private financial tables; `migrations/financial_schema_0005.py` freezes its schema; `0006_financial_permissions_and_review_history.py` upgrades existing grants and contributor history.                        |
+| Commands               | `Service/financial_workflow.py` coordinates the financial lock, retry fingerprints, audit and transaction. Trip finance, payroll, advance and billing services own their business rules.                                                                                |
+| Queries                | `Service/finance_query_service.py` projects role-scoped workspaces/reports. Trip facts and display-only employee names are loaded in batches to avoid a database query per report row.                                                                                  |
+| HTTP contract          | `Controller/finance_controller.py`, `DTO/finance_dto.py`; `openapi_contract.py` normalizes documented RFC 9457 error responses across supported Python versions.                                                                                                        |
+| Headers                | `response_security.py` and `problem_details.py` provide the configured no-store, content-sniffing/frame/referrer controls and traceable errors.                                                                                                                         |
+| Frontend               | `pages/FinancePage.jsx` loads lazily from `AppPages.jsx`; `components/finance/*Panel.jsx` and `components/reports/ReportsPanel.jsx` display persistent DTOs.                                                                                                            |
+| Frontend orchestration | `hooks/useFinanceWorkspace.js`, `services/financeService.js`, `store/financeStores.js` and `shared/utils/finance.js` handle account-scoped loading, strict payloads and retained retry keys.                                                                            |
+| Demonstration          | `scripts/seed_presentation.py` validates a local nonproduction destination; `Repository/presentation_seed_repository.py` commits a repeatable fictional seed transaction. Demo images use `Infrastructure/Imaging/presentation_document.py`, not live Supabase uploads. |
+| Installation support   | `src/frontend/public/manifest.webmanifest`, `service-worker.js`, `offline.html`, `icons/`, and `src/shared/services/offlineService.js`. Only production builds register the public offline-help worker.                                                                 |
+| Verification           | Financial workflow, migration, presentation, readiness/query-growth, permission-matrix and load tests; `tools/scripts/verify_postgres.py` creates/removes a local scratch database.                                                                                     |
+
+The financial tables are `finance_lock`, `expense_sheets`, `earning_rates`, `trip_financials`, `earnings`, `payrolls`, `pay_statements`, `pay_adjustments`, `advances`, `advance_movements`, `advance_delegations`, `invoices`, `invoice_lines`, `financial_payments` and `financial_operations`. Monetary columns use fixed precision; a unique employee/trip key protects original earnings, a partial unique index protects active billing allocation, and repayment/reversal/retry constraints prevent duplicate postings. Migration 0005 enables RLS and revokes Data API grants for the new tables.
+
+Financial commands acquire one short database write lock before balance/allocation checks. Receipt correction uses the same finance-before-trip lock order and atomically holds related earnings/invoices. Receipt completion commits operations first; automatic earnings calculation then uses a separate transaction. Request-path repositories flush without committing; the presentation seed is an operator-only command with its own seed commit.
+
+The browser never computes authoritative money. A draft payroll does not post repayments, UI grants do not replace service checks, and no action here transfers bank funds. Production/multi-worker validation and unsupported correction flows are listed in [the handoff](runbooks/sprint-5-6.md#remaining-release-gates).
+
+### Financial API reference
+
+All paths below start with `/api/v1/finance`. Every command requires `Idempotency-Key`; service rules add ownership, independence and state checks to the capability shown. Request/response fields are authoritative in [OpenAPI](../src/backend/openapi.snapshot.json).
+
+| Method | Path                                       | Capability                     |
+| ------ | ------------------------------------------ | ------------------------------ |
+| GET    | `/presentation-documents/{document_id}`    | `or.view_files`                |
+| GET    | `/expenses`                                | `expense.view`                 |
+| GET    | `/payroll`                                 | `payroll.view`                 |
+| GET    | `/advances`                                | `cash_advance.view`            |
+| GET    | `/billing`                                 | `billing.manage`               |
+| GET    | `/reports`                                 | `report.view`                  |
+| POST   | `/expenses/{trip_id}`                      | `expense.enter`                |
+| POST   | `/expenses/{trip_id}/submit`               | `expense.enter`                |
+| POST   | `/expenses/{trip_id}/review`               | `expense.approve`              |
+| POST   | `/charges/{trip_id}`                       | `charge.finalize`              |
+| POST   | `/charges/{trip_id}/approve-variance`      | `earning_percentage.set`       |
+| POST   | `/earnings/{trip_id}/calculate`            | `earnings.calculate`           |
+| POST   | `/holds/{trip_id}/release`                 | `earning_percentage.set`       |
+| POST   | `/rates`                                   | `earning_percentage.set`       |
+| POST   | `/advances`                                | `cash_advance.request`         |
+| POST   | `/advances/{identifier}/approve`           | `cash_advance.approval_action` |
+| POST   | `/advances/{identifier}/release`           | `cash_advance.release_repay`   |
+| POST   | `/advances/{identifier}/return`            | `cash_advance.release_repay`   |
+| POST   | `/advances/{identifier}/reconcile`         | `cash_advance.approve`         |
+| POST   | `/advance-delegations`                     | `cash_advance.approve`         |
+| POST   | `/advance-delegations/{identifier}/revoke` | `cash_advance.approve`         |
+| POST   | `/adjustments`                             | `deduction.record`             |
+| POST   | `/adjustments/{identifier}/approve`        | `deduction.approve`            |
+| POST   | `/payrolls`                                | `payroll.prepare`              |
+| POST   | `/payrolls/{identifier}/finalize`          | `payroll.prepare`              |
+| POST   | `/payrolls/{identifier}/reverse`           | `payroll.reverse`              |
+| POST   | `/statements/{identifier}/payments`        | `payroll_payment.record`       |
+| POST   | `/invoices`                                | `billing.manage`               |
+| POST   | `/invoices/{identifier}/issue`             | `billing.manage`               |
+| POST   | `/invoices/{identifier}/request-void`      | `billing.manage`               |
+| POST   | `/invoices/{identifier}/approve-void`      | `invoice.void_approve`         |
+| POST   | `/invoices/{identifier}/payments`          | `billing.manage`               |

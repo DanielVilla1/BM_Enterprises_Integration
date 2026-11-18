@@ -47,7 +47,7 @@ flowchart TB
 | Upload            | Driver or enabled assigned Helper; signed image   | OR Uploaded; advance reservation eligible                 | Delivered, correct role/ownership, JPEG/PNG content, ≤5 MB, storage succeeds                                            |
 | External handover | Driver gives OR to company                        | Physical receipt outside app                              | Upload alone is not receipt; no steel-company system integration                                                        |
 | Confirm           | Assigned Driver; actual receipt time              | Completed; restriction removed; next reservation retained | Stored signed OR, valid time, idempotency key; no Dispatcher approval                                                   |
-| Finance           | Authorized finance staff                          | Independent earnings/billing readiness                    | Planned services under [working policies](../decisions/financial-policies.md)                                           |
+| Finance           | Authorized finance staff                          | Independent earnings/billing readiness                    | Persistent services under [working policies](../decisions/financial-policies.md)                                        |
 
 </details>
 
@@ -120,7 +120,7 @@ flowchart TB
 | Wrong receipt confirmation          | Owner gives reason; reopen to OR Uploaded if no later resource trip departed                        | Driver reconfirms with new operation key                     |
 | Later resource trip departed        | Correction rejected even if later trip is now Completed/Failed                                      | Separate adjustment process required; do not rewrite history |
 | Later trip cleared but not departed | Correction revokes clearance to Accepted                                                            | Re-clear after receipt reconfirmation                        |
-| Stamped copy absent                 | Completion allowed; audit records its presence/absence                                              | Manual spot-check; dedicated report planned                  |
+| Stamped copy absent                 | Completion allowed; audit records its presence/absence                                              | Reports flags completed trips without a stamped copy         |
 | Upload failure                      | Completion unavailable until signed OR stored                                                       | Correct file/retry; escalate storage failure                 |
 
 </details>
@@ -151,35 +151,39 @@ Images are checked and re-encoded to remove metadata; storage paths are server-g
 
 Receipt confirmation requires an `Idempotency-Key`. Repeating the operation does not duplicate completion; the UI retains its key while a submission fails. After a timeout, reload before starting a different business action. After Owner correction, use a new confirmation operation.
 
-Completion updates trip/receipt, derived order/truck state and audit. It does not wait for expenses, payroll, invoices or client collection. Future earnings generation is separate and idempotent with one original employee/trip entry. No outbox runs without a defined recipient.
+Completion updates trip/receipt, derived order/truck state and audit. It does not wait for expenses, payroll, invoices or client collection. Earnings generation is separate and idempotent with one original employee/trip entry. If financial inputs are already ready, calculation starts after operational completion commits; source finalization also attempts calculation. Failed financial calculation leaves operational completion intact and can be retried by authorized HR/Owner. No outbox runs without a defined recipient.
 
 </details>
 
-## 5. Financial handoff — planned
+## 5. Financial handoff
 
-**Operations complete before independent planned payroll and billing branches.**
+**Operational completion is independent of payroll and billing readiness.**
 
 ```mermaid
 flowchart TB
     accTitle: Completion is separate from finance
     accDescr: Completed operations feed independent payroll and billing readiness checks; one branch never waits for payment on the other.
     trip["LIVE · Driver confirms receipt"]:::done --> complete["Trip completed"]:::done
-    complete -.-> payrollReady["PLANNED · Final charge + reviewed expenses"]:::planned
-    complete -.-> billReady["PLANNED · Final charge + OR evidence + unbilled"]:::planned
-    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::planned
-    billReady --> billing["Client batch → invoice → collection record"]:::planned
+    complete -.-> payrollReady["Final charge + reviewed expenses"]:::action
+    complete -.-> billReady["Final charge + OR evidence + unbilled"]:::action
+    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::action
+    billReady --> billing["Client batch → invoice → collection record"]:::action
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
 
 <details>
 <summary><strong>Rules, handoffs and exceptions</strong></summary>
 
-Completed trip → final charge + submitted expenses → independent approval or reviewed zero → calculate individual earnings → finalize period → apply approved personal deductions/repayments → record actual employee payments.
+Completed trip + final charge + independently reviewed expenses/zero → automatic individual earnings → HR prepares a period and reviews draft statements → period-end finalization allocates earnings/approved adjustments and posts repayments atomically → HR records actual payments. Personal deductions/debit adjustments are disabled by default pending D16.
 
-Separately: completed trip + finalized charge + signed OR + company receipt + unbilled charge → select one-client billing batch → issue invoice → record collections. Expense review does not block operations. Partial orders and older trips can be billed. See [financial policies](../decisions/financial-policies.md) for holds, cutoffs, reversals and approval duties.
+Separately: completed trip + finalized charge + signed OR + company receipt + unbilled charge → select one-client billing batch → issue invoice → record collections. Expense/payroll review does not block operations or eligible billing. Partial orders and older trips can be billed. Accounting records collections; Owner has read-only billing plus independent requested-void approval. See [financial policies](../decisions/financial-policies.md) for holds, cutoffs, reversals and approval duties.
 
 </details>
+
+Receipt correction also holds linked earnings and invoices in the same transaction. Later clearance can be revoked, but existing payment evidence is retained. Actual Driver receipt must be reconfirmed before an independent non-beneficiary Owner releases a releasable hold. A negative base cannot be released while still negative; direct source corrections and paid-record refunds/reversals need the [documented design work](../decisions/financial-policies.md#implementation-coverage-and-limits).
+
+Financial mutations require an `Idempotency-Key` bound to actor, action/target and validated payload. Reusing it for changed input is a conflict; retries preserve the original result. Finance commands use a shared database lock and uniqueness constraints, so parallel requests cannot duplicate original earnings, repayment allocation or active billing. Financial audit history includes the validated request/reference under Owner-only audit access.
 
 ## 6. Requirement traceability
 
@@ -188,16 +192,16 @@ Separately: completed trip + finalized charge + signed OR + company receipt + un
 
 Paths are relative to `src/backend/src/`; test names are in `src/backend/tests/`.
 
-| Specification       | Source                                                                             | Verification / gap                                                                       |
-| ------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| §3 access/identity  | Authentication, authorization and employee services; `Data/permission_matrix.json` | `test_authentication`, `test_permission_matrix`, `test_employees`                        |
-| §§4–5 dispatch      | `Service/trip_service.py`, `Entity/dispatch.py`, `Repository/trip_repository.py`   | `test_dispatch_assignment`, `test_dispatch_flow`, `test_dispatch_revalidation`           |
-| §6 OR/completion    | `Service/or_service.py`, storage/imaging adapters, state synchronizer              | `test_or_documents`, `test_or_completion`, `test_storage_adapters`; live storage pending |
-| §§7–8 finance       | Preview UI and policy document                                                     | Entities/services/migrations/APIs/tests still required                                   |
-| §9 billing          | Billing preview and policy document                                                | Persistent implementation still required                                                 |
-| §10 records/reports | Audit repository/controller and frontend dashboard/audit                           | Live operational views; financial/exception reports planned                              |
-| §§11–12 platform    | DTOs, JWT/webhook checks, upload limits, migrations, CI                            | Postgres hardening; staging/backup/mobile/outage drills pending                          |
+| Specification       | Source                                                                                                                                                   | Verification / gap                                                                                                                                                       |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| §3 access/identity  | Authentication, authorization and employee services; `Data/permission_matrix.json`                                                                       | `test_authentication`, `test_permission_matrix`, `test_employees`                                                                                                        |
+| §§4–5 dispatch      | `Service/trip_service.py`, `Entity/dispatch.py`, `Repository/trip_repository.py`                                                                         | `test_dispatch_assignment`, `test_dispatch_flow`, `test_dispatch_revalidation`                                                                                           |
+| §6 OR/completion    | `Service/or_service.py`, storage/imaging adapters, state synchronizer                                                                                    | `test_or_documents`, `test_or_completion`, `test_storage_adapters`; live storage pending                                                                                 |
+| §§7–8 finance       | `Service/trip_finance_service.py`, `payroll_service.py`, `advance_service.py`; `Entity/finance.py`, `Repository/finance_models.py`, migrations 0005/0006 | `test_finance_workflows`, `test_financial_migration`, `test_financial_readiness_and_query_budget`, presentation/concurrency regressions; D16 and exception limits remain |
+| §9 billing          | `Service/billing_service.py`, financial repositories/DTOs/controller and frontend billing panel                                                          | Billing eligibility, unique allocation, independent void, collection/credit and retry checks; paid-record reconciliation remains unsupported                             |
+| §10 records/reports | Audit implementation; `Service/finance_query_service.py`; operational dashboard and `ReportsPanel.jsx`                                                   | Role-scoped reports, ownership/query-growth regressions and local 30-trip/20-user load evidence; real staging remains pending                                            |
+| §§11–12 platform    | DTOs, JWT/webhook checks, upload limits, migrations, CI                                                                                                  | Postgres hardening; staging/backup/mobile/outage drills pending                                                                                                          |
 
-A seeded capability or preview page does not mean its financial service exists.
+The listed financial services now persist on this branch. A passing local test or fictional presentation does not constitute production approval; see [coverage and exception limits](../decisions/financial-policies.md#implementation-coverage-and-limits).
 
 </details>

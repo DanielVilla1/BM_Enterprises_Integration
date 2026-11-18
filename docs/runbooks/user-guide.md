@@ -1,10 +1,12 @@
 # User feature guide
 
+**Sprint 5–6 branch:** The financial and report screens now use persistent APIs. Use the procedures below and the [finance and presentation guide](sprint-5-6.md). DEMO records are fictional, and production financial release remains gated.
+
 **Want to practice?** Start with [the guided delivery exercise](delivery-walkthrough.md).
 
 [Index](../README.md) · [Choose your role](roles/README.md) · [Terms and statuses](../taxonomy.md)
 
-These procedures describe the current operational screens. **Soon / Design preview** pages contain invented examples; they do not save expenses, wages, advances, invoices or payments. Use the [financial policies](../decisions/financial-policies.md) as future process instructions only.
+These procedures cover persistent operational and financial screens on the Sprint 5–6 branch. Only the separate `/preview.html` design harness uses sample-only screens. Seeded `DEMO` records persist in the development database and are fictional; they must not be used as actual pay or invoices. The [financial policies](../decisions/financial-policies.md) describe working defaults and release gates.
 
 ## Find your task quickly
 
@@ -234,9 +236,9 @@ Document buttons request temporary signed links. Reopen from the app if a link e
 
 </details>
 
-## 10. Dashboard, audit, permissions and preview finance
+## 10. Dashboard, audit, permissions and finance
 
-**Dashboard:** operations. **Audit/Permissions:** Owner review. **Finance:** preview examples only.
+**Dashboard:** operations. **Audit/Permissions:** Owner review. **Finance/Reports:** persistent, role-scoped records on this branch.
 
 <details>
 <summary><strong>Full procedure and exception rules</strong></summary>
@@ -244,9 +246,62 @@ Document buttons request temporary signed links. Reopen from the app if a link e
 - **Dashboard:** Owner/Dispatcher review current trips and resource summaries; open the relevant operational screen to act.
 - **Audit log:** Owner searches actions/entity/trace, and loads older entries. Records are read-only. Use the trace ID when reporting a failed request; omit private data from the report.
 - **Permissions:** Owner inspects the stored role-capability table. This is a viewer, not a permission editor; role assignment happens in People. Conditional helper grants still depend on the configured flag.
-- **Trip expenses, Payroll, Cash advances, Billing, Reports:** current preview screens show intended layouts only. Do not use their amounts as employee balances, issue them to clients or treat an example button as a saved transaction. Role manuals explain the planned responsibilities under the financial working policies.
+- **Trip expenses, Payroll, Cash advances, Billing, Reports:** follow [the current financial procedures](sprint-5-6.md). Owner can enter/review expenses and inspect payroll/billing; HR records payroll payments and Accounting records client collections. DEMO amounts are fictional.
 
 </details>
+
+### Trip expenses and charge review
+
+**Enter:** Owner, Dispatcher or the assigned Driver. **Review:** Accounting or an independent Owner. Helper has no expense-entry grant.
+
+1. Open **Trip expenses → Add an expense line**, select the trip and Fuel/Toll, then enter the actual amount, description, purchase date, evidence reference and reason. Save each line while the sheet is **Entering**.
+2. If no expenses occurred, use **Declare zero expenses** with a reason instead; missing lines are not a zero declaration.
+3. Select **Submit for review**. An authorized different reviewer opens **Review declaration**, chooses **Approve** or **Return for changes**, records the reason and saves. Prior contributors and crew beneficiaries cannot approve, even with combined roles.
+4. Accounting/Owner uses **Finalize agreed hauling charge** with the final amount, agreed reference amount, agreement reference and variance reason. A variance waits for **Approve variance** by a different non-beneficiary Owner. Dispatcher/crew cannot see commercial charges/rates.
+5. Finalized expense/charge values cannot be silently rewritten. Refer disputed values to Owner and the documented correction limits; do not modify database values manually.
+
+Owner configures future percentage versions under **Schedule a future earnings-rate version** on this page. The effective date must be a future Manila date. Departed trips retain their selected version.
+
+### Payroll and personal statements
+
+**HR** prepares/finalizes payroll and records actual payment. **Owner** inspects payroll and independently approves proposals; Owner alone cannot prepare positive adjustments or record payroll payment. **Driver/Helper** see only their own records.
+
+1. Open **Payroll**. A trip stays **Pending Calculation** until completion, final charge and reviewed expenses/zero are ready. Earnings are attempted when the last prerequisite arrives; HR/Owner can use **Calculate ready trip earnings** to retry pending work.
+2. HR opens **Prepare payroll period** with the 1st or 16th as its start. Review each employee’s trip/rate/gross, approved deductions, scheduled repayments, net and unpaid balance. A draft does not post repayments.
+3. Where authorized, HR uses **Propose employee adjustment** with a written basis and period. Owner uses **Approve proposal** independently. Ordinary personal deductions and debit adjustments remain disabled by default pending D16.
+4. After the period’s final Manila business day ends, HR selects **Finalize reviewed payroll**. Allocation and repayments post together once. Late ready earnings retain their original trip/date and carry forward into an open period.
+5. HR opens **Record actual payroll payment**, enters actual amount/date/method/reference, and saves. The API refuses overpayment, self-payment or payment against a held statement. This records a transfer already made; it does not send money.
+6. Owner may request **Reverse unpaid payroll** with an independent reason. The API restores linked repayments and unallocates earnings; any existing payment blocks this reversal. No paid-history deletion or refund workflow is implied.
+
+Real percentage-pay, deductions and payroll repayments still require the documented D16 review and release approval. The application does not implement attendance, regular salaries, benefits or statutory contributions.
+
+### Personal and operating advances
+
+1. Crew request their own personal advance under **Cash advances → Request personal advance**. HR may prepare a request for an employee.
+2. Owner uses **Approve arrangement** to record maximum amount, agreed fixed installment, start period, acknowledgment and reason. A named HR approver needs an unexpired Owner delegation; use **Delegate advance approval** / **Revoke delegation** where available. No requester or beneficiary approves their own request.
+3. A different authorized HR actor uses **Record actual release** with the actual amount/date/reference and acknowledgment. Approval alone creates no debt, and partial releases cannot exceed approval.
+4. Finalized payroll posts the smaller of the agreed installment, outstanding released balance and available pay after authorized deductions. Inspect movement history and remaining balance; drafts do not post repayments.
+5. For business float, HR uses **Request trip operating funds** and selects the assigned crew custodian/trip. It remains separate from personal debt. Record unused funds under **Record unused operating funds returned** and obtain independent **Review operating reconciliation** after expense review. A shortage or unsupported multi-arrangement allocation stays under review.
+
+Operating approval currently shares an arrangement form, but its installment is unused for payroll. There is no general repayment-schedule amendment or paid-record reconciliation screen; see [policy limits](../decisions/financial-policies.md#implementation-coverage-and-limits).
+
+### Billing and collections
+
+**Accounting** builds, issues and records collections. **Owner** has read-only billing plus independent requested-void approval.
+
+1. Open **Billing → Build client billing batch**; select one client, an inclusive past/present delivery cutoff and one or more **Ready unbilled trips for that client**. Set terms (30 days by default) and save.
+2. Eligibility requires completed trip, finalized charge, active signed OR, recorded receipt, no hold and no active bill allocation. Earlier delivery periods/orders can carry over. Expense/payroll finalization, client payment, stamped copy and whole-order completion are separate.
+3. Inspect **Lines and collections**, then select **Issue reviewed invoice**. Issued amounts/lines are immutable. Invoice state and payment position remain separate.
+4. Use **Record actual collection** for actual amount/date/method/reference. Allocation stops at outstanding balance; excess remains visible as unallocated credit. The app does not collect money itself.
+5. Accounting uses **Request independent void approval** with a reason; a different Owner can **Approve unpaid invoice void**. Any payment record blocks void/rebilling. Refund, credit-note and excess-credit reallocation workflows are not implemented.
+
+### Reports, presentation and connection handling
+
+**Reports** shows each role’s remit: operations/document exceptions; authorized pay, advance and client balances; and fleet maintenance/replacements. Crew see their own records. Operational counts describe the current page, while financial totals cover authorized records; use **Previous / Next** and **Refresh** deliberately.
+
+The separate `/preview.html` role picker is a design tool, not sign-in or a way to grant access. The presentation seed adds fictional persisted `DEMO` records and a notice, without creating Clerk logins. See [presentation setup](sprint-5-6.md#presentation-dataset). Demo evidence is visibly fictional and still checks authorization.
+
+Only a production frontend build registers the public offline-help worker. It does not cache business records/tokens or queue receipt/payment actions. Reconnect and confirm a saved server result before treating an action as complete.
 
 ## 11. Troubleshooting and interrupted operations
 
@@ -264,5 +319,7 @@ Document buttons request temporary signed links. Reopen from the app if a link e
 | Not found on another person's record | Access may be deliberately concealed; ask authorized staff rather than guessing IDs                        |
 | Save/confirmation times out          | Reload current record before retrying; do not create a duplicate trip/order/payment                        |
 | Page shows old information           | Refresh or reopen; operational lists are not live push subscriptions                                       |
+
+**Owner expense page unexpectedly forbidden after updating:** ask the developer/operator to apply migrations through `0006`, restart the API and refresh the account/page. That migration repairs the missing read grant. Do not add HR or remove legitimate Owner access to work around a schema mismatch.
 
 During an outage, Dispatcher records a paper log with order/trip reference, actor and actual event times. Follow BM's operational contingency decision; do not claim the application cleared a trip while unavailable. Once restored, authorized roles reconcile records and duplicates in order. There is no offline queue or proven recovery-time guarantee today.

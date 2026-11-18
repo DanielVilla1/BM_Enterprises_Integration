@@ -2,7 +2,7 @@
 
 [Current handbook](../README.md) · [Current workflow](../runbooks/service-workflow.md)
 
-> **ARCHIVE — do not use as current operating instructions.** The original content is retained below for comparison.
+> **ARCHIVE — do not use as current operating instructions.** The original content, including its old build-status notes, is retained below for comparison. For the current implemented finance/report scope and remaining gates, use the [Sprint 5–6 handoff](../runbooks/sprint-5-6.md).
 
 **Current specification replaces the older completion, finance and crew assumptions.**
 

@@ -1,0 +1,16 @@
+{
+  "database": "PostgreSQL",
+  "transport": "in-process ASGI",
+  "trips": 30,
+  "users": 20,
+  "target_requests_per_second": 10,
+  "requests": 300,
+  "failures": 0,
+  "elapsed_seconds": 30.27,
+  "achieved_requests_per_second": 9.91,
+  "mean_ms": 53.07,
+  "p50_ms": 46.15,
+  "p95_ms": 102.45,
+  "p99_ms": 153.73,
+  "scope": "Local application/database test; excludes real Clerk, network/TLS and Supabase."
+}

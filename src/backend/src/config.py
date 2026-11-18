@@ -40,6 +40,8 @@ class ApplicationSettings(BaseSettings):
     max_upload_bytes: int = 5 * 1024 * 1024
 
     helper_or_upload_enabled: bool = False
+    # AI MODIFIED: Keep personal deductions closed until the documented D16 review.
+    payroll_deductions_enabled: bool = False
     # AI MODIFIED: Positive, bounded request budgets cannot silently disable protection.
     rate_limit_failed_auth_per_minute: int = Field(default=20, ge=1, le=1000)
     rate_limit_webhook_per_minute: int = Field(default=120, ge=1, le=1000)

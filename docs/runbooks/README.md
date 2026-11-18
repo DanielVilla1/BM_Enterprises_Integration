@@ -11,3 +11,12 @@
 | Set up or maintain the app         | [Development guide](development.md)           |
 | Check validation and limitations   | [Verification record](verification.md)        |
 | Perform release acceptance testing | [QA checklist and deployment gate](qa.md)     |
+
+## Finance, presentation and documentation review
+
+- [Financial procedures and role boundaries](user-guide.md#10-dashboard-audit-permissions-and-finance)
+- [Sprint 5–6 handoff and presentation seed](sprint-5-6.md)
+- [Detailed implementation verification](sprint-5-6-evidence/verification.md) and [load measurement](sprint-5-6-evidence/load-postgres.json)
+- [Complete documentation reconciliation](documentation-audit.md)
+
+Persistent development features, fictional presentation records and pending production gates are separate. This branch is unmerged.

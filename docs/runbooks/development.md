@@ -1,5 +1,7 @@
 # Developer guide
 
+**Sprint 5–6 branch update:** Expenses, earnings, payroll, advances, billing and reports now have persistent services and screens on `sprint-5-6-finance-and-reporting`. See [the current handoff](sprint-5-6.md) for behavior, role access, migrations, demonstration data and verification. Section 13 lists the remaining release gates.
+
 [Handbook](../README.md) · [System structure](../architecture.md) · [Verification](verification.md)
 
 **Need to run it?** Start at [Local setup](#4-local-setup). **Changing a feature?** Start at [Architecture](#6-architecture-rules-enforced-by-review-partly-by-tests) and [feature checklist](#11-how-to-add-a-feature-checklist).
@@ -29,7 +31,7 @@ flowchart LR
 <details>
 <summary><strong>Source specification and handbook context</strong></summary>
 
-**Handbook:** [documentation index](../README.md), [role manuals](roles/README.md), [feature procedures](user-guide.md), [service workflow](service-workflow.md), [system structure](../architecture.md), [taxonomy](../taxonomy.md) and [verification record](verification.md). Read these with this guide. On 18 November 2026 the user authorized filling missing financial decisions; [Financial working policies v1](../decisions/financial-policies.md) defines D4–D10 for future implementation. It does not turn the financial previews into live features.
+**Handbook:** [documentation index](../README.md), [role manuals](roles/README.md), [feature procedures](user-guide.md), [service workflow](service-workflow.md), [system structure](../architecture.md), [taxonomy](../taxonomy.md) and [verification record](verification.md). Read these with this guide. On 18 November 2026 the user authorized filling missing financial decisions; [Financial working policies v1](../decisions/financial-policies.md) defines D4–D10 development defaults. The Sprint 5–6 implementation now persists the financial workflows; production release remains gated.
 
 Handover guide for the next developer. It says what exists, how it is built, how to run and extend it, what is not verified, and what is left. Read it with the **Consolidated Developer Specification (9 Nov 2026)**, which is the source of business rules. (It is a Word file kept by the team; it is not committed here. Where it disagrees with the older [archived proposal](../archive/architecture-proposal.md), the specification wins.)
 
@@ -48,23 +50,22 @@ For file placement, use the visible [repository folder architecture](../architec
 
 ## 1. Status
 
-**Live:** operational Sprints 1–4 plus dashboard/audit UI. **Preview:** financial modules and expanded reports.
+**Implemented on this branch:** operational modules, finance and reports. External production release gates remain; see [Sprint 5–6](sprint-5-6.md).
 
 <details>
 <summary><strong>Technical reference and caveats</strong></summary>
 
-| Sprint | Scope                                                                                                 | State                                                                                       |
-| ------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| 1      | Skeleton, Clerk auth, employees, roles, permission matrix, audit, webhook, errors, CI                 | Done                                                                                        |
-| 2      | Clients, trucks and maintenance, driver licenses, delivery orders                                     | Done                                                                                        |
-| 3      | Dispatch: trips, crew, capacity and license checks, OR dispatch block, crew change, truck replacement | Done                                                                                        |
-| 4      | OR upload, private storage, signed URLs, driver receipt confirmation, completion, Owner correction    | Done                                                                                        |
-| 5      | Expenses, earnings (8/4 and 6/3/3), payroll, deductions, cash advances, billing                       | **Not started**                                                                             |
-| 6      | Reports and dashboards, audit viewer, security review, load test, staging                             | Operational dashboard and audit viewer exist; expanded reports and production checks remain |
+| Sprint | Scope                                                                        | Current branch status                                                                                                                              |
+| ------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1–4    | Identity, records, dispatch, OR and completion                               | Persistent implementation retained.                                                                                                                |
+| 5      | Expenses, charges/rates, earnings, payroll/adjustments, advances and billing | Core persistent workflows implemented; deductions disabled by default; see policy coverage for correction/reconciliation limits.                   |
+| 6      | Reports, security checks, load test and installation support                 | Role-scoped reports, automated checks and public offline help implemented; live staging/mobile/restore and production approval remain outstanding. |
 
-Verified during sprint consolidation: 203 backend tests on Python 3.12/SQLite (6 PostgreSQL-only tests skipped), 208 application tests on Python 3.14/PostgreSQL 18.2, 25 frontend tests, backend/frontend lint, backend formatting, frontend production build, and runtime dependency audits. The OpenAPI snapshot was checked on Python 3.12, matching CI; that one test was excluded from the Python 3.14/PostgreSQL run because Python 3.14 changes the generated HTTP 422 description.
-Browser follow-up verified live Clerk development sign-in for all seven business roles, including password entry, test-email verification, authenticated `/me` responses and the rendered workspace. The Owner-only permission-matrix endpoint returned 200 for Owner and 403 for the other six roles.
-**Still unverified:** live Supabase, real-inbox verification and mobile UI. See section 12.
+The [verification record](verification.md) distinguishes current Sprint 5–6 checks from historical counts: the complete PostgreSQL/Python 3.12 suite recorded 258 passes and one opt-in load skip; the separate 300-request load run passed; 78 frontend tests, lint, formatting, build and production dependency audits passed. The application contract also passed on the local Python 3.14 environment after normalizing HTTP error descriptions. These are developer-run checks, not QA or production sign-off.
+
+Docker development containers were rebuilt/restarted, schema revision `0006` applied, and Owner access and fictional presentation records checked in the running app. Live Supabase behavior, real-device/inbox journeys and restore timing remain separate checks.
+
+The separate [pre-finance QA record](qa-results-2026-11-18.md) retains its own baseline and measurements, including seven-role Clerk sign-in and Compose Watch/ngrok checks. Those observations do not certify the later Sprint 5?6 changes.
 
 </details>
 
@@ -77,14 +78,16 @@ Browser follow-up verified live Clerk development sign-in for all seven business
 
 Sprints 1–4 are consolidated into `main`, preserving all sprint commits and the merge commits from PRs #1–#4. The original PRs were stacked: PR #1 targeted `main`, but PRs #2–#4 targeted the preceding sprint branch. Merging those PRs did not carry the later sprints into `main`; the consolidation merge brings all four branch histories together.
 
-Start new work from the latest `main` and explicitly target `main`:
+The current work is on `sprint-5-6-finance-and-reporting` and remains unmerged. Inspect the working tree before switching branches; preserve uncommitted work. Do not merge or publish this branch without the requested review and authorization.
 
 ```bash
-git switch main
-git pull --ff-only origin main
-git switch -c sprint-5-payroll-and-billing
-gh pr create --base main --head sprint-5-payroll-and-billing --title "Sprint 5: payroll and billing"
+git branch --show-current
+git status --short
+# Switch only when your current work is safely preserved:
+git switch sprint-5-6-finance-and-reporting
 ```
+
+For a future independent feature, create a separate branch from the reviewed base. A review request should explicitly target the intended base; opening one is a separate action from local implementation.
 
 For future stacked PRs, merge the oldest first, then explicitly retarget the next PR to `main` before merging it. Verify the base branch in GitHub; do not depend on automatic retargeting or branch deletion.
 
@@ -96,7 +99,7 @@ The spec requires a named human reviewer for any change to authentication, autho
 
 ## 3. Repository map
 
-See the [complete folder architecture](../architecture.md#repository-folder-architecture) for the current tree and file placement rules.
+See the [folder/layer architecture](../architecture.md#repository-folder-architecture) for the current tree and file placement rules.
 
 **Backend:** layered business services. **Frontend:** screens, hooks, stores and API services.
 
@@ -106,15 +109,15 @@ See the [complete folder architecture](../architecture.md#repository-folder-arch
 ```
 src/backend/
   main.py                    app factory: CORS, body cap, problem+json, routers
-  alembic.ini, migrations/   Alembic (0001 identity+audit, 0002 fleet/orders, 0003 trips, 0004 OR/idempotency)
+  alembic.ini, migrations/   Alembic 0001–0006; includes finance schema snapshot and grant/history upgrade
   pyproject.toml             ruff, black, pytest config
   requirements*.txt          pinned runtime / dev dependencies
   openapi.snapshot.json      committed API contract (a test fails if it drifts)
-  scripts/                   bootstrap_owner, reconcile_clerk, export_openapi
+  scripts/                   bootstrap_owner, reconcile_clerk, export_openapi, seed_presentation
   src/
     Entity/                  domain values and rules (no framework imports)
     Contract/                Protocol interfaces (ports) for repositories and adapters
-    Repository/              SQLAlchemy: orm_models.py + one file per domain; returns Entities, never ORM rows
+    Repository/              SQLAlchemy: orm_models.py, finance_models.py + domain repositories; returns Entities, never ORM rows
     Service/                 business rules, transactions, audit
     DTO/                     Pydantic request/response models
     Controller/              FastAPI routers (thin)
@@ -186,7 +189,7 @@ src/backend/.venv/Scripts/python tools/scripts/backend.py backend.scripts.bootst
 src/backend/.venv/Scripts/python tools/scripts/backend.py uvicorn backend.main:app --reload
 ```
 
-Scripts must be run **from the repo root** with `-m backend.scripts...` (they import `backend.*`). Docs are at `/api/v1/docs` when `ENABLE_API_DOCS=true`.
+Run the tracked `tools/scripts/backend.py` launcher from the repository root; it invokes the requested module with `src/` on `PYTHONPATH`. A bare `python -m backend.scripts...` needs equivalent module-path/environment setup. Docs are at `/api/v1/docs` when `ENABLE_API_DOCS=true`.
 
 **Frontend** (from `src/frontend/`): `npm ci`, `npm run dev`, `npm run lint`, `npm test`, `npm run build`.
 `VITE_CLERK_PUBLISHABLE_KEY` **must be set at build time**; with it empty, Vite folds the check away and drops the whole app from the bundle.
@@ -195,11 +198,11 @@ For local Vite development, create `src/frontend/.env` with the public settings 
 
 To share the local demo through one ngrok URL, set `VITE_API_BASE_URL=` and `VITE_PUBLIC_FRONTEND_URL=https://YOUR-DEV-DOMAIN.ngrok-free.dev` in the root and frontend environment files. Keep FastAPI on port 8000 and Vite on port 5173, then run `ngrok http 5173 --url https://YOUR-DEV-DOMAIN.ngrok-free.dev`. Vite serves the frontend at `/` and proxies `/api/v1` to FastAPI, so API calls and `/api/v1/webhooks/clerk` use the same public origin. Existing Clerk webhook URLs remain valid when the ngrok domain stays the same.
 
-Add that exact public origin to the backend's comma-separated `CORS_ALLOWED_ORIGINS` and `CLERK_AUTHORIZED_PARTIES`, preserving `http://localhost:5173`, then restart both servers. Vite reads the exact public hostname from `VITE_PUBLIC_FRONTEND_URL`; do not use an unrestricted hostname allowlist. The demo remains available while the PC, local services and ngrok agent are running. The ignored local `.venv/start-bm-public.cmd` helper starts this machine's configured public demo; it is not a deployment service or a file supplied by a fresh clone.
+Add that exact public origin to the backend's comma-separated `CORS_ALLOWED_ORIGINS` and `CLERK_AUTHORIZED_PARTIES`, preserving `http://localhost:5173`, then restart both servers. Vite reads the exact public hostname from `VITE_PUBLIC_FRONTEND_URL`; do not use an unrestricted hostname allowlist. The demo remains available while the PC, local services and ngrok agent are running. Any workstation-specific tunnel helper is local-only; the tracked commands above are the supported starting point.
 
 Authentication uses Clerk Core 3 (`@clerk/react` 6) and `<Show when="signed-in">` / `<Show when="signed-out">` gates. Run `npm ci` after pulling SDK updates and restart Vite. The deprecated `@clerk/clerk-react` 5 package can be rejected by Clerk's minimum-version protection.
 
-For automated testing without real inboxes, Clerk supports test-email addresses such as `owner+clerk_test@example.com` with verification code `424242` in development Test mode. Regular Gmail role aliases such as `yourname+owner@gmail.com` use actual verification codes delivered to the base Gmail inbox; they are not Clerk test-email addresses. The local role accounts now use Gmail aliases while preserving their existing identity IDs, passwords and database roles. Current login details are kept in the ignored `.venv/development-role-logins.csv`, never in migrations or tracked source. See [Clerk test-email documentation](https://clerk.com/docs/guides/development/testing/test-emails-and-phones).
+Use provisioned Clerk development/staging accounts according to that instance’s testing configuration. Credentials and real inbox codes are never stored in tracked documentation. Presentation seeding creates unlinked fictional employee records, not Clerk users or login credentials.
 
 **Accounts you need:** a Clerk application (dev instance), a Supabase project (dev, not Free in production) with a **private** bucket named `delivery-documents`. Use fake data and staging keys only. Never commit `.env`.
 
@@ -228,6 +231,10 @@ All settings are environment variables read by `src/config.py` (`.env.example` l
 | `TEST_DATABASE_URL`                                                                 | run the test suite on PostgreSQL                                                 |
 | `VITE_CLERK_PUBLISHABLE_KEY`, `VITE_API_BASE_URL`                                   | frontend                                                                         |
 
+`PAYROLL_DEDUCTIONS_ENABLED=false` is the default and keeps ordinary personal deductions/debit adjustments disabled pending the D16 decision. It does not authorize real payroll use or replace legal/QA approval. The API/user/upload rate-budget variables are all documented in [security hardening](../decisions/security-hardening.md#request-budgets).
+
+To load fictional records, explicitly run `docker compose exec -T backend python -m backend.scripts.seed_presentation --presentation` in the local development stack. The command refuses production/remote destinations, does not run during migrations, and does not create sign-in accounts. See [presentation setup](sprint-5-6.md#presentation-dataset).
+
 </details>
 
 ## 6. Architecture rules (enforced by review, partly by tests)
@@ -241,13 +248,13 @@ These come from `.github/copilot-instructions.md` and the per-layer files in `.g
 
 - **Layers:** Controller (HTTP only) → Service (rules, transactions, audit) → Repository (SQL only) → Entity. Controllers never import ORM, sessions or SDKs. Responses are always DTOs; entities and ORM rows are never returned.
 - **Wiring:** Services receive repository _Contracts_; `providers.py` builds them per request around one session.
-- **Transactions:** repositories only `flush`; a service calls `unit_of_work.commit()` once after all rule checks. A failure leaves nothing behind.
+- **Transactions:** repositories only `flush`; a service commits each business transaction after its checks. Operational completion is one transaction; its subsequent automatic earnings calculation is separate, so a financial failure cannot undo completion. The operator-only presentation seed commits its own seed transaction.
 - **Errors:** services raise `BusinessRuleError(status, code, title, detail[, headers, extensions])`. Handlers return `application/problem+json` (RFC 9457) with a `trace_id`. Never put stack traces, SQL or paths in a response. `extensions` add fields such as `blocking_trip_ids`.
 - **Naming and comments:** variables 4+ characters, functions 6+; forbidden names `data item obj val thing temp test misc`. Every source file starts with the `# ===== AI GENERATED: <name> =====` header (max 8 lines) describing purpose, inputs, returns, flow. JS uses JSDoc on every exported function (no TypeScript).
 - **Frontend:** no API calls or business rules in components; API only through `services/`; state only through `store/`; role-based UI hints come from the backend's `/me` capabilities and only hide links (the backend still decides).
 - **Input DTOs** set `extra="forbid"`. PATCH bodies extend `PartialUpdateRequest` (rejects empty bodies and null on required fields).
-- **Units and formats:** UUID ids, JSON snake_case, UTC timestamps, weights as `Decimal` metric tons (JSON numbers), Philippine business date = UTC+8 (`Entity/clock.py`). Money is not built yet: use fixed-precision columns and string/Decimal, never float.
-- **Audit:** every mutation writes an audit row with action, actor, entity and a trace id. `details` must never hold personal data, license numbers, emails or file names (field _names_ only).
+- **Units and formats:** UUID ids, JSON snake_case, UTC timestamps, weights as `Decimal` metric tons (JSON numbers), Philippine business date = UTC+8 (`Entity/clock.py`). Money inputs use decimal strings, calculations use `Decimal`, and persistence uses fixed-precision numeric columns; never calculate money with binary floats.
+- **Audit:** every mutation writes an audit row with action, actor, entity and a trace id. ordinary profile audits record changed field names rather than private values. Financial command audit details retain the validated financial request/reference for accountability and are restricted to Owner audit access. Do not place credentials, JWTs, identity documents or unrelated personal data in reasons/evidence references.
 - **Pagination:** list endpoints cap `limit` at 100.
 
 </details>
@@ -286,7 +293,7 @@ access: AccessContext = Depends(require_capability("trip.progress", only_levels=
 - `test_permission_matrix.py` **fails** if a route has no capability (public/authenticated-only routes are an explicit allowlist in that file) and calls every route as every role, comparing with the stored matrix. New routes are covered automatically.
 - **Adding or changing a matrix cell:** edit the JSON _and_ ship an **idempotent** Alembic migration that inserts missing rows (see `0003`). Fresh databases get the JSON via `0001`; existing ones get the migration. Never edit an applied migration.
 - Cells marked ‡ in the spec were inferred by its author and need BM's confirmation. One was added by this build: `trip.assignment_view` (the matrix gave helpers no way to see their own assignments, but spec 3.2 requires it). Clients reuse `delivery_order.manage`.
-- Forbidden role pairs (spec 3.2) are enforced on role assignment and need an Owner reason to override (audited). "No self-approval" is specified but **not built yet**: apply it to expenses, deductions, advances and adjustments in Sprint 5.
+- Forbidden role pairs (spec 3.2) are enforced on role assignment and need an Owner reason to override (audited). No-self-approval is enforced for financial approvals, including combined roles and prior expense contributors.
 
 </details>
 
@@ -297,7 +304,7 @@ access: AccessContext = Depends(require_capability("trip.progress", only_levels=
 <details>
 <summary><strong>Technical reference and caveats</strong></summary>
 
-`cd src/backend && .venv/Scripts/python -m pytest -q` (about 10-75 s). Files:
+From `src/backend/`, run `.venv/Scripts/python -m pytest -q`. Runtime depends on the database/environment; PostgreSQL recreates its scratch schema per test. Files:
 
 | File                                                                              | Covers                                                                                                    |
 | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -308,6 +315,8 @@ access: AccessContext = Depends(require_capability("trip.progress", only_levels=
 | `test_or_documents`, `test_or_completion`, `test_storage_adapters`                | upload validation, metadata stripping, storage, signed URLs, confirmation, idempotency, FP-02, correction |
 | `test_problem_details`, `test_platform`, `test_contract_snapshot`                 | error format, migrations vs models, seed, audit immutability, OpenAPI                                     |
 | `test_postgres_hardening`                                                         | RLS, anon/authenticated lockdown, audit triggers (**only with `TEST_DATABASE_URL`**)                      |
+
+Financial regressions also live in `test_finance_workflows.py`, `test_financial_migration.py`, `test_presentation_and_financial_controls.py` and `test_financial_readiness_and_query_budget.py`. The opt-in `test_sprint6_load.py` uses `RUN_LOAD_TESTS=1`; it exercises 30 completed trips, 20 users and 300 paced report reads, with no external identity/storage traffic. `tools/scripts/verify_postgres.py` creates and removes a local scratch database; use an isolated development server/account with the required test-database/role privileges, never the operational database. [Measured results](sprint-5-6-evidence/verification.md) retain their environment and limitations.
 
 Helpers: `tests/conftest.py` (migrated SQLite per test, signed fake Clerk tokens, signed webhooks, `FakeObjectStorage`, `employees` factory), `dispatch_support.py` (`World`: fake orders/trucks/crews, `delivered_trip()`), `image_support.py` (real JPEG/PNG with metadata). Tests use **fake data only**.
 
@@ -337,13 +346,13 @@ SQLite caveats (tests default to SQLite): datetimes come back **naive** (use `as
 **Uploads:** JPEG/PNG only, judged by content; re-encoded to strip EXIF/GPS; 5 MB (route cap plus global body cap); storage path is server-generated; object is stored **before** the DB transaction and deleted if the commit fails; reads use signed URLs (120 s) issued after the access check.
 
 **Defaults used where BM has not decided** (change them deliberately):
-D2 crew locked once the truck departs; D3 cancel only before departure, fail only after, earnings treatment deferred; D15 no override of the dispatch block; D5 hauling rate is **not stored** yet (working fixed-charge policy now defined in FINANCIAL_POLICIES.md); D14 no outbox; D1 helper upload off (`HELPER_OR_UPLOAD_ENABLED`).
+D2 crew locked once the truck departs; D3 cancel only before departure, fail only after, earnings treatment deferred; D15 no override of the dispatch block; D5 fixed charges are finalized per trip by Owner/Accounting under [financial working policies](../decisions/financial-policies.md); no client rate-card module; D14 no outbox; D1 helper upload off (`HELPER_OR_UPLOAD_ENABLED`).
 
 </details>
 
-## 10. API surface (38 paths, all under `/api/v1`)
+## 10. API surface
 
-**Contract:** `src/backend/openapi.snapshot.json`. All listed routes use `/api/v1`.
+**Contract:** `src/backend/openapi.snapshot.json`: **69 paths / 81 operations**, including **31 finance paths / 32 finance operations**. Counts come from the committed snapshot; all paths use `/api/v1`.
 
 <details>
 <summary><strong>Technical reference and caveats</strong></summary>
@@ -361,6 +370,8 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 | Dispatch        | `GET /dispatch/resources`, `GET /trips`, `GET /trips/assigned`, `GET /trips/{id}`; `POST` actions: `accept`, `clear-dispatch`, `depart`, `deliver`, `cancel`, `fail`; `PUT .../crew`, `POST .../truck-replacement` |
 | OR              | `POST/GET .../or-documents`, `GET .../or-documents/{id}/url`, `POST .../confirm-receipt`, `POST .../receipt-correction`                                                                                            |
 
+| Finance and reports | `/finance/expenses`, `/payroll`, `/advances`, `/billing`, `/reports`; per-trip expense/charge/earning/hold commands; rates, adjustments, payrolls/statements, delegations, invoices/collections and authorized presentation documents. See the [complete financial route/capability table](../architecture.md#financial-api-reference). |
+
 </details>
 
 ## 11. How to add a feature (checklist)
@@ -371,7 +382,7 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 <summary><strong>Technical reference and caveats</strong></summary>
 
 1. Read the spec section; if a rule is marked Open/Recommended, confirm with BM or put it behind a setting.
-2. **Entity** (`Entity/`), **ORM** (`Repository/orm_models.py`), **migration** (new file, never edit applied ones; include RLS lock-down for new tables, copy the pattern in `0002`-`0004`).
+2. **Entity** (`Entity/`), **ORM** (`Repository/orm_models.py` or `Repository/finance_models.py`), **migration** (new file, never edit applied ones; include RLS lock-down for new tables, copy the lockdown pattern in `0002`–`0005`).
 3. **Contract** + **Repository** (return entities; `flush` only).
 4. **Service**: rules, audit, one `commit()`. Raise `BusinessRuleError` with a stable code.
 5. **DTOs**, **Controller** with `require_capability(...)`, register the router in `main.py`, add the service factory to `providers.py`.
@@ -390,39 +401,20 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 <details>
 <summary><strong>Technical reference and caveats</strong></summary>
 
-- **PostgreSQL 16 in CI:** the application suite, including migrations, Row Level Security and audit-trigger tests, passed locally against an isolated PostgreSQL 18.2 instance. Check the workflow result for CI's PostgreSQL 16 environment after pushing.
+- **CI/database environment:** the tracked workflow uses PostgreSQL 16. Sprint 5–6 local results are recorded separately in [verification](verification.md); older PostgreSQL 18.2 observations are historical. Check the actual CI result for the reviewed commit; no production database version or deployment is certified by local tests.
 - **Spec proof of concept (section 12 of the spec):** Clerk token lifetime and outage behaviour (tokens last about 60 s), webhook bad-signature then double replay, Supabase public key cannot read or write any table, backup restore time (the 4 h target is unproven), 5 MB phone upload on mobile data and signed URL expiry.
 - **Live Supabase Storage:** `Infrastructure/Supabase/supabase_object_storage.py` is tested against a mock only; confirm upload, signing and delete against a real project.
 - **Browser check:** desktop Chrome sign-in and the workspace were verified for all seven roles using the live Clerk development instance and test-email aliases. Mobile behavior and real-inbox verification still need testing.
-- **Docker development:** Compose Watch was verified on Docker Desktop: fresh PostgreSQL migrations, frontend source sync and browser reload, Clerk sign-in rendering and API health through Vite and ngrok. Docker uses a separate persistent database; bootstrap the Owner before using a fresh database. This does not verify production deployment or migration of existing local records.
-- **Dependencies:** Pillow and python-multipart were added in Sprint 4; the frontend Clerk SDK was migrated to `@clerk/react` 6.18.8 with Core 3 authentication gates after the old SDK was blocked at sign-in. Frontend lint, 25 tests, build and dependency audit passed after the upgrade. The spec asks for a human dependency review note.
+- **Docker development:** the backend/frontend containers were rebuilt and restarted, migrations through `0006` applied, and the running Owner workspaces checked against stored grants. This does not certify production deployment. Compose Watch source sync, browser reload and Vite/ngrok health were recorded against the earlier QA baseline. Docker uses its own persistent database; bootstrap the first Owner only on a fresh database, and retain `pgdata` to preserve accounts.
+- **Dependencies:** Pillow and python-multipart were added in Sprint 4; the frontend Clerk SDK was migrated to `@clerk/react` 6.18.8 with Core 3 authentication gates after the old SDK was blocked at sign-in. That SDK upgrade had its own historical verification; current branch results are in the verification record. The spec asks for a human dependency review note.
 
 </details>
 
 ## 13. Left to build
 
-**Financial policies exist; persistent financial modules do not.** Implement their ledgers and controls before removing preview labels.
+The persistent Sprint 5 finance modules and Sprint 6 reports are implemented on this branch. Read [the current handoff](sprint-5-6.md) for the complete behavior and role matrix.
 
-<details>
-<summary><strong>Technical reference and caveats</strong></summary>
-
-**Sprint 5 (spec sections 7, 8, 9, 13.1):**
-
-- Trip expenses (fuel, toll, other): states _entering / awaiting review / finalized / confirmed-zero_; missing expenses are never silently zero; the enterer cannot approve their own entry. Matrix rows: enter, approve.
-- Finalize the hauling charge per trip (Accounting or Owner). Client rates are visible to Owner/Accounting only.
-- Earnings: `base = charge - approved expenses`; driver+1 helper 8%/4%, driver+2 helpers 6%/3%/3% **of the base** (example: 20,000 - 5,500 = 14,500 -> 1,160/580 or 870/435/435). One entry per employee per trip; stays _Pending Calculation_ until charge and expenses are final; later percentage changes never alter finalized entries (use adjustments); negative base flagged, not paid.
-- Payroll periods, employee deductions (after gross), net pay, statements, payment records (HR). Cash advances: request, Owner approval, release, repayment through payroll, balances; operating advances are separate and never become personal debt.
-- Billing: batches of eligible, unbilled trips with carry-over; separate states for billing readiness, batch, invoice (draft/issued/void, two-person void) and payment; a trip charge appears in at most one active bill.
-- Make the Owner's receipt correction also reverse/hold earnings and billing once they exist. Add the **no-self-approval** and Owner-delegated advance approver rules.
-- Working policies for D4–D10 now exist in [FINANCIAL_POLICIES.md](../decisions/financial-policies.md). Implement their versioned rates, decimal rounding, approvals, schedules and billing eligibility with database constraints and tests. D16 (labour-law check) remains required before payroll goes live. These policy choices are new development defaults, not previously approved text from the supplied specification.
-
-**Sprint 6 remaining:** expanded reports and dashboards (spec 10.1, including "completed without a stamped copy" spot-check flag and ORs awaiting receipt), security review, load test (the plan assumes ~30 trips/day, ~20 users, ~10 req/s peak), staging validation.
-
-**Screens not built:** the real Expenses, Payroll, Advances, Billing and Reports screens (design previews exist, see 13a), and the **PWA** (manifest, service worker, installability) for drivers. The People, Audit, Permissions, crew-change and truck-replacement screens now exist.
-
-**Platform and operations:** hosting and deploy pipeline (D12), Clerk/Supabase production plans (D11), MFA and recovery for Owner/HR/Accounting (D17), scheduled receipt-bucket backup, scheduling `reconcile_clerk` (e.g. hourly), HTTPS scan, decide whether `/docs` is public in production, data-privacy incident procedure and region (spec 11.3), branch protection and required reviewers on GitHub, a shared rate-limit store if more than one server process runs.
-
-</details>
+Remaining release gates: named human/security review before merge; D16 review before real payroll/deduction use; live staging and Supabase/mobile checks; hosting, MFA/recovery, HTTPS and incident procedure; backup/reconciliation schedules and a timed restore drill. Refund/credit reconciliation and already-paid payroll corrections need their own designed workflow. Driver installation support includes a manifest and public offline help, without an offline action queue.
 
 ## 13a. Frontend design system (daisyUI + Tailwind)
 
@@ -432,10 +424,10 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 <summary><strong>Technical reference and caveats</strong></summary>
 
 - **Stack:** Tailwind 4 with **daisyUI 5.8.1** (pinned). Two custom themes live in `src/frontend/src/index.css`: `bm-dark` (bold dark navy + orange, default) and `bm-light`. The shell's sun/moon button toggles them and remembers the choice (`shared/utils/theme.js`, `store/themeStore.js`).
-- **Shell:** `shared/components/AppShell.jsx` is a responsive frame: sidebar on large screens, slide-in menu plus a bottom dock on phones. Pages, their groups and the capability each needs are declared once in `shared/utils/navigation.js`; pages marked `preview: true` show a "Soon" badge.
+- **Shell:** `shared/components/AppShell.jsx` is a responsive frame: sidebar on large screens, slide-in menu plus a bottom dock on phones. Pages, their groups and the capability each needs are declared once in `shared/utils/navigation.js`; the current financial/report entries have no `preview: true` marker and no "Soon" badge. Read and write capabilities remain separate.
 - **Building blocks** (all pure components): `PageHeader`, `StatCard`, `StatusBadge` (labels and colours from `shared/utils/statusLabels.js`), `FilterTabs`, `SearchField`, `FormField`, `ModalDialog`, `ReasonDialog`, `RowMenu`, `Toast` (+ `hooks/useToast`), `EmptyState`, `ListSkeleton`, `ErrorNotice`, `Icon` (inline SVGs, no icon package).
-- **Live screens:** Dashboard, Dispatch board (assign, clear, change crew, replace truck, cancel, fail, correct), Delivery orders (edit/cancel), Clients, Fleet (edit, maintenance history), My trips, People (roles, sign-in link, activation, driver licenses), Audit log, Permissions, My account. Page containers are in `src/pages/AppPages.jsx`; `src/App.jsx` is the root.
-- **Design previews (not real yet):** Trip expenses, Payroll, Cash advances, Billing and Reports (`components/finance/*Preview.jsx` and `components/reports/ReportsPreview.jsx`) use invented data from `shared/mockups/sampleData.js` behind a "Design preview" banner. Replace each with a real screen when Sprints 5 and 6 land, and remove its preview entry.
+- **Persistent screens:** Expenses, Payroll, Cash advances, Billing, Reports, Dashboard, Dispatch board (assign, clear, change crew, replace truck, cancel, fail, correct), Delivery orders (edit/cancel), Clients, Fleet (edit, maintenance history), My trips, People (roles, sign-in link, activation, driver licenses), Audit log, Permissions, My account. Page containers are in `src/pages/AppPages.jsx`; `src/App.jsx` is the root.
+- **Design-only reference:** `components/finance/*Preview.jsx` and `components/reports/ReportsPreview.jsx` remain isolated to `/preview.html`. Signed-in finance pages use the persistent panels through `pages/FinancePage.jsx`.
 - **Design preview page:** run `npm run dev` and open `http://localhost:5173/preview.html`. It renders the real shell and every screen with sample data (no Clerk or backend), with role and state pickers (normal, loading, error, empty). Resize the window to test phones. It lives in `src/frontend/design-preview/` and is not part of the production build.
 - **Rules:** keep components pure (props in, callbacks out); put new colours in the theme, not in components; every new status needs a label and tone in `statusLabels.js`; add unit tests for new helpers in `shared/utils/`.
 

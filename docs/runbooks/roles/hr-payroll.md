@@ -2,31 +2,30 @@
 
 [All roles](README.md) · [Feature guide](../user-guide.md)
 
-> **Your job:** Maintain employee records now; prepare for the planned payroll workflow.
+> **Your job:** Maintain employee records, prepare payroll, and record actual releases and payments.
 
-**HR and Payroll workflow. Maintain employee records now; prepare for the planned payroll workflow.**
+**HR and Payroll workflow. Maintain employee records, prepare payroll, and record actual releases and payments.**
 
 ```mermaid
 flowchart TB
     accTitle: HR and Payroll: daily workflow
-    accDescr: Maintain employee records now; prepare for the planned payroll workflow.
+    accDescr: Maintain employee records, prepare payroll, and record actual releases and payments.
     search["People: search before creating"]:::action --> record["Create or update employee details"]:::action
     record --> owner["Owner: roles + link + activate"]:::wait
     owner --> active["Employee ready for authorized work"]:::done
-    active -.-> payroll["PLANNED: review earnings → payroll → payment record"]:::planned
+    active -.-> payroll["review earnings → payroll → payment record"]:::action
     classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
     classDef wait fill:#fff3d6,stroke:#b77910,color:#62420d,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
 ```
 
 ## What can I use?
 
-| Screen / area      | Your access                             |
-| ------------------ | --------------------------------------- |
-| People             | Create/edit employee records            |
-| Driver licenses    | Read details; Fleet/Owner makes changes |
-| Payroll / Advances | Preview screens — no real processing    |
+| Screen / area      | Your access                              |
+| ------------------ | ---------------------------------------- |
+| People             | Create/edit employee records             |
+| Driver licenses    | Read details; Fleet/Owner makes changes  |
+| Payroll / Advances | Persistent payroll and advance workflows |
 
 ## Quick checklist
 
@@ -34,9 +33,9 @@ flowchart TB
 - [ ] **License issue:** Refer correction to Fleet.
 - [ ] **Leaving employee:** Notify Owner and Dispatcher promptly.
 
-> **Remember:** Owner activates accounts. Payroll previews cannot release money or deduct wages.
+> **Remember:** Owner activates accounts and independently approves designated financial proposals. Draft payroll does not post repayments. Recording a payment does not transfer money; personal deductions remain disabled pending D16 review.
 
-> **Finance status:** policies are defined; financial services are not implemented. Preview values are not real pay, debt or invoices.
+> **Finance status:** persistent modules are available on this branch. [Current procedures and role boundaries](../sprint-5-6.md). DEMO records are fictional; real financial use remains gated.
 
 ## When you need the details
 
@@ -59,23 +58,25 @@ Create/edit employee records and read Driver license details. Owner activates/de
 </details>
 
 <details>
-<summary><strong>Payroll procedure — planned, not available in preview</strong></summary>
+<summary><strong>Payroll procedure</strong></summary>
 
-1. Select the semi-monthly period and identify completed trips with finalized charges and reviewed expenses/explicit zero.
+1. Open **Payroll → Prepare payroll period**, use a 1st/16th start, and identify completed trips with final charges and reviewed expenses/zero. The earning calculation runs when prerequisites arrive; **Calculate ready trip earnings** retries pending work.
 2. Leave incomplete finance **Pending Calculation**; this does not block operational completion.
 3. Review one original earning per employee/trip, saved crew/rate version and decimal rounding. Route negative-base or disputed entries to Owner.
 4. Prepare permitted employee deductions/adjustments for independent Owner approval; do not deduct fuel/toll twice.
 5. Preview agreed advance installments. Draft payroll does not reduce debt. Finalization posts approved deductions/repayments once and holds insufficient-pay cases under the working arrangement.
-6. Provide the detailed statement, record actual payment releases/reference, and reconcile unpaid balances. A calculation is not a money transfer.
+6. After the period ends, select **Finalize reviewed payroll**. Use **Record actual payroll payment** for actual amount/date/method/reference and inspect unpaid balances. A calculation/record is not a money transfer; payment is blocked for held or overpaid statements.
 
 </details>
 
 <details>
-<summary><strong>Advances — planned</strong></summary>
+<summary><strong>Advances</strong></summary>
 
-Prepare requests on behalf of employees if needed; obtain independent Owner approval. Record actual release and acknowledgment, not merely approval. Apply the agreed fixed installment at payroll finalization; partial release/repayment and reversal update balance precisely. Keep trip operating advances separate from personal debt.
+Use **Cash advances → Request personal advance** on behalf of an employee if needed; obtain independent Owner approval. Named HR approval requires a valid delegation, and a different HR person must release an advance that HR approved. Record actual release and acknowledgment, not merely approval. Apply the agreed fixed installment at payroll finalization; partial release/repayment and reversal update balance precisely. Keep trip operating advances separate from personal debt.
 
-These steps follow [financial policies](../../decisions/financial-policies.md). Financial persistence, approvals and statements still need implementation and D16 review before real payroll use. Current sample screens cannot process pay.
+See the [exact financial screen procedures](../user-guide.md#10-dashboard-audit-permissions-and-finance), including period close, disabled deductions, held statements and unsupported paid-record correction limits.
+
+These steps follow [financial policies](../../decisions/financial-policies.md). Persistence, approvals and statements are implemented. D16 review remains required before real payroll use; DEMO records do not represent actual pay.
 
 </details>
 

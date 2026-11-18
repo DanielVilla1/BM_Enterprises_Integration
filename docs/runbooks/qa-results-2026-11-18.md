@@ -1,5 +1,7 @@
 # QA acceptance execution — 18 November 2026
 
+> **Historical QA baseline:** these results and their evidence apply to the commit identified below, before Sprint 5?6. Finance-preview observations and schema `0004` recovery do not describe or approve the current financial implementation. See the [current handoff](sprint-5-6.md), [implementation evidence](sprint-5-6-evidence/verification.md) and [current QA cases](qa.md).
+
 **Release decision: Blocked. QA lead and business Owner approval remain pending. No deployment performed.**
 
 The acceptance checklist in [qa.md](qa.md) is unchanged. This report adds references P01–P07 (preparation), U01–U07 (usability/recovery), F01–F02 (financial scope), and G01–G06 (release gates). A01–A11, W01–W14, D01–D09 and S01–S10 retain their original meaning. Every record has a result; blocked physical/deployed/human requirements are not reported as passes.

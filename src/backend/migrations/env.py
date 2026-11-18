@@ -12,7 +12,7 @@ from logging.config import fileConfig
 from alembic import context
 from backend.src.config import get_settings
 from backend.src.database import Base
-from backend.src.Repository import orm_models  # noqa: F401  (register tables)
+from backend.src.Repository import finance_models, orm_models  # noqa: F401  (register tables)
 from sqlalchemy import create_engine
 
 config = context.config

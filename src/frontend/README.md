@@ -51,7 +51,7 @@ Set `VITE_PUBLIC_FRONTEND_URL` in the root `.env` to the exact HTTPS URL ngrok p
 | `tests/unit/`, `tests/components/` | Frontend regression tests                           |
 | `design-preview/`                  | Isolated sample-data preview harness                |
 
-Components receive props and emit callbacks. Services handle network access. The API enforces business rules and permissions. Financial pages marked **Soon** are previews.
+Components receive props and emit callbacks. Services handle network access. The API enforces business rules and permissions. Trip expenses, payroll, cash advances, billing and reports use persistent, role-scoped APIs; implemented pages no longer carry **Soon** indicators. `/preview.html` remains a separate design preview. See the [financial procedures](../../docs/runbooks/user-guide.md#10-dashboard-audit-permissions-and-finance) and [Sprint 5?6 handoff](../../docs/runbooks/sprint-5-6.md) for presentation seeding and implementation limits.
 
 ```powershell
 npm.cmd test

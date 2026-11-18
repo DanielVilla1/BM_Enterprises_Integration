@@ -13,7 +13,7 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from ..Entity.access import RoleCode
-from ..Entity.employee import Employee
+from ..Entity.employee import Employee, EmployeeDirectoryEntry
 from .orm_models import EmployeeRoleRow, EmployeeRow
 
 
@@ -58,6 +58,15 @@ class EmployeeRepository:
             statement = statement.where(EmployeeRow.is_active == only_active)
         rows = self._session.scalars(statement.limit(limit).offset(offset)).all()
         return [self._to_entity(row) for row in rows]
+
+    # AI MODIFIED: Financial name lists do not load identities, contacts or per-person role queries.
+    def list_directory(self) -> list[EmployeeDirectoryEntry]:
+        statement = select(EmployeeRow.employee_id, EmployeeRow.full_name).order_by(
+            EmployeeRow.full_name, EmployeeRow.employee_id
+        )
+        return [
+            EmployeeDirectoryEntry(identifier, name) for identifier, name in self._session.execute(statement)
+        ]
 
     def list_all(self) -> list[Employee]:
         statement = select(EmployeeRow).order_by(EmployeeRow.full_name, EmployeeRow.employee_id)

@@ -118,6 +118,12 @@ class TruckRepository:
         self._session.flush()
         return _maintenance(row)
 
+    def list_maintenance_for_trucks(self, truck_ids: list[UUID]) -> list[MaintenanceRecord]:
+        if not truck_ids:
+            return []
+        statement = select(MaintenanceRecordRow).where(MaintenanceRecordRow.truck_id.in_(truck_ids))
+        return [_maintenance(row) for row in self._session.scalars(statement)]
+
     def list_maintenance(self, truck_id: UUID) -> list[MaintenanceRecord]:
         statement = (
             select(MaintenanceRecordRow)

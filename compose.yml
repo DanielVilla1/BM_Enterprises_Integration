@@ -23,6 +23,7 @@ services:
     build:
       context: ./src/backend
     container_name: bm_backend
+    restart: unless-stopped
     env_file:
       - .env
     ports:
@@ -33,6 +34,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          'import urllib.request; urllib.request.urlopen("http://127.0.0.1:8000/api/v1/health", timeout=3).close()',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
     develop:
       watch:
         - action: sync
@@ -54,6 +67,7 @@ services:
     build:
       context: ./src/frontend
     container_name: bm_frontend
+    restart: unless-stopped
     environment:
       VITE_CLERK_PUBLISHABLE_KEY: '${VITE_CLERK_PUBLISHABLE_KEY}'
       VITE_PUBLIC_FRONTEND_URL: '${VITE_PUBLIC_FRONTEND_URL:-}'
@@ -62,7 +76,8 @@ services:
     ports:
       - '${FRONTEND_EXTERNAL_PORT}:5173'
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     develop:
       watch:
         - action: sync

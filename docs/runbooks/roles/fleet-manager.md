@@ -23,11 +23,12 @@ flowchart TB
 
 ## What can I use?
 
-| Screen / area           | Your access                                |
-| ----------------------- | ------------------------------------------ |
-| Fleet                   | Register/edit trucks and maintenance       |
-| People → Driver license | Save number and expiry                     |
-| Limited employee list   | Select by name; private fields stay hidden |
+| Screen / area           | Your access                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Fleet                   | Register/edit trucks and maintenance                                                                         |
+| People → Driver license | Save number and expiry                                                                                       |
+| Limited employee list   | Select by name; private fields stay hidden                                                                   |
+| Reports                 | Operational/fleet exceptions, maintenance and replacement history; no financial totals outside Fleet’s remit |
 
 ## Quick checklist
 
@@ -65,7 +66,7 @@ Maintain trucks, capacity, condition, maintenance and Driver license details. Pe
 3. Confirm validity and notify Dispatcher. License actions may also appear for limited employee rows whose roles are hidden; the server rejects saving a license for a non-driver.
 4. Resolve missing/expired licenses before assignment. A later capacity/license change is rechecked at clearance and departure.
 
-Expected outcome: accurate fleet and license data supports dispatch eligibility. Report wrong crew roles or employee status to Owner; you cannot activate or reassign roles. Expanded maintenance/replacement reports remain planned, while maintenance history is available on Fleet.
+Expected outcome: accurate fleet and license data supports dispatch eligibility. Report wrong crew roles or employee status to Owner; you cannot activate or reassign roles. Open **Reports** for fleet status, maintenance and retained replacement history. Financial totals outside Fleet’s remit remain unavailable; **Fleet** also retains maintenance history.
 
 </details>
 

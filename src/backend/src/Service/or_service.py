@@ -14,6 +14,7 @@ from uuid import UUID, uuid4
 
 from ..Contract.i_audit_repository import IAuditRepository
 from ..Contract.i_document_repositories import IIdempotencyRepository, IOrDocumentRepository
+from ..Contract.i_financial_repository import ITripFinancialControls
 from ..Contract.i_storage import (
     IImageSanitizer,
     InvalidImageError,
@@ -66,6 +67,8 @@ class OrService:
         signed_url_ttl_seconds: int,
         maximum_upload_bytes: int,
         clock: Callable[[], datetime] = lambda: datetime.now(UTC),
+        financial_controls: ITripFinancialControls | None = None,
+        presentation_enabled: bool = False,
     ) -> None:
         self._trips = trips
         self._documents = documents
@@ -79,6 +82,8 @@ class OrService:
         self._signed_url_ttl = signed_url_ttl_seconds
         self._maximum_upload_bytes = maximum_upload_bytes
         self._clock = clock
+        self._financial_controls = financial_controls
+        self._presentation_enabled = presentation_enabled
 
     # ----- documents ---------------------------------------------------------------
 
@@ -149,7 +154,12 @@ class OrService:
         if document is None or document.trip_id != trip_id or hidden_history:
             raise _error(404, "DOCUMENT_NOT_FOUND", "Not found", "The document was not found.")
         try:
-            url = self._storage.create_signed_url(document.storage_path, self._signed_url_ttl)
+            # AI MODIFIED: Fictional local presentation evidence is fetched with bearer authorization.
+            url = (
+                f"/api/v1/finance/presentation-documents/{document.document_id}"
+                if self._presentation_enabled and document.storage_path.startswith("presentation/")
+                else self._storage.create_signed_url(document.storage_path, self._signed_url_ttl)
+            )
         except StorageError as storage_error:
             raise _error(
                 503,
@@ -200,11 +210,17 @@ class OrService:
         )
         self._record(principal, "trip.receipt_confirmed", trip_id, {"stamped_copy": stamped}, trace_id)
         self._unit_of_work.commit()
+        # AI MODIFIED: Financial calculation starts after the operational transaction has committed.
+        if self._financial_controls:
+            self._financial_controls.after_completion(trip_id, trace_id)
         return self._trip_service.view_for(self._load(trip_id))
 
     def correct_confirmation(
         self, principal: Principal, trip_id: UUID, reason: str, trace_id: str | None
     ) -> TripView:
+        # AI MODIFIED: Hold dependent ledgers in the same correction transaction.
+        if self._financial_controls:
+            self._financial_controls.lock_finances()
         trip = self._load(trip_id)
         self._trips.lock_trip(trip_id)
         trip = self._load(trip_id)
@@ -231,6 +247,8 @@ class OrService:
         )
         for later_trip_id in reopened:
             self._trips.set_status(later_trip_id, TripStatus.ACCEPTED)
+        if self._financial_controls:
+            self._financial_controls.hold_receipt(trip_id, reason)
         self._trips.clear_receipt_confirmation(trip_id)
         self._synchronizer.refresh_truck(trip.truck_id)
         self._synchronizer.refresh_order(trip.order_id)
