@@ -11,21 +11,31 @@ npm.cmd run dev
 
 Open `http://localhost:5173`. The API must be running on port 8000; Vite proxies `/api/v1` requests to it. `/preview.html` uses fictional data for visual review.
 
-With Docker Desktop running Linux containers, start the full development stack from the repository root:
+For Docker Desktop, run from the repository root with the root `.env` configured:
 
 ```powershell
 docker compose up --build --watch
 ```
 
-Docker runs Vite inside the frontend container, FastAPI inside the backend container, and PostgreSQL with persistent storage. Do not also start standalone Vite or FastAPI on ports 5173 and 8000. Compose syncs source edits for hot reload and rebuilds services when dependency manifests change. Restart the Compose command after changing `compose.yml` or the root `.env`.
+Stop standalone Vite and API processes first so ports 5173 and 8000 are free. If a local PostgreSQL server uses port 5432, set `POSTGRES_EXTERNAL_PORT=5433` in the root `.env`. Docker uses its own persistent `pgdata` database; existing local database records are not copied.
 
-Open `http://localhost:5173` for local use. To share with friends, keep the Docker stack running and start ngrok on the host in another terminal:
+A fresh database needs an active employee linked to the Clerk identity, even if that identity is already an Owner in another database. Create the first Owner once, using the same Clerk user ID:
+
+```powershell
+docker compose exec backend python -m backend.scripts.bootstrap_owner --name "Owner Name" --email "owner@example.com" --clerk-user-id "user_REPLACE_ME"
+```
+
+This audited command refuses to run if employees already exist. Keep the `pgdata` volume to retain accounts between starts; `docker compose down` preserves it.
+
+Compose syncs source edits into the containers. Vite applies hot reload, FastAPI reloads Python changes, and dependency or Dockerfile changes rebuild the affected service. Windows `node_modules`, Python virtual environments and local `.env` files are excluded. After changing the root `.env`, restart the Compose command to apply the new settings.
+
+Keep ngrok running on the host in another terminal:
 
 ```powershell
 ngrok http http://127.0.0.1:5173
 ```
 
-The root `.env` must set `VITE_PUBLIC_FRONTEND_URL` to the exact ngrok HTTPS origin and include it in `CLERK_AUTHORIZED_PARTIES`. Restart Compose if that URL changes. Vite sends `/api/v1` to `backend:8000` over Docker's network, so one ngrok tunnel serves both the frontend and API. Keep the `pgdata` volume to retain employee accounts; `docker compose down` preserves it.
+Set `VITE_PUBLIC_FRONTEND_URL` in the root `.env` to the exact HTTPS URL ngrok provides, then restart Compose if it changed. The browser uses `/api/v1` on that same origin; Vite forwards those requests to `backend:8000` inside Docker. Include the public origin in `CLERK_AUTHORIZED_PARTIES` for authenticated API access.
 
 | Directory                          | Responsibility                                      |
 | ---------------------------------- | --------------------------------------------------- |
@@ -41,7 +51,7 @@ The root `.env` must set `VITE_PUBLIC_FRONTEND_URL` to the exact ngrok HTTPS ori
 | `tests/unit/`, `tests/components/` | Frontend regression tests                           |
 | `design-preview/`                  | Isolated sample-data preview harness                |
 
-Components receive props and emit callbacks. Services handle network access. The API enforces business rules and permissions. Financial pages marked **Soon** are previews.
+Components receive props and emit callbacks. Services handle network access. The API enforces business rules and permissions. Trip expenses, payroll, cash advances, billing and reports use persistent, role-scoped APIs; implemented pages no longer carry **Soon** indicators. `/preview.html` remains a separate design preview. See the [financial procedures](../../docs/runbooks/user-guide.md#10-dashboard-audit-permissions-and-finance) and [Sprint 5?6 handoff](../../docs/runbooks/sprint-5-6.md) for presentation seeding and implementation limits.
 
 ```powershell
 npm.cmd test

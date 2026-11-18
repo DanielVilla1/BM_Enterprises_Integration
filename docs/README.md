@@ -4,6 +4,8 @@
 
 **Start with your job. Open the detailed rules only when you need them.**
 
+**Technical reference:** [Combined documentation — Parts 1 and 2, Sections 1–8](technical/technical-documentation.md) covers the verified stack, architecture, schema, APIs, permissions, setup and deployment notes.
+
 **Preparing a release?** Start with the [QA checklist and deployment gate](runbooks/qa.md), then review [security hardening](decisions/security-hardening.md).
 
 **First time using the system?** Follow [one delivery, step by step](runbooks/delivery-walkthrough.md), with the exact role, menu, button and expected result at each handoff.

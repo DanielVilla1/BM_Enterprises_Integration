@@ -1,0 +1,44 @@
+{
+  "identifier": "S06",
+  "status": "Pass",
+  "requests": [
+    {
+      "subcheck": "valid",
+      "http": 200,
+      "code": null,
+      "outcome": "processed",
+      "trace": "5eb52461272f4d49a6212deef12709c2"
+    },
+    {
+      "subcheck": "replay-1",
+      "http": 200,
+      "code": null,
+      "outcome": "duplicate",
+      "trace": "a3f0fe94b2244c19a99206c3774fad58"
+    },
+    {
+      "subcheck": "replay-2",
+      "http": 200,
+      "code": null,
+      "outcome": "duplicate",
+      "trace": "dc3ed73247394df4aee1b274dda4f680"
+    },
+    {
+      "subcheck": "invalid-signature",
+      "http": 400,
+      "code": "WEBHOOK_SIGNATURE_INVALID",
+      "outcome": 400,
+      "trace": "80f24da2df954b3681d7f1470f825a43"
+    },
+    {
+      "subcheck": "oversized",
+      "http": 413,
+      "code": "PAYLOAD_TOO_LARGE",
+      "outcome": 413,
+      "trace": "9829376cdfa5464386724b60a8115a2e"
+    }
+  ],
+  "identity_mutations": 1,
+  "link_audit_events": 1,
+  "scope": "Real HTTP and HMAC verification using the development secret; not provider-origin webhook delivery certification"
+}

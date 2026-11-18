@@ -1,0 +1,870 @@
+[
+  {
+    "label": "backend-current-postgres",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/verify_workflow_postgres.py",
+      "--junitxml=[workspace]/.venv/qa-acceptance-20261118/backend-current-postgres.xml"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:31:53.849336+00:00",
+    "seconds": 245.03,
+    "exit_code": 0,
+    "local_raw_log_sha256": "771372ea2532f570d5cb4e36796387389a2cda5708598dbbdf4779d8b6e46f3b",
+    "portable_redacted_log_sha256": "1593d40d8922968856267945e761541d8d9783e719f0d1b49d8dd5e58a114cd6"
+  },
+  {
+    "label": "backend-current-sqlite",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-ra",
+      "--junitxml=[workspace]/.venv/qa-acceptance-20261118/backend-current-sqlite.xml",
+      "--basetemp=[workspace]/.venv/qa-acceptance-20261118/backend-current-sqlite-temp",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T13:31:52.521238+00:00",
+    "seconds": 115.06,
+    "exit_code": 0,
+    "local_raw_log_sha256": "e9c70f8632a00b273eba6dd08b791997da8d74aff333fc90e5ef91f9b792267e",
+    "portable_redacted_log_sha256": "e955112314b9dc80ddf6f9f4ce58881d913899e058de63d21ae76c26cd576f30"
+  },
+  {
+    "label": "backend-final-format",
+    "command": ["[workspace]/src/backend/.venv/Scripts/python.exe", "-m", "black", "--check", "."],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T13:42:06.995209+00:00",
+    "seconds": 3.05,
+    "exit_code": 0,
+    "local_raw_log_sha256": "dc27d7fb7f0686518080483fadf959a26ed328173a775229d369aa0e3e3cdc6f",
+    "portable_redacted_log_sha256": "381891115352ed77dd9b7cc147082a50c7269895620ecdea183211b99c3a36a6"
+  },
+  {
+    "label": "backend-final-lint",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "ruff",
+      "check",
+      ".",
+      "../../tools/scripts"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T13:42:04.967692+00:00",
+    "seconds": 1.89,
+    "exit_code": 0,
+    "local_raw_log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "portable_redacted_log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "label": "backend-format-correct",
+    "command": ["[workspace]/src/backend/.venv/Scripts/python.exe", "-m", "black", "--check", "."],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:49:57.485136+00:00",
+    "seconds": 3.86,
+    "exit_code": 0,
+    "local_raw_log_sha256": "dc27d7fb7f0686518080483fadf959a26ed328173a775229d369aa0e3e3cdc6f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "backend-format-final",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "black",
+      "--check",
+      ".",
+      "../../tools/scripts"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:47:25.237290+00:00",
+    "seconds": 5.69,
+    "exit_code": 1,
+    "local_raw_log_sha256": "8e2cb743a0dbf8b83337dd33476ae364c849f58b692de55b9254736b3aafabc6",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "backend-format",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "black",
+      "--check",
+      ".",
+      "../../tools/scripts"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:46:25.426237+00:00",
+    "seconds": 0.09,
+    "exit_code": 1,
+    "local_raw_log_sha256": "79f2f51118bdc813ac4bbd2f75c8e82d57dee82878f375e3c9686d198d54982f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "backend-lint-final",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "ruff",
+      "check",
+      ".",
+      "../../tools/scripts"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:47:24.860127+00:00",
+    "seconds": 0.33,
+    "exit_code": 0,
+    "local_raw_log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "backend-lint",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "ruff",
+      "check",
+      ".",
+      "../../tools/scripts"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:46:25.372874+00:00",
+    "seconds": 0.09,
+    "exit_code": 1,
+    "local_raw_log_sha256": "aa7c45b72d38068cbbf81936407082734a99fbd50b4f9667b84a1efc1b981c64",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "cleanup",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/cleanup_live.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:43:51.583649+00:00",
+    "seconds": 28.08,
+    "exit_code": 0,
+    "local_raw_log_sha256": "6a2395063717394eb5af22c82d8cee355f968c73fb8019e2cb834ccc674ef1b2",
+    "portable_redacted_log_sha256": "252266870e4e53d02fc3348ae54947f60e2c67dd8ebe38cd2303c96d9dd76505"
+  },
+  {
+    "label": "compose-config-final",
+    "command": [
+      "C:/Program Files/Docker/Docker/resources/bin/docker.exe",
+      "compose",
+      "config",
+      "--quiet"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:49:40.366217+00:00",
+    "seconds": 0.22,
+    "exit_code": 0,
+    "local_raw_log_sha256": "4c4fb9fd10b76e019d64d2af523a71fbf855d9372f38d9e5ceabdf578a52a66b",
+    "portable_redacted_log_sha256": "64f2fa098e63357c7abab8a0959307eb766b0084ed4416c4b230ceaa42329749"
+  },
+  {
+    "label": "docs",
+    "command": ["[workspace]/.venv/ci312/Scripts/python.exe", "tools/scripts/check_docs.py"],
+    "cwd": "D:/Code Projects/BM_Enterprises_Integration",
+    "started_utc": "2026-11-18T12:46:25.365323+00:00",
+    "seconds": 0.28,
+    "exit_code": 0,
+    "local_raw_log_sha256": "926ce9cabbbc9704da9df54ca42516ac8609280e7554cdfc432f62e7b4b8752b",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "documentation-final",
+    "command": [".venv/ci312/Scripts/python.exe", "tools/scripts/check_docs.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:49:38.952894+00:00",
+    "seconds": 0.25,
+    "exit_code": 0,
+    "local_raw_log_sha256": "538d38bcdf6fd530211bae0d6f24be5794cff38e2ef63ded40fd89b63e9862d0",
+    "portable_redacted_log_sha256": "4b01b99b428aeefcc695f4b81ec1a1510074a298fc1bd25e8fe6b625520c1721"
+  },
+  {
+    "label": "fault-workers",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/qa-acceptance-20261118/start_test_workers.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:01:38.742553+00:00",
+    "seconds": 15.11,
+    "exit_code": 0,
+    "local_raw_log_sha256": "21d1b5ffda3c72009b02e48a79e2f4972392e06d97e5d723eb6bbecdd0c374e1",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "frontend-build",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "build"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:47:23.003923+00:00",
+    "seconds": 11.39,
+    "exit_code": 0,
+    "local_raw_log_sha256": "263dbafa4058bc1e7edb07f6a7c052b0f5aab8055ef750bcf466f935d7558825",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "frontend-final-build",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "build"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T13:31:53.018554+00:00",
+    "seconds": 40.08,
+    "exit_code": 0,
+    "local_raw_log_sha256": "764d37be06d9f564d8a9c7cdec8eda0d2a047118563bde12a85232da5687729f",
+    "portable_redacted_log_sha256": "764d37be06d9f564d8a9c7cdec8eda0d2a047118563bde12a85232da5687729f"
+  },
+  {
+    "label": "frontend-final-format",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "format:check"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T13:49:39.684470+00:00",
+    "seconds": 3.51,
+    "exit_code": 0,
+    "local_raw_log_sha256": "49c7c4e2079c22efc0756a586b7e3fd08f149172c9caa254b253e3b6b5243955",
+    "portable_redacted_log_sha256": "49c7c4e2079c22efc0756a586b7e3fd08f149172c9caa254b253e3b6b5243955"
+  },
+  {
+    "label": "frontend-final-lint",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "lint"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T13:20:00.369725+00:00",
+    "seconds": 11.39,
+    "exit_code": 0,
+    "local_raw_log_sha256": "0d4695f4da2780a75fa8d28ae5fabe88093b7de3774417c514e2ecd90774e01f",
+    "portable_redacted_log_sha256": "31298a090b4d326219614a2b109f11bc9be6ea420c4b2fa47c181368d3733a26"
+  },
+  {
+    "label": "frontend-final-tests",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "test", "--", "--reporter=verbose"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T13:19:55.706388+00:00",
+    "seconds": 2.66,
+    "exit_code": 0,
+    "local_raw_log_sha256": "d6155293ccf44e16c7a21a7b75c840a508e138b2f50bf1f961e4a1d62d1a4e37",
+    "portable_redacted_log_sha256": "49efdd6cf5801626a8ee58753e51856fc7adc69a135ad5d1f784e582462e300f"
+  },
+  {
+    "label": "frontend-format-lf",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "format:check"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:49:58.595204+00:00",
+    "seconds": 5.84,
+    "exit_code": 0,
+    "local_raw_log_sha256": "49c7c4e2079c22efc0756a586b7e3fd08f149172c9caa254b253e3b6b5243955",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "frontend-format",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "format:check"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:47:24.414392+00:00",
+    "seconds": 8.24,
+    "exit_code": 1,
+    "local_raw_log_sha256": "7b0bc020e124bd2c067f82e647f1f015ed2edb2a6cb3d9be29e0097e410ccb29",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "frontend-lint",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "run", "lint"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:47:23.566133+00:00",
+    "seconds": 13.39,
+    "exit_code": 0,
+    "local_raw_log_sha256": "0d4695f4da2780a75fa8d28ae5fabe88093b7de3774417c514e2ecd90774e01f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "frontend-tests",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "test", "--", "--reporter=verbose"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:46:25.317476+00:00",
+    "seconds": 3.16,
+    "exit_code": 0,
+    "local_raw_log_sha256": "3ff12a016d393a4aff973270d07118e3e0bebe507d4b22499c1deeb32c778d38",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "inventory",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/inventory.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:47:22.527061+00:00",
+    "seconds": 9.67,
+    "exit_code": 0,
+    "local_raw_log_sha256": "bc72a594f8402e0be062a665be594d42d2cf02a7902a47fdafd00a570869f5bc",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "license-targeted-2",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-followup.mjs",
+      "--license-only"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:41:40.823048+00:00",
+    "seconds": 9.59,
+    "exit_code": 0,
+    "local_raw_log_sha256": "d879626db78249082a6be9288e46462497e2a7b4b6277bd456dde5ba1f19c8dc",
+    "portable_redacted_log_sha256": "d879626db78249082a6be9288e46462497e2a7b4b6277bd456dde5ba1f19c8dc"
+  },
+  {
+    "label": "license-targeted",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-followup.mjs",
+      "--license-only"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:40:34.641529+00:00",
+    "seconds": 3.7,
+    "exit_code": 1,
+    "local_raw_log_sha256": "3d67fa5fc6bc65cf803e506571913050967738dc014eb933b8a3d5dbccf1adb9",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-browser-network",
+    "command": ["C:/Program Files/nodejs/node.exe", ".venv/browser-check/qa-acceptance.mjs"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:55:56.176393+00:00",
+    "seconds": 460.14,
+    "exit_code": 1,
+    "local_raw_log_sha256": "bd888ad3332b8d37ea862ab6e8ba28869625d8f96bcb9d273847962f08540469",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-browser",
+    "command": ["C:/Program Files/nodejs/node.exe", ".venv/browser-check/qa-acceptance.mjs"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:54:13.031112+00:00",
+    "seconds": 47.22,
+    "exit_code": 1,
+    "local_raw_log_sha256": "919a9be53c9f2940f46c291ce1860cc2d981c469181c860605bffa6f50174772",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-followup-2",
+    "command": ["C:/Program Files/nodejs/node.exe", ".venv/browser-check/qa-followup.mjs"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:34:00.654486+00:00",
+    "seconds": 93.88,
+    "exit_code": 1,
+    "local_raw_log_sha256": "2d348e0578c49b7e26365f747ea8121b60652a7841b0a691a8e1b349a096b137",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-followup",
+    "command": ["C:/Program Files/nodejs/node.exe", ".venv/browser-check/qa-followup.mjs"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:31:06.704753+00:00",
+    "seconds": 141.44,
+    "exit_code": 1,
+    "local_raw_log_sha256": "103e8232eb0e6eef63639f8cbd1bfd6205da38a03d96e8fe0d299c4f37bf47ca",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-workflow-2",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-acceptance.mjs",
+      "--workflow"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:11:16.408050+00:00",
+    "seconds": 51.47,
+    "exit_code": 1,
+    "local_raw_log_sha256": "5d84f5a4f6391b893d3e3c7ac3cfd8bcde1a9ada63855df18f54b311a6c3eeb4",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-workflow-3",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-acceptance.mjs",
+      "--workflow"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:14:34.201179+00:00",
+    "seconds": 79.16,
+    "exit_code": 1,
+    "local_raw_log_sha256": "9ae80d5e7667dbe21a7fa46b9c76615646bc95231fbb1ee0f46a10816482aac9",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-workflow-5",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-acceptance.mjs",
+      "--workflow"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:17:34.091013+00:00",
+    "seconds": 81.05,
+    "exit_code": 1,
+    "local_raw_log_sha256": "64b1acae6cb402131ce8108ba1a06853ced2c515f8856c95d3ae566ed4b730df",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "live-workflow",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-acceptance.mjs",
+      "--workflow"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:05:50.444412+00:00",
+    "seconds": 57.48,
+    "exit_code": 1,
+    "local_raw_log_sha256": "d5865354c9289d9a100e2656b238ca24a79b470df73c16533785e20cf8c49255",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "npm-dev-audit-live",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "audit", "--json"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:49:21.532267+00:00",
+    "seconds": 2.56,
+    "exit_code": 1,
+    "local_raw_log_sha256": "9a9b1234e4c9315a1001e86bae494fd9da3058ec322cfdf7e5458b8236946a3e",
+    "portable_redacted_log_sha256": "9a9b1234e4c9315a1001e86bae494fd9da3058ec322cfdf7e5458b8236946a3e"
+  },
+  {
+    "label": "npm-dev-audit",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "audit", "--json"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:48:56.960450+00:00",
+    "seconds": 3.31,
+    "exit_code": 1,
+    "local_raw_log_sha256": "6ee1a314ead059867afaceae138f015d5bef7f52ff9ec905f637c4b2f88b7292",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "npm-runtime-audit-live",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "audit", "--omit=dev", "--json"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:49:20.418861+00:00",
+    "seconds": 2.27,
+    "exit_code": 0,
+    "local_raw_log_sha256": "de32e6ea71fe4302bbc6d4cb5813d202393a91fe0c90c6b2fa228c721873e38e",
+    "portable_redacted_log_sha256": "de32e6ea71fe4302bbc6d4cb5813d202393a91fe0c90c6b2fa228c721873e38e"
+  },
+  {
+    "label": "npm-runtime-audit",
+    "command": ["C:/Program Files/nodejs/npm.cmd", "audit", "--omit=dev", "--json"],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T12:48:58.477203+00:00",
+    "seconds": 3.11,
+    "exit_code": 1,
+    "local_raw_log_sha256": "6ee1a314ead059867afaceae138f015d5bef7f52ff9ec905f637c4b2f88b7292",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "orphan-after",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_or_documents.py",
+      "--basetemp=[workspace]/.venv/qa-acceptance-20261118/orphan-after-temp"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:49:57.767198+00:00",
+    "seconds": 15.31,
+    "exit_code": 0,
+    "local_raw_log_sha256": "60ad3b5a00dcb05e6d578962a149405d405f67899eeeb6bc707bf95e0a413dd3",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "orphan-before",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_or_documents.py",
+      "-k",
+      "timeout_after_accepting",
+      "--basetemp=[workspace]/.venv/qa-acceptance-20261118/orphan-before-temp"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:48:44.108666+00:00",
+    "seconds": 10.44,
+    "exit_code": 1,
+    "local_raw_log_sha256": "d21d05650fb564500a9e4c6fc711f573f524097da228859d7f040e9b6809325f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "pip-dev-audit-live",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "pip_audit",
+      "-r",
+      "requirements-dev.txt",
+      "--format=json"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:51:16.019622+00:00",
+    "seconds": 48.03,
+    "exit_code": 0,
+    "local_raw_log_sha256": "22148ad6906e78991f5c4dd21d2ebc2aee84b8ac30221333cb67add3e70c9059",
+    "portable_redacted_log_sha256": "d1601368758abd6590e086a707c1c85f6cd3bd6844071043b5a074f390a6332c"
+  },
+  {
+    "label": "pip-dev-audit",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "pip_audit",
+      "-r",
+      "requirements-dev.txt",
+      "--format=json"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:48:57.705105+00:00",
+    "seconds": 35.09,
+    "exit_code": 1,
+    "local_raw_log_sha256": "34438344ef3bb918a57139b75f2f9a60a5b1f50feafae8646ddb3db80b414a1a",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "pip-runtime-audit-live",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "pip_audit",
+      "-r",
+      "requirements.txt",
+      "--format=json"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:51:11.789023+00:00",
+    "seconds": 45.44,
+    "exit_code": 0,
+    "local_raw_log_sha256": "2f0558dd259288852efb9263b457ff8b36671dcb93204bf3e8f9128a07053594",
+    "portable_redacted_log_sha256": "53d59a018ab2c496e7c8320122da1ef41df60f2163c179fdd25eee2fcc08baad"
+  },
+  {
+    "label": "pip-runtime-audit",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "pip_audit",
+      "-r",
+      "requirements.txt",
+      "--format=json"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:48:56.226179+00:00",
+    "seconds": 36.64,
+    "exit_code": 1,
+    "local_raw_log_sha256": "fe2e9befd2b4a65fb364bea6aede0e7173052421e16543d2591e8023806e72ff",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "postgres-final",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/verify_workflow_postgres.py",
+      "--junitxml=[workspace]/.venv/qa-acceptance-20261118/postgres-final.xml"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:59:53.189133+00:00",
+    "seconds": 165.53,
+    "exit_code": 0,
+    "local_raw_log_sha256": "0d1f293b8823e0072e9be7d3de92fca9dffaede2034ff9db1881e7b46c68f11a",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "prepare-live-network",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/prepare_live.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:52:37.833434+00:00",
+    "seconds": 21.02,
+    "exit_code": 0,
+    "local_raw_log_sha256": "d1f610db6b2437f369f8875a0fed512928832a9c7c7240778e7c2299f7c0fb1c",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "prepare-live",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/prepare_live.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:51:08.423011+00:00",
+    "seconds": 1.17,
+    "exit_code": 2,
+    "local_raw_log_sha256": "3d25bb18dc8b620c001aec4258fc6bdd4461520f6a076e4716701ffc4310d1f0",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "receipt-before",
+    "command": [
+      "C:/Program Files/nodejs/npm.cmd",
+      "test",
+      "--",
+      "tests/unit/forms.test.js",
+      "tests/components/workflowRendering.test.jsx"
+    ],
+    "cwd": "src/frontend",
+    "started_utc": "2026-11-18T13:19:28.001205+00:00",
+    "seconds": 4.08,
+    "exit_code": 1,
+    "local_raw_log_sha256": "f16d11c0b2c05242ae2657313edeb54fbfa31fa2928858021a06676e1a2795a5",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "recovery-network",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/qa-acceptance-20261118/recovery_checks.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:28:34.329258+00:00",
+    "seconds": 17.69,
+    "exit_code": 0,
+    "local_raw_log_sha256": "94288f0aaffe45f42fc461f11225759b96ebceba59d901dd614f09ed15c4b9b9",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "recovery",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/qa-acceptance-20261118/recovery_checks.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:20:11.920414+00:00",
+    "seconds": 3.73,
+    "exit_code": 1,
+    "local_raw_log_sha256": "b3a4c76df9b94f33a8020c6cc390593ce94b2c7eb565f823412183c4150d739c",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "secrets-final-history",
+    "command": [
+      ".venv/qa-acceptance-20261118/scanner/gitleaks.exe",
+      "git",
+      "--no-banner",
+      "--redact=100",
+      "--log-opts=--all",
+      "--report-format=json",
+      "--report-path=.venv/qa-acceptance-20261118/secrets-final-history-findings.json"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:47:49.637066+00:00",
+    "seconds": 1.3,
+    "exit_code": 0,
+    "local_raw_log_sha256": "9a958d789f6bc4c38d17c866b095f0bbe5c4f6434d01a7087aca3212dd7a74e9",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "secrets-final-source-retest",
+    "command": [
+      ".venv/qa-acceptance-20261118/scanner/gitleaks.exe",
+      "dir",
+      ".venv/qa-acceptance-20261118/scan-tree",
+      "--no-banner",
+      "--redact=100",
+      "--report-format=json",
+      "--report-path=.venv/qa-acceptance-20261118/secrets-final-source-retest-findings.json"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:48:30.693953+00:00",
+    "seconds": 1.55,
+    "exit_code": 0,
+    "local_raw_log_sha256": "32c634a2aadde571341e13b3b7c12194569c5c8f33a54df62915903fa7e290b5",
+    "portable_redacted_log_sha256": "32c634a2aadde571341e13b3b7c12194569c5c8f33a54df62915903fa7e290b5"
+  },
+  {
+    "label": "secrets-final-source",
+    "command": [
+      ".venv/qa-acceptance-20261118/scanner/gitleaks.exe",
+      "dir",
+      ".venv/qa-acceptance-20261118/scan-tree",
+      "--no-banner",
+      "--redact=100",
+      "--report-format=json",
+      "--report-path=.venv/qa-acceptance-20261118/secrets-final-source-findings.json"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:47:47.939334+00:00",
+    "seconds": 1.53,
+    "exit_code": 1,
+    "local_raw_log_sha256": "e68433ffbdd44f9ccb8b455bcca6bc550c838f599d1f1c64507f2e0b92edb397",
+    "portable_redacted_log_sha256": "e68433ffbdd44f9ccb8b455bcca6bc550c838f599d1f1c64507f2e0b92edb397"
+  },
+  {
+    "label": "secrets-history-all-parents",
+    "command": [
+      ".venv/qa-acceptance-20261118/scanner/gitleaks.exe",
+      "git",
+      "--no-banner",
+      "--redact=100",
+      "--log-opts=--all --full-history -m",
+      "--report-format=json",
+      "--report-path=.venv/qa-acceptance-20261118/secrets-history-all-parents-findings.json"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:48:32.411758+00:00",
+    "seconds": 1.53,
+    "exit_code": 0,
+    "local_raw_log_sha256": "9fbeb0484859f25803c318e027e16a0745d00906938e40ea5204fa7e1b5bf354",
+    "portable_redacted_log_sha256": "9fbeb0484859f25803c318e027e16a0745d00906938e40ea5204fa7e1b5bf354"
+  },
+  {
+    "label": "secrets-history",
+    "command": [
+      ".venv/qa-acceptance-20261118/scanner/gitleaks.exe",
+      "git",
+      "--no-banner",
+      "--redact=100",
+      "--report-format=json",
+      "--report-path=.venv/qa-acceptance-20261118/secrets-history-findings.json",
+      "--log-opts=--all"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:56:06.860612+00:00",
+    "seconds": 1.28,
+    "exit_code": 0,
+    "local_raw_log_sha256": "ffa6525cf66af4f724db1c7e7fa2ac1ebab47dd35bd3e7b5acb0442869d6b828",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "sqlite-final",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-ra",
+      "--junitxml=[workspace]/.venv/qa-acceptance-20261118/sqlite-final.xml",
+      "--basetemp=[workspace]/.venv/qa-acceptance-20261118/sqlite-final-temp",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:59:42.235503+00:00",
+    "seconds": 46.75,
+    "exit_code": 0,
+    "local_raw_log_sha256": "df5113ec8f38e6b042a45845b8b96d8735e5ac876b3659aa6038c1b76bd2dd41",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "sqlite",
+    "command": [
+      "[workspace]/.venv/ci312/Scripts/python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-ra",
+      "--junitxml=[workspace]/.venv/qa-acceptance-20261118/sqlite.xml",
+      "--basetemp=[workspace]/.venv/qa-acceptance-20261118/sqlite-temp",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:46:25.358770+00:00",
+    "seconds": 55.62,
+    "exit_code": 0,
+    "local_raw_log_sha256": "2dcc817fc35d79c14adf21a8a8e09957307c173740923c7a639fb8129f624bf3",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "test-workers-network",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/qa-acceptance-20261118/start_test_workers.py",
+      "--restart"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:07:53.321117+00:00",
+    "seconds": 26.03,
+    "exit_code": 0,
+    "local_raw_log_sha256": "9596897dedcf02997a1aa107d4973a0b40b76f815609b4f3a0b2b7c3c9feeeac",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "test-workers",
+    "command": [
+      ".venv/ci312/Scripts/python.exe",
+      ".venv/qa-acceptance-20261118/start_test_workers.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T12:59:30.856055+00:00",
+    "seconds": 25.62,
+    "exit_code": 0,
+    "local_raw_log_sha256": "b925eac3086694e7bbda745e5a779a4170b7777c37dfe5fdb25e1c806eca370f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "tools-final-format",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "black",
+      "--check",
+      "../../tools/scripts",
+      "--config",
+      "pyproject.toml"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T13:42:10.183589+00:00",
+    "seconds": 1.61,
+    "exit_code": 0,
+    "local_raw_log_sha256": "83abf4b47e6b6e216d698b30f1f030922562c86836a54764d86a0e463467807e",
+    "portable_redacted_log_sha256": "f1292d711f03f123147106b0bf123a4a72829bd9d6f5d10f8a9feda9d70a78a4"
+  },
+  {
+    "label": "tools-format",
+    "command": [
+      "[workspace]/src/backend/.venv/Scripts/python.exe",
+      "-m",
+      "black",
+      "--check",
+      "../../tools/scripts",
+      "--config",
+      "pyproject.toml"
+    ],
+    "cwd": "src/backend",
+    "started_utc": "2026-11-18T12:49:58.198818+00:00",
+    "seconds": 3.41,
+    "exit_code": 0,
+    "local_raw_log_sha256": "83abf4b47e6b6e216d698b30f1f030922562c86836a54764d86a0e463467807e",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "webhook-live-2",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/webhook_checks.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:12:15.945916+00:00",
+    "seconds": 5.34,
+    "exit_code": 0,
+    "local_raw_log_sha256": "cd86dee4fd327b6a2da51d8d4b5532de61c098eac1264894ad77f805c987a677",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "webhook-live",
+    "command": [".venv/ci312/Scripts/python.exe", ".venv/qa-acceptance-20261118/webhook_checks.py"],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:11:57.884890+00:00",
+    "seconds": 5.11,
+    "exit_code": 1,
+    "local_raw_log_sha256": "15b9842d54d20d9a4b913e785622655034c04487bb2d8b9e04ab2ab6cc4ff59f",
+    "portable_redacted_log_sha256": null
+  },
+  {
+    "label": "workload-corrected",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      ".venv/browser-check/qa-final-live.mjs",
+      "--load-only"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-18T13:40:37.271417+00:00",
+    "seconds": 37.0,
+    "exit_code": 0,
+    "local_raw_log_sha256": "f7dcbc1240b8978c51563788bf657e2a4ff84c995f6f797215c091c68f4fcbef",
+    "portable_redacted_log_sha256": null
+  }
+]

@@ -65,6 +65,8 @@ The [verification record](verification.md) distinguishes current Sprint 5–6 ch
 
 Docker development containers were rebuilt/restarted, schema revision `0006` applied, and Owner access and fictional presentation records checked in the running app. Live Supabase behavior, real-device/inbox journeys and restore timing remain separate checks.
 
+The separate [pre-finance QA record](qa-results-2026-11-18.md) retains its own baseline and measurements, including seven-role Clerk sign-in and Compose Watch/ngrok checks. Those observations do not certify the later Sprint 5?6 changes.
+
 </details>
 
 ## 2. Branches and pull request targets
@@ -139,7 +141,7 @@ src/frontend/src/
 src/frontend/tests/              unit/ and components/ regression suites
 .github/                     CI workflow, PR template, Copilot governance and per-layer rules
 docs/runbooks/development.md      this file
-compose.yml                  Postgres, backend, frontend, pgAdmin (development stack verified)
+compose.yml                  Postgres, backend, frontend, pgAdmin with Compose Watch
 ```
 
 </details>
@@ -168,7 +170,7 @@ flowchart TB
 <details>
 <summary><strong>Commands and setup instructions</strong></summary>
 
-Requirements: Python 3.12, Node 20+ (22 in CI), Git. Docker is optional (and untested).
+Requirements: Python 3.12, Node 22+, Git. Docker Desktop is optional; see the [Compose Watch instructions](../../src/frontend/README.md) to run Vite and FastAPI in containers.
 
 **Backend** (from `src/backend/`; on Linux/macOS use `.venv/bin/python`):
 
@@ -403,7 +405,7 @@ Auth: bearer Clerk session token. Source of truth: `src/backend/openapi.snapshot
 - **Spec proof of concept (section 12 of the spec):** Clerk token lifetime and outage behaviour (tokens last about 60 s), webhook bad-signature then double replay, Supabase public key cannot read or write any table, backup restore time (the 4 h target is unproven), 5 MB phone upload on mobile data and signed URL expiry.
 - **Live Supabase Storage:** `Infrastructure/Supabase/supabase_object_storage.py` is tested against a mock only; confirm upload, signing and delete against a real project.
 - **Browser check:** desktop Chrome sign-in and the workspace were verified for all seven roles using the live Clerk development instance and test-email aliases. Mobile behavior and real-inbox verification still need testing.
-- **Docker development:** the backend/frontend containers were rebuilt and restarted, migrations through `0006` applied, and the running Owner workspaces checked against stored grants. This does not certify production deployment.
+- **Docker development:** the backend/frontend containers were rebuilt and restarted, migrations through `0006` applied, and the running Owner workspaces checked against stored grants. This does not certify production deployment. Compose Watch source sync, browser reload and Vite/ngrok health were recorded against the earlier QA baseline. Docker uses its own persistent database; bootstrap the first Owner only on a fresh database, and retain `pgdata` to preserve accounts.
 - **Dependencies:** Pillow and python-multipart were added in Sprint 4; the frontend Clerk SDK was migrated to `@clerk/react` 6.18.8 with Core 3 authentication gates after the old SDK was blocked at sign-in. That SDK upgrade had its own historical verification; current branch results are in the verification record. The spec asks for a human dependency review note.
 
 </details>

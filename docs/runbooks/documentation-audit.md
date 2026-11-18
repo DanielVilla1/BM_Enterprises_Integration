@@ -2,7 +2,7 @@
 
 Review date: **18 November 2026**. Branch: `sprint-5-6-finance-and-reporting`, **unmerged**.
 
-This follow-up reviewed **all 27 files currently under `docs/`** for Sprint 5–6 consistency. It reconciles current guidance against the financial services/DTOs, stored permission seed, frontend forms/navigation, migration files, committed API contract and retained implementation evidence. It does not claim every described policy exception has been implemented.
+This follow-up reviewed **all 27 files under `docs/` at the time of that review** for Sprint 5–6 consistency. It reconciles current guidance against the financial services/DTOs, stored permission seed, frontend forms/navigation, migration files, committed API contract and retained implementation evidence. It does not claim every described policy exception has been implemented.
 
 ## What was reconciled
 
@@ -53,3 +53,7 @@ The retained contract currently has **69 paths / 81 operations**, of which finan
 Raw load-evidence SHA-256 at review: `acdd47a811807ed3e1931d1c3ad5b8d5ade9207c701abecfdcc04fa9d36c657f`.
 
 This register covers the current `docs/` tree, including this file; it does not claim that a new document added later has already been reviewed. Merge and production approval remain separate actions.
+
+## Subsequent integration of main
+
+The conflict-resolution update imported the earlier QA report, raw QA evidence and combined technical reference from `main`. They extend the original 27-file inventory above. The imported technical reference and QA report now explicitly identify their historical baseline and link to current finance guidance; raw evidence is retained unchanged. Compose keeps the financial branch health/restart controls alongside main's `.dockerignore` rebuild watches, environment exclusions and fresh-database setup guidance.

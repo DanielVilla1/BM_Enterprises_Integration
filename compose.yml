@@ -60,6 +60,8 @@ services:
           path: ./src/backend/requirements.txt
         - action: rebuild
           path: ./src/backend/Dockerfile
+        - action: rebuild
+          path: ./src/backend/.dockerignore
 
   frontend:
     build:
@@ -93,6 +95,8 @@ services:
           path: ./src/frontend/package-lock.json
         - action: rebuild
           path: ./src/frontend/Dockerfile
+        - action: rebuild
+          path: ./src/frontend/.dockerignore
 
   pgadmin:
     image: dpage/pgadmin4

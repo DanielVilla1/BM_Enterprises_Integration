@@ -9,6 +9,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { MyTripsPanel } from '../../src/components/trips/MyTripsPanel'
 import { PeoplePanel } from '../../src/components/administration/PeoplePanel'
+import { ConfirmReceiptForm } from '../../src/components/trips/ConfirmReceiptForm'
 
 const assignedTrip = {
   trip_id: 'trip-one',
@@ -25,6 +26,15 @@ const assignedTrip = {
 }
 
 describe('role-specific workflow screens', () => {
+  // AI MODIFIED: Keep the receipt input capable of submitting its precise default time.
+  it('renders a receipt time input with milliseconds rather than minute truncation', () => {
+    const markup = renderToStaticMarkup(
+      <ConfirmReceiptForm disabled={false} onConfirm={() => {}} />,
+    )
+    expect(markup).toContain('step="0.001"')
+    expect(markup).toMatch(/value="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}"/)
+  })
+
   it('renders limited employee records without claiming missing account or role information', () => {
     const markup = renderToStaticMarkup(
       <PeoplePanel
