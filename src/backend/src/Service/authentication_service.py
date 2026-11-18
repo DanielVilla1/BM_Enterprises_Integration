@@ -47,6 +47,12 @@ class AuthenticationService:
                 "AUTH_NO_ACTIVE_EMPLOYEE",
                 "No active employee",
                 "This account is not linked to an active employee record.",
+                extensions={
+                    "account_setup": {
+                        "reason": "identity_not_linked" if employee is None else "employee_inactive",
+                        "clerk_user_id": claims.subject,
+                    }
+                },
             )
         return Principal(
             employee_id=employee.employee_id,

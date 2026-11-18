@@ -9,7 +9,15 @@
 
 // AI MODIFIED: Use the supported Core 3 SDK and its Show authentication gates.
 // AI MODIFIED: Add the user menu and let the signed-out gate wrap a branded layout.
-import { ClerkProvider, Show, SignIn, UserButton, useAuth } from '@clerk/react'
+import {
+  ClerkProvider,
+  Show,
+  SignIn,
+  SignOutButton,
+  UserButton,
+  useAuth,
+  useUser,
+} from '@clerk/react'
 import { useEffect } from 'react'
 import { CLERK_PUBLISHABLE_KEY } from './clerkConfig'
 import { registerSessionTokenProvider } from './httpClient'
@@ -73,4 +81,23 @@ export function SessionSignIn() {
  */
 export function SessionUserButton() {
   return <UserButton />
+}
+
+/** @returns {import('react').ReactElement} Recovery before an employee account can load. */
+export function SessionSignOutButton() {
+  const { sessionId } = useAuth()
+  return (
+    <SignOutButton redirectUrl="/" signOutOptions={{ sessionId: sessionId ?? undefined }}>
+      <button type="button" className="btn btn-ghost btn-sm mt-2">
+        Sign out
+      </button>
+    </SignOutButton>
+  )
+}
+
+/** @returns {import('react').ReactElement|null} Identify the signed-in account on recovery screens. */
+export function SessionIdentity() {
+  const { user } = useUser()
+  const email = user?.primaryEmailAddress?.emailAddress
+  return email ? <p className="text-sm text-base-content/70">Signed in as {email}</p> : null
 }

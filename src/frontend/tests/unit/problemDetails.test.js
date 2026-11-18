@@ -74,4 +74,33 @@ describe('normalizeApiError', () => {
     expect(failure.code).toBe('UNEXPECTED_RESPONSE')
     expect(failure.status).toBe(200)
   })
+
+  it('preserves the caller-specific account setup reason and identifier', () => {
+    const failure = normalizeApiError({
+      response: {
+        status: 403,
+        data: {
+          code: 'AUTH_NO_ACTIVE_EMPLOYEE',
+          account_setup: { reason: 'identity_not_linked', clerk_user_id: 'user_current' },
+        },
+      },
+    })
+    expect(failure.accountSetup).toEqual({
+      reason: 'identity_not_linked',
+      clerkUserId: 'user_current',
+    })
+  })
+
+  it('ignores account diagnostics in unauthenticated or unrelated errors', () => {
+    const failure = normalizeApiError({
+      response: {
+        status: 401,
+        data: {
+          code: 'AUTH_INVALID_TOKEN',
+          account_setup: { reason: 'identity_not_linked', clerk_user_id: 'user_unknown' },
+        },
+      },
+    })
+    expect(failure.accountSetup).toBeUndefined()
+  })
 })

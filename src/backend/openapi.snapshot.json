@@ -12,6 +12,29 @@
         "title": "AccessLevel",
         "type": "string"
       },
+      "AccountSetupResponse": {
+        "description": "Diagnostics for the caller's own verified identity, without employee privileges.",
+        "properties": {
+          "clerk_user_id": {
+            "title": "Clerk User Id",
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "identity_not_linked",
+              "employee_inactive"
+            ],
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason",
+          "clerk_user_id"
+        ],
+        "title": "AccountSetupResponse",
+        "type": "object"
+      },
       "AdjustmentRequest": {
         "additionalProperties": false,
         "properties": {
@@ -2737,6 +2760,16 @@
       "ProblemDetailsResponse": {
         "description": "RFC 9457 body returned for every error (application/problem+json).",
         "properties": {
+          "account_setup": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AccountSetupResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "blocking_trip_ids": {
             "anyOf": [
               {
