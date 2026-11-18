@@ -22,11 +22,14 @@ flowchart TB
 
 ## What can I use?
 
-| Screen / area       | Your access                                             |
-| ------------------- | ------------------------------------------------------- |
-| People              | Assign roles, link identity, activate/deactivate        |
-| Dispatch            | Monitor, clear, replace; correct receipts where allowed |
-| Audit / Permissions | Read history and review grants                          |
+| Screen / area           | Your access                                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| People                  | Assign roles, link identity, activate/deactivate                                                                  |
+| Dispatch                | Monitor, clear, replace; correct receipts where allowed                                                           |
+| Audit / Permissions     | Read history and review grants                                                                                    |
+| Trip expenses           | Enter; independently approve/return; finalize charges and future rates                                            |
+| Payroll / Cash advances | Inspect payroll; independently approve designated proposals/advances; no payroll-payment or advance-release grant |
+| Billing / Reports       | Read billing; independently approve requested unpaid voids; inspect authorized reports                            |
 
 ## Quick checklist
 
@@ -36,7 +39,7 @@ flowchart TB
 
 > **Remember:** Order entry needs Dispatcher duties. The assigned Driver still confirms receipt.
 
-> **Finance status:** policies are defined; financial services are not implemented. Preview values are not real pay, debt or invoices.
+> **Finance status:** persistent modules are available on this branch. [Current procedures and role boundaries](../sprint-5-6.md). DEMO records are fictional; real financial use remains gated.
 
 ## When you need the details
 
@@ -72,9 +75,13 @@ Expected outcome: each employee acts through their own authorized identity; oper
 </details>
 
 <details>
-<summary><strong>Financial responsibilities — policies defined, screens are previews</strong></summary>
+<summary><strong>Financial responsibilities</strong></summary>
 
-Under [financial policies](../../decisions/financial-policies.md), configure future-dated earnings percentages; independently approve expenses where permitted, deductions/adjustments and personal advances; review rate variances/negative bases; approve Accounting invoice-void requests. Never approve your own entry or pay. HR records releases/payroll payments; Accounting records collections. If no independent approver exists, leave the item pending. These actions require future implementation and cannot be completed through the preview screens.
+Use **Trip expenses** for charge/expense review and future rate versions; **Payroll** to inspect statements/approve proposals; **Cash advances** for arrangement/delegation approval; **Billing** for read-only oversight and independent void approval.
+
+Under [financial policies](../../decisions/financial-policies.md), configure future-dated earnings percentages; independently approve expenses where permitted, deductions/adjustments and personal advances; review rate variances/negative bases; approve Accounting invoice-void requests. Never approve your own entry or pay. HR records releases/payroll payments; Accounting records collections. If no independent approver exists, leave the item pending. Receipt correction holds affected earnings and invoices. Reconfirm actual receipt and independently review before releasing a hold; a negative base cannot be cleared while still negative. Paid-record/source corrections remain subject to [documented limits](../../decisions/financial-policies.md#implementation-coverage-and-limits).
+
+These supported actions are available through the persistent financial screens; HR payment and Accounting collection controls are hidden from Owner-only accounts.
 
 </details>
 

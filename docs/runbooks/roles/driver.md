@@ -22,11 +22,13 @@ flowchart TB
 
 ## What can I use?
 
-| Screen / area   | Your access                          |
-| --------------- | ------------------------------------ |
-| My trips        | Only your assigned deliveries        |
-| Signed OR       | Upload and view authorized evidence  |
-| Confirm receipt | Your confirmation completes the trip |
+| Screen / area                     | Your access                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| My trips                          | Only your assigned deliveries                                               |
+| Signed OR                         | Upload and view authorized evidence                                         |
+| Confirm receipt                   | Your confirmation completes the trip                                        |
+| Trip expenses                     | Enter/submit fuel/toll or explicit zero only for trips where you are Driver |
+| Payroll / Cash advances / Reports | Own earnings/statements, personal advance requests and owned reports        |
 
 ## Quick checklist
 
@@ -66,7 +68,7 @@ See [OR procedure](../user-guide.md#9-signed-or-stamped-copy-and-completion) for
 
 For a breakdown or crew issue, contact Dispatcher; replacement continues the same trip. For license details, ask Fleet to update them. If you cannot see the trip, refresh and verify the assignment with Dispatcher.
 
-Expense submission for your own trips, your earnings/payroll statement and personal advance requests are planned. The current finance screens are examples, not actual balances. Under [working policies](../../decisions/financial-policies.md), submit evidence for actual trip expenses; an independent person reviews them. Earnings use charge minus approved trip expenses, then your percentage. Personal repayments require an explicit approved arrangement; operating fuel advances are not automatic personal debt.
+Use **Trip expenses** to enter your assigned trips’ fuel/toll lines or declare zero, then submit for independent review. Use **Payroll** to inspect your own earnings/statements, **Cash advances** to request your own personal advance, and **Reports** for your own records. These are persistent records; any `DEMO` values are fictional presentation data. Under [working policies](../../decisions/financial-policies.md), submit evidence for actual trip expenses; an independent person reviews them. Earnings use charge minus approved trip expenses, then your percentage. Personal repayments require an explicit approved arrangement; operating fuel advances are not automatic personal debt.
 
 </details>
 

@@ -17,10 +17,9 @@ flowchart TB
     trips --> truck["One truck<br/>replacement history retained"]:::action
     trips --> crew["One Driver + 1–2 Helpers<br/>crew history retained"]:::action
     trips --> docs["Signed OR + optional stamped copy"]:::done
-    trips -.-> money["PLANNED: earnings and bill allocations"]:::planned
+    trips -.-> money["earnings and bill allocations"]:::action
     classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
 ```
 
 <details>
@@ -31,7 +30,7 @@ flowchart TB
 | Client                           | Organization whose instructions BM records; has many orders                               |
 | Delivery order                   | Manually entered request with locations, date and total load; may need several trips      |
 | Trip                             | One movement belonging to an order, with a truck, one driver and one or two helpers       |
-| Crew                             | Assigned driver/helpers; history is retained for accountability and future earnings       |
+| Crew                             | Assigned driver/helpers; history is retained for accountability and historical earnings   |
 | Truck                            | Vehicle with metric-ton capacity, maintenance state and reservations                      |
 | Advance assignment / reservation | Next trip allocated after prior signed OR upload; does not authorize departure            |
 | Dispatch clearance               | Authorization for an accepted trip to depart after current eligibility checks             |
@@ -145,7 +144,7 @@ Truck statuses: `AVAILABLE`, `ASSIGNED`, `IN_TRANSIT`, `MAINTENANCE`. An assigne
 
 </details>
 
-## Financial states — planned
+## Financial states
 
 **Operational and financial states remain separate.**
 
@@ -154,18 +153,33 @@ flowchart TB
     accTitle: Completion is separate from finance
     accDescr: Completed operations feed independent payroll and billing readiness checks; one branch never waits for payment on the other.
     trip["LIVE · Driver confirms receipt"]:::done --> complete["Trip completed"]:::done
-    complete -.-> payrollReady["PLANNED · Final charge + reviewed expenses"]:::planned
-    complete -.-> billReady["PLANNED · Final charge + OR evidence + unbilled"]:::planned
-    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::planned
-    billReady --> billing["Client batch → invoice → collection record"]:::planned
+    complete -.-> payrollReady["Final charge + reviewed expenses"]:::action
+    complete -.-> billReady["Final charge + OR evidence + unbilled"]:::action
+    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::action
+    billReady --> billing["Client batch → invoice → collection record"]:::action
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
 
 <details>
 <summary><strong>Glossary and exact names</strong></summary>
 
-Expenses: **Entering → Awaiting review → Finalized**, or **Confirmed zero** after independent review. Earnings: **Pending Calculation → Calculated → Finalized**, with review holds. Invoice: **Draft → Issued → Void** when approved. Payments: **Unpaid / Partially paid / Paid**. Final API codes will be established with implementation.
+| Record / view               | Exact code or representation                                                    | Meaning                                                                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Expense sheet               | `ENTERING`, `AWAITING_REVIEW`, `FINALIZED`, `CONFIRMED_ZERO`                    | Editable entry; independent review; approved nonzero or explicit zero. Missing is not zero.                                                          |
+| Trip charge                 | `MISSING`, `AWAITING_REVIEW`, `FINALIZED`                                       | A variance waits for independent Owner review. `held` / `hold_reason` are separate fields.                                                           |
+| Trip earnings summary       | `PENDING_CALCULATION`, `CALCULATED`, `HELD`                                     | Derived readiness summary; incomplete inputs do not create an earning row.                                                                           |
+| Original earning row        | `READY`, `HELD`; nullable `payroll_id`                                          | One original employee/trip entry, with immutable percentage/base/amount snapshots. Payroll allocation is separate from earning state.                |
+| Payroll                     | `DRAFT`, `FINALIZED`, `REVERSED`                                                | Draft previews installments; finalization allocates earnings and posts repayments once; reversal is restricted to unpaid payroll.                    |
+| Employee adjustment         | `PENDING`, `APPROVED`; nullable `payroll_id`                                    | Independent approval before allocation. Types are `CREDIT`, `DEBIT`, `VOLUNTARY`, `OVERPAYMENT`; personal debits/deductions are disabled by default. |
+| Advance workflow            | `REQUESTED`, `APPROVED`, `RELEASED`, `REVIEW_REQUIRED`, `RECONCILED`            | Approval creates no debt. Operating reconciliation can remain under review.                                                                          |
+| Personal advance settlement | Displayed `SETTLED` when released principal is positive and its balance is zero | Derived from the movement ledger; repayment reversal restores the balance without deleting history.                                                  |
+| Advance movement            | `RELEASE`, `RETURN`, `REPAYMENT`, `REVERSAL`                                    | Separate positive-amount ledger operations; operating returns are not payroll repayments.                                                            |
+| Invoice                     | `DRAFT`, `ISSUED`, `VOID_REQUESTED`, `VOID`                                     | Invoice state is separate from collections. `held` blocks issue/collection where applicable.                                                         |
+| Bill allocation             | `InvoiceLine.active`                                                            | A trip can have at most one active allocation. An approved unpaid void releases it while retaining line history.                                     |
+| Payment position            | Unpaid / partially paid / paid, derived from allocations                        | A fully collected invoice can still have invoice state `ISSUED`; excess collections remain explicit unallocated credit.                              |
+
+UI-only design fixtures may use older illustrative labels such as `ZERO_CONFIRMED`; the persistent expense API uses `CONFIRMED_ZERO`. See [the generated API contract](../src/backend/openapi.snapshot.json) and [working policy coverage](decisions/financial-policies.md#implementation-coverage-and-limits).
 
 Weights are metric tons. Monetary policy uses pesos and decimal centavos. Event timestamps are stored in UTC; business dates/cutoffs use Asia/Manila. Browser date/time controls follow the device timezone; operators should set devices to Philippine time.
 

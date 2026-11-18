@@ -35,15 +35,9 @@ flowchart TB
 | Frontend | <http://localhost:5173>             | Normal work and this walkthrough |
 | FastAPI  | <http://localhost:8000/api/v1/docs> | Developer API reference          |
 
-These local addresses were responding on 18 November 2026. If the system has stopped, start the local launcher from PowerShell in the repository root:
+Use [local setup](development.md#4-local-setup) if services are not running. For the configured Docker development stack, `docker compose up -d --build backend frontend` builds/starts the apps and applies migrations; it is not a production deployment. Use provisioned development/staging accounts and check **My account** before acting. Do not put credentials or inbox codes into documentation.
 
-```powershell
-.\.venv\ci312\Scripts\python.exe .\.venv\start_bm_system.py
-```
-
-That launcher belongs to this configured workstation. For a fresh installation, follow [Local setup](development.md#4-local-setup).
-
-Sign in with your provisioned account. Your local `.venv/development-role-logins.csv` contains the development account details; keep that file private. Enter the real inbox code if Clerk requests verification. Open **My account** and check your role before continuing.
+The presentation seed is a separate explicit command in [presentation setup](sprint-5-6.md#presentation-dataset). It adds labelled, fictional records without creating Clerk logins; you cannot sign in as a seeded DEMO Driver/Helper without separately provisioning and linking an authorized development identity.
 
 > **Switching roles:** use separate browser profiles or sign out before signing into the next account. The role picker at `/preview.html` is a sample design tool; use the main frontend for saved records.
 
@@ -121,10 +115,25 @@ Do not confirm a real receipt merely to remove a block. If your test reservation
 | Fleet Manager   | **Fleet** for trucks/maintenance; **People → Driver license** for licenses                                       |
 | Driver          | **My trips** for acceptance, departure, delivery, OR and receipt                                                 |
 | Helper          | **My trips** for assigned deliveries and authorized OR uploads; no Driver progress or receipt actions            |
-| HR and Payroll  | **People** for employee details; **Payroll / Cash advances** are currently previews                              |
-| Accounting      | **Clients / Delivery orders** for permitted reads; finance pages marked **Soon** are previews                    |
+| HR and Payroll  | **People** for employee details; **Payroll / Cash advances / Reports** for persistent financial work             |
+| Accounting      | **Clients / Delivery orders** for reads; **Trip expenses / Billing / Reports** within Accounting’s remit         |
 
-**Stop at operational completion when testing saved business workflows.** Expenses, payroll, advances, billing and expanded reports currently show sample data. Their working policies are documented, but those screens do not persist financial transactions.
+## 6. Continue through fictional finance
+
+Use a dedicated development/staging scenario. Seeded records are also available for read-only presentation, but their counts/states can change if you edit them. Do not treat DEMO amounts as actual business records.
+
+| Step | Role                                 | Action                                                                                                                          | Expected result                                                                             |
+| ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1    | Assigned Driver, Dispatcher or Owner | **Trip expenses → Add an expense line** with fictional fuel/toll evidence, or **Declare zero expenses**; **Submit for review**. | Entering → Awaiting review; missing data never equals zero.                                 |
+| 2    | Independent Accounting/Owner         | **Review declaration**; approve or return with a reason.                                                                        | Finalized expenses or Confirmed zero; no contributor/beneficiary approves.                  |
+| 3    | Accounting/Owner                     | **Finalize agreed hauling charge** with matching agreed/final values. Send a variance to a different Owner.                     | Financial readiness; automatic individual earnings after all prerequisites.                 |
+| 4    | HR                                   | **Payroll**: inspect earnings; prepare a closed 1st/16th-start period and review statements.                                    | Draft previews installments without posting debt repayment; late earnings carry forward.    |
+| 5    | HR                                   | **Finalize reviewed payroll**, then record only a simulated payment explicitly labelled DEMO.                                   | Once-only allocations/repayments and a recorded payment, not an actual transfer.            |
+| 6    | Accounting                           | **Billing → Build client billing batch** for ready trips, review lines and **Issue reviewed invoice**.                          | One active allocation per charge; payroll finalization is not required for billing.         |
+| 7    | Accounting                           | Record only a fictional collection explicitly labelled DEMO; inspect balances.                                                  | Invoice and payment position stay separate; excess credit is explicit.                      |
+| 8    | Owner and each role                  | **Reports**; compare own/remit-limited views.                                                                                   | Owner oversight, HR payroll, Accounting billing, crew-owned records; no cross-role leakage. |
+
+A current period cannot finalize before its last Manila business day ends; use the existing seeded closed-period presentation rather than falsifying a real trip date. Personal deductions stay disabled pending D16, and no real financial use is approved by this exercise. For exact commands, advances, retries and correction limits, use the [financial procedures](user-guide.md#10-dashboard-audit-permissions-and-finance).
 
 <details>
 <summary><strong>If a step is missing or blocked</strong></summary>

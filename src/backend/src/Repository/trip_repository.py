@@ -336,6 +336,31 @@ class TripRepository:
                 .with_for_update()
             ).all()
 
+    # AI MODIFIED: Expose retained truck replacement history for authorized reports.
+    def list_replacements(self, trip_id: UUID) -> list[TruckReplacement]:
+        return self.list_replacements_for_trips([trip_id])
+
+    def list_replacements_for_trips(self, trip_ids: list[UUID]) -> list[TruckReplacement]:
+        if not trip_ids:
+            return []
+        rows = self._session.scalars(
+            select(TruckReplacementRow)
+            .where(TruckReplacementRow.trip_id.in_(trip_ids))
+            .order_by(TruckReplacementRow.effective_at)
+        ).all()
+        return [
+            TruckReplacement(
+                row.replacement_id,
+                row.trip_id,
+                row.original_truck_id,
+                row.replacement_truck_id,
+                row.reason,
+                row.effective_at,
+                row.replaced_by,
+            )
+            for row in rows
+        ]
+
     def lock_trip(self, trip_id: UUID) -> None:
         self._session.execute(
             select(TripRow.trip_id).where(TripRow.trip_id == trip_id).with_for_update()

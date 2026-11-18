@@ -22,11 +22,12 @@ flowchart TB
 
 ## What can I use?
 
-| Screen / area             | Your access                                   |
-| ------------------------- | --------------------------------------------- |
-| Clients / Delivery orders | Create and update permitted records           |
-| Dispatch                  | Assign, clear, change crew/truck, cancel/fail |
-| Fleet / People            | Read condition and limited license status     |
+| Screen / area             | Your access                                                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Clients / Delivery orders | Create and update permitted records                                                                              |
+| Dispatch                  | Assign, clear, change crew/truck, cancel/fail                                                                    |
+| Fleet / People            | Read condition and limited license status                                                                        |
+| Trip expenses / Reports   | Enter/submit supported expenses; operational reports; no expense approval, commercial rates or payroll of others |
 
 ## Quick checklist
 
@@ -71,7 +72,7 @@ For license problems, open **People → License status** or refer to Fleet. For 
 <details>
 <summary><strong>Expenses — future workflow</strong></summary>
 
-You will enter supported trip expenses and evidence, then submit for independent Accounting/Owner review. You cannot approve your own expenses. Fuel operating advances are reconciled separately from actual fuel purchases. Today the expense page is a preview; follow the current external recordkeeping process until persistent services are delivered.
+Open **Trip expenses**, add supported fuel/toll lines and evidence references or explicitly declare zero, then submit for independent Accounting/Owner review. You cannot approve your own expenses. Fuel operating advances are reconciled separately from actual fuel purchases. Expense entry/review states now persist. Dispatcher cannot approve expenses, finalize charges, inspect hauling rates or other employees’ payroll, or record payments. Reports provide operational exceptions within Dispatcher’s remit.
 
 </details>
 

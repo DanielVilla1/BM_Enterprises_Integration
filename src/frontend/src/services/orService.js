@@ -36,6 +36,15 @@ export async function fetchOrDocumentUrl(tripIdentifier, documentIdentifier) {
   const response = await apiClient.get(
     `/trips/${tripIdentifier}/or-documents/${documentIdentifier}/url`,
   )
+  // AI MODIFIED: Fictional local presentation images still require the caller's bearer token.
+  if (/^\/api\/v1\/finance\/presentation-documents\/[0-9a-f-]{36}$/i.test(response.data.url)) {
+    const imageResponse = await apiClient.get(response.data.url.slice('/api/v1'.length), {
+      responseType: 'blob',
+    })
+    const imageUrl = URL.createObjectURL(imageResponse.data)
+    setTimeout(() => URL.revokeObjectURL(imageUrl), response.data.expires_in_seconds * 1000)
+    return { ...response.data, url: imageUrl }
+  }
   return response.data
 }
 

@@ -13,8 +13,10 @@ import './index.css'
 import App from './App.jsx'
 import { SessionProvider } from './shared/services/clerkSessionService'
 import { applyTheme, readStoredTheme } from './shared/utils/theme'
+import { registerOfflineSupport } from './shared/services/offlineService'
 
 applyTheme(readStoredTheme())
+registerOfflineSupport()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -40,6 +40,14 @@
     {"capability": "billing.manage", "grants": {"OWNER": "VIEW", "ACCOUNTING": "FULL"}},
     {"capability": "invoice.void_approve", "grants": {"OWNER": "FULL"}},
     {"capability": "report.view", "grants": {"OWNER": "FULL", "DISPATCHER": "FULL", "FLEET_MANAGER": "FULL", "DRIVER": "OWN", "HELPER": "OWN", "HR_PAYROLL": "FULL", "ACCOUNTING": "FULL"}},
-    {"capability": "audit_user.manage", "grants": {"OWNER": "FULL"}}
+    {"capability": "audit_user.manage", "grants": {"OWNER": "FULL"}},
+    {"capability": "expense.view", "grants": {"OWNER": "FULL", "DISPATCHER": "FULL", "DRIVER": "OWN", "ACCOUNTING": "FULL"}},
+    {"capability": "payroll.view", "grants": {"OWNER": "FULL", "HR_PAYROLL": "FULL", "DRIVER": "OWN", "HELPER": "OWN"}},
+    {"capability": "payroll.prepare", "grants": {"HR_PAYROLL": "FULL"}},
+    {"capability": "payroll.reverse", "grants": {"OWNER": "FULL"}},
+    {"capability": "earnings.calculate", "grants": {"OWNER": "FULL", "HR_PAYROLL": "FULL"}},
+    {"capability": "cash_advance.view", "grants": {"OWNER": "FULL", "HR_PAYROLL": "FULL", "DRIVER": "OWN", "HELPER": "OWN"}},
+    {"capability": "cash_advance.approval_action", "grants": {"OWNER": "FULL", "HR_PAYROLL": "FULL"}},
+    {"capability": "cash_advance.delegated_approve", "grants": {"HR_PAYROLL": "FULL"}}
   ]
 }

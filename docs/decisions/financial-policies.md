@@ -2,22 +2,40 @@
 
 [Index](../README.md) · [Role manuals](../runbooks/roles/README.md)
 
-> **PLANNED — not live financial processing.** Version 1, 18 November 2026. These user-authorized working policies fill D4–D10. Real payroll still requires D16 legal review.
+> **Working policy v1 — development implementation, 18 November 2026.** These user-authorized defaults fill D4–D10. Core financial workflows persist on `sprint-5-6-finance-and-reporting`; see the implementation coverage below for limits. Real payroll still requires D16 review, QA and release approval.
 
-**Trip completion feeds independent planned payroll and client billing workflows.**
+**Trip completion feeds independent earnings/payroll and client-billing readiness checks.**
 
 ```mermaid
 flowchart TB
     accTitle: Completion is separate from finance
     accDescr: Completed operations feed independent payroll and billing readiness checks; one branch never waits for payment on the other.
     trip["LIVE · Driver confirms receipt"]:::done --> complete["Trip completed"]:::done
-    complete -.-> payrollReady["PLANNED · Final charge + reviewed expenses"]:::planned
-    complete -.-> billReady["PLANNED · Final charge + OR evidence + unbilled"]:::planned
-    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::planned
-    billReady --> billing["Client batch → invoice → collection record"]:::planned
+    complete -.-> payrollReady["Final charge + reviewed expenses"]:::action
+    complete -.-> billReady["Final charge + OR evidence + unbilled"]:::action
+    payrollReady --> payroll["Individual earnings → payroll → payment record"]:::action
+    billReady --> billing["Client batch → invoice → collection record"]:::action
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
+
+## Implementation coverage and limits
+
+These policies describe the intended working process. The current branch implements the core path, with the following concrete boundaries; a stated policy is not proof that every exception has an API or screen.
+
+| Policy       | Current implementation                                                                                                                                                                         | Boundary / remaining decision                                                                                                                                                                                                                                                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D4 expenses  | Fuel/toll lines with mandatory evidence references, review/return, explicit reviewed zero and contributor/beneficiary separation.                                                              | Other categories and an unavailable-receipt exception/waiver workflow are not enabled. The UI adds lines or declares zero; per-line edit/remove controls are not supplied. A returned draft can be replaced via the validated API, while a finalized sheet cannot be rewritten.                                                                         |
+| D5 charges   | Positive fixed per-trip charge and agreed reference amount; a variance needs a different, non-beneficiary Owner.                                                                               | Final charge values are immutable. Dedicated trip-source financial correction/credit-note APIs are not supplied; keep disputed records on hold and design the correction before changing business data.                                                                                                                                                 |
+| D6 rates     | Future Manila-date versions; departure snapshot; original individual earnings retain their amounts/rates.                                                                                      | There is no retroactive rate edit or change of departed-trip crew to recalculate history.                                                                                                                                                                                                                                                               |
+| D7 precision | Decimal strings, fixed-precision storage, half-up individual centavos and recorded crew rounding variance; negative base creates a hold.                                                       | A negative-base hold cannot be cleared while the finalized charge remains below expenses; the missing source-correction process must be resolved independently.                                                                                                                                                                                         |
+| D8 payroll   | Semi-monthly drafts, late carry-forward, independently approved adjustments, finalization, actual payment records and unpaid-payroll reversal.                                                 | `PAYROLL_DEDUCTIONS_ENABLED=false` disables ordinary personal deductions and debit adjustments. D16 review is required before real payroll use. Payment-bearing payroll cannot be reversed through the current API; no statutory deductions, regular salary, benefits or attendance processing is implied.                                              |
+| D9 advances  | Independent Owner approval or explicitly delegated HR approval; different HR releaser; personal installments posted only at payroll finalization, with exact linked reversal.                  | The delegation target must have the HR approval-action grant. There is no general repayment-schedule amendment screen. Operating approvals share the arrangement form, but its installment value is unused and creates no personal debt. Multiple operating-fund arrangements for one trip require a designed expense allocation before reconciliation. |
+| D10 billing  | Explicit past/present delivery cutoff, one-client batches, 30-day default terms (0–365 selectable), unique active allocations, issue, unpaid void approval and collections with excess credit. | No automatic monthly scheduler, tax invoice/PDF certification, refund/credit-note or excess-credit reallocation workflow is implemented. Any payment record prevents void/rebilling; preserve the evidence and resolve the design first.                                                                                                                |
+
+Owner has Full expense entry/review and charge access, payroll oversight, read-only billing plus independent void approval, and no payroll-payment grant. HR prepares/finalizes payroll and records releases/payments; Accounting handles charges, billing and collections. Crew see their own financial records. Combined roles never bypass independence or ownership checks.
+
+These development defaults are separate from legal validation, staging QA and production sign-off. See [procedures](../runbooks/user-guide.md#10-dashboard-audit-permissions-and-finance), [handoff](../runbooks/sprint-5-6.md), and [verified results](../runbooks/sprint-5-6-evidence/verification.md).
 
 ## Seven decisions at a glance
 
@@ -51,23 +69,21 @@ flowchart TB
 
 **Fuel/toll first.** Other categories need the specified policy; an empty expense list is not a zero declaration.
 
-**Fuel/toll first. Other categories need the specified policy; an empty expense list is not a zero declaration.**
-
 ```mermaid
 flowchart TB
     accTitle: Expenses need an independent review
     accDescr: A submitted expense set or explicit zero claim is reviewed by someone other than its enterer.
-    draft["Enter expense lines + evidence"]:::planned --> submit["Submit for review"]:::planned
-    zero["Explicitly declare zero expenses"]:::planned --> submit
+    draft["Enter expense lines + evidence"]:::action --> submit["Submit for review"]:::action
+    zero["Explicitly declare zero expenses"]:::action --> submit
     submit --> independent{"Different authorized reviewer?"}:::wait
     independent -->|No| hold["Remain pending"]:::stop
     independent -->|Yes| check{"Evidence and lines accepted?"}:::wait
     check -->|No| revise["Return with reason; resubmit"]:::wait
     revise --> submit
-    check -->|Yes| final["Finalize expenses or confirm zero"]:::planned
+    check -->|Yes| final["Finalize expenses or confirm zero"]:::action
     classDef wait fill:#fff3d6,stroke:#b77910,color:#62420d,stroke-width:2px
     classDef stop fill:#ffebec,stroke:#c93b49,color:#72232c,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
 
 <details>
@@ -104,20 +120,17 @@ Corrections after earnings or invoice finalization require linked adjustments/cr
 
 **Percentages apply to the earnings base itself.** Later rule changes never rewrite finalized earnings.
 
-**Percentages apply to the earnings base itself. Later rule changes never rewrite finalized earnings.**
-
 ```mermaid
 flowchart TB
     accTitle: Worked earnings example
     accDescr: A 20000 peso charge minus 5500 pesos of expenses gives a 14500 peso base; apply percentages directly to that base.
-    charge["Hauling charge · PHP 20,000"]:::planned --> base["Less approved expenses · PHP 5,500<br/>EARNINGS BASE · PHP 14,500"]:::action
+    charge["Hauling charge · PHP 20,000"]:::action --> base["Less approved expenses · PHP 5,500<br/>EARNINGS BASE · PHP 14,500"]:::action
     base --> one["1 HELPER<br/>Driver 8% = PHP 1,160<br/>Helper 4% = PHP 580"]:::done
     base --> two["2 HELPERS<br/>Driver 6% = PHP 870<br/>Each Helper 3% = PHP 435"]:::done
     one --> total["Crew total · PHP 1,740"]:::done
     two --> total
     classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
     classDef done fill:#e7f6ec,stroke:#208448,color:#16452a,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
 ```
 
 <details>
@@ -163,17 +176,15 @@ Negative base creates an **Owner review hold** and no payable negative earnings.
 
 **Periods: 1–15 and 16–month-end.** A draft previews repayments; finalization posts them once.
 
-**Periods: 1–15 and 16–month-end. A draft previews repayments; finalization posts them once.**
-
 ```mermaid
 flowchart LR
     accTitle: Payroll in two periods
     accDescr: Receipt-confirmed date determines the original period; late readiness carries forward after a finalized cutoff.
-    first["Period A<br/>1–15"]:::planned --> second["Period B<br/>16–month-end"]:::planned
-    second --> next["Next open period"]:::planned
+    first["Period A<br/>1–15"]:::action --> second["Period B<br/>16–month-end"]:::action
+    second --> next["Next open period"]:::action
     late["Trip finances ready late?<br/>Original period already final?"]:::wait --> next
     classDef wait fill:#fff3d6,stroke:#b77910,color:#62420d,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
 
 <details>
@@ -195,22 +206,19 @@ Statements show each trip/rate/gross, gross total, each deduction, repayment, ne
 
 **Approved is not released.** Only actual personal funds released count as debt; operating advances stay separate.
 
-**Approved is not released. Only actual personal funds released count as debt; operating advances stay separate.**
-
 ```mermaid
 flowchart TB
     accTitle: Personal advances only become debt on release
     accDescr: Approval creates no debt; actual release changes the balance and finalized payroll posts agreed repayments.
-    request["Request personal advance"]:::planned --> approve["Independent Owner approval<br/>Debt is still ZERO"]:::planned
-    approve --> release["HR records actual release + acknowledgment"]:::planned
+    request["Request personal advance"]:::action --> approve["Independent Owner approval<br/>Debt is still ZERO"]:::action
+    approve --> release["HR records actual release + acknowledgment"]:::action
     release --> balance["Balance = released principal less posted repayments"]:::action
     balance --> draft["Draft payroll: preview installment only"]:::wait
-    draft --> final["Final payroll: post agreed installment once"]:::planned
+    draft --> final["Final payroll: post agreed installment once"]:::action
     final --> balance
     final -.-> reverse["Reversal restores the exact repayment once"]:::wait
     classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
     classDef wait fill:#fff3d6,stroke:#b77910,color:#62420d,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
 ```
 
 <details>
@@ -230,8 +238,6 @@ Operating advance workflow: authorize trip funds → record release → record a
 
 **Bill eligible trips, even across orders/periods.** Unready work carries over without changing its delivery date.
 
-**Bill eligible trips, even across orders/periods. Unready work carries over without changing its delivery date.**
-
 ```mermaid
 flowchart TB
     accTitle: Billing readiness and carry-over
@@ -239,12 +245,12 @@ flowchart TB
     ready{"Completed + charge final + signed OR<br/>Receipt recorded + no hold + not billed?"}:::wait
     ready -->|No| carry["Carry forward; keep original dates"]:::wait
     carry --> ready
-    ready -->|Yes| batch["Accounting: one-client draft batch"]:::planned
-    batch --> issue["Issue invoice<br/>Default terms: 30 calendar days"]:::planned
-    issue --> payment["Record actual partial or full collection"]:::planned
+    ready -->|Yes| batch["Accounting: one-client draft batch"]:::action
+    batch --> issue["Issue invoice<br/>Default terms: 30 calendar days"]:::action
+    issue --> payment["Record actual partial or full collection"]:::action
     issue -.-> void["Void request → different Owner approval<br/>Reconcile money before rebilling"]:::wait
     classDef wait fill:#fff3d6,stroke:#b77910,color:#62420d,stroke-width:2px
-    classDef planned fill:#f0ebff,stroke:#7856ad,color:#412c65,stroke-width:2px,stroke-dasharray:5 4
+    classDef action fill:#e8f1ff,stroke:#2563eb,color:#163566,stroke-width:2px
 ```
 
 <details>
@@ -273,11 +279,11 @@ D1 OR title/helper upload authorization; D2 post-departure crew changes; D3 fail
 
 ## 10. Implementation acceptance checks
 
-**Prove the money rules with tests before finance is marked live.**
+**Automated financial checks passed on this branch; manual, legal and release gates remain.**
 
 <details>
 <summary><strong>Full policy, controls and edge cases</strong></summary>
 
-Before marking finance live, prove: missing expenses never equal zero; no self-approval with combined roles; sample percentages match; historical rates do not change; negative base/pay hold; one original employee/trip earning; draft payroll does not repay advances; approved but unreleased advances create no debt; partial release/repayment/reversal remain exact; client nonpayment does not block earnings; one active bill per charge; old trips carry over unchanged; operational completion remains independent. Cover concurrent retries on PostgreSQL and role/field/ownership access, not only happy-path calculations.
+The financial regressions exercise the following acceptance rules: missing expenses never equal zero; no self-approval with combined roles; sample percentages match; historical rates do not change; negative base/pay hold; one original employee/trip earning; draft payroll does not repay advances; approved but unreleased advances create no debt; partial release/repayment/reversal remain exact; client nonpayment does not block earnings; one active bill per charge; old trips carry over unchanged; operational completion remains independent. Cover concurrent retries on PostgreSQL and role/field/ownership access, not only happy-path calculations.
 
 </details>

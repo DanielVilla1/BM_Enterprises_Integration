@@ -17,6 +17,7 @@ from uuid import UUID
 from ..Contract.i_audit_repository import IAuditRepository
 from ..Contract.i_document_repositories import IOrDocumentRepository
 from ..Contract.i_employee_repository import IEmployeeRepository
+from ..Contract.i_financial_repository import ITripFinancialControls
 from ..Contract.i_fleet_repositories import IDriverLicenseRepository, ITruckRepository
 from ..Contract.i_operations_repositories import IDeliveryOrderRepository
 from ..Contract.i_trip_repository import ITripRepository
@@ -74,6 +75,7 @@ class TripService:
         audit: IAuditRepository,
         unit_of_work: IUnitOfWork,
         today_provider: Callable[[], date] = manila_today,
+        financial_controls: ITripFinancialControls | None = None,
     ) -> None:
         self._trips = trips
         self._orders = orders
@@ -85,6 +87,7 @@ class TripService:
         self._audit = audit
         self._unit_of_work = unit_of_work
         self._today_provider = today_provider
+        self._financial_controls = financial_controls
 
     # ----- queries -----------------------------------------------------------------
 
@@ -273,11 +276,16 @@ class TripService:
     def depart_trip(
         self, principal: Principal, level: AccessLevel, trip_id: UUID, trace_id: str | None
     ) -> TripView:
+        # AI MODIFIED: Use the finance lock order before snapshotting historical rates.
+        if self._financial_controls:
+            self._financial_controls.lock_finances()
         trip = self._driver_trip(principal, level, trip_id)
         self._require_status(trip, {TripStatus.CLEARED_FOR_DISPATCH}, "TRIP_NOT_CLEARED")
         self._trips.lock_resources([trip.truck_id], [trip.driver_id, *trip.helper_ids])
         self._ensure_dispatchable(trip)
         self._trips.set_status(trip_id, TripStatus.IN_TRANSIT)
+        if self._financial_controls:
+            self._financial_controls.snapshot_departure(trip_id)
         self._refresh_truck(trip.truck_id)
         self._refresh_order(trip.order_id)
         self._record(principal, "trip.departed", trip_id, {}, trace_id)

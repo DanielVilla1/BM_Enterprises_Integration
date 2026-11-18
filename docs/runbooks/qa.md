@@ -2,7 +2,7 @@
 
 [Runbooks](README.md) · [Delivery walkthrough](delivery-walkthrough.md) · [Security review](../decisions/security-hardening.md) · [Verification](verification.md)
 
-**Use this checklist to decide whether the operational system is ready for hosting.** Automated results are supporting evidence; QA must record its own manual results. All cases below start **Not run** for the QA team.
+**Use this checklist to decide whether the operational and financial scope is ready for hosting.** Automated results are supporting evidence; QA must record its own manual results. All cases below start **Not run** for the QA team.
 
 ```mermaid
 flowchart LR
@@ -43,7 +43,7 @@ Test direct API access as well as menus. A hidden button alone is insufficient. 
 | A08 | HR edits employee contact details, then attempts role/link/activation changes                       | Allowed details save; Owner-only changes denied                                                                                                           |
 | A09 | Driver 2 attempts Driver 1's trip progress, OR list and signed URL                                  | No record access (`403`/`404` as appropriate); no signed link leaks                                                                                       |
 | A10 | Helper views assigned trip, then tries progress and receipt confirmation                            | Assigned trip visible; Driver-only actions denied. Upload denied when Helper upload flag/grant is disabled; allowed for assigned Helper only when enabled |
-| A11 | Accounting views clients/orders, then attempts crew progress or another employee's payroll          | Permitted operational reads only; unauthorized writes/private records unavailable; finance pages stay previews                                            |
+| A11 | Accounting views clients/orders, then attempts crew progress or another employee's payroll          | Clients/orders and financial/report summaries within Accounting’s remit; no crew progress, other-employee payroll or Owner audit access                   |
 
 ## 3. Operational workflow checks
 
@@ -107,16 +107,46 @@ Restore temporary rate limits after testing. Restart a test worker if configurat
 
 ## 7. Financial scope and release decision
 
-Expenses, payroll, advances, billing and expanded reports are **previews**. QA checks their labels and access, not real transaction processing. If the release requires financial processing, it is **blocked** until those services are implemented, tested and legally reviewed where required.
+Financial modules now persist on this branch. Run the cases below against fictional data in a dedicated environment; seeded DEMO figures are not actual wages, debts or invoices. Every manual case remains **Not run** until QA records evidence. Automated results are in [Sprint 5–6 verification](sprint-5-6-evidence/verification.md), and [policy coverage](../decisions/financial-policies.md#implementation-coverage-and-limits) identifies unsupported exception flows.
+
+| ID  | Steps                                                                                                                                    | Expected result                                                                                                                                                                   |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F01 | Owner opens Expenses, Payroll, Advances, Billing and Reports; inspect `/me` read grants.                                                 | Authorized workspaces load; Owner expenses are Full, billing is View, payroll-payment action is absent/denied.                                                                    |
+| F02 | Use Dispatcher/assigned Driver to enter fuel/toll evidence or explicitly declare zero; save and submit.                                  | `ENTERING` → `AWAITING_REVIEW`; missing/empty input is never silently zero. Helper/unassigned Driver entry is denied.                                                             |
+| F03 | Accounting or another Owner reviews; return one submission with a reason, then resubmit/approve.                                         | Return makes the sheet editable again. Approval finalizes nonzero expenses or confirms zero. Finalized sheets cannot be rewritten.                                                |
+| F04 | Submit/review with combined roles; have one person contribute, another edit, then the first approve.                                     | No self-, beneficiary- or prior-contributor approval; no combined-role bypass.                                                                                                    |
+| F05 | Finalize equal agreed/final charges; separately create a variance and attempt its own approval.                                          | Equal values finalize; variance waits for independent non-beneficiary Owner review. Charges/rates stay hidden from unauthorized roles.                                            |
+| F06 | Complete a PHP 20,000 trip with PHP 5,500 approved expenses for one-helper and two-helper crews.                                         | Original individual earnings are 1,160/580 or 870/435/435; one original employee/trip entry and correct rounding variance.                                                        |
+| F07 | Finalize finance before receipt; separately complete before finance is ready.                                                            | Earnings are attempted when the last prerequisite arrives. Operational completion/next dispatch do not wait for financial processing.                                             |
+| F08 | Schedule future percentage rules and attempt a current/past date or duplicate effective date.                                            | Only valid future versions save; already departed trips and original finalized earnings retain their snapshot.                                                                    |
+| F09 | Make the earnings base negative; attempt payment or hold release.                                                                        | No negative earning is payable; review hold stays while the negative source remains unresolved.                                                                                   |
+| F10 | HR prepares a 1st/16th-start payroll; inspect draft installments and advance balances.                                                   | Draft previews do not post repayments; an open current period cannot finalize before its last Manila business day ends.                                                           |
+| F11 | Finalize payroll and retry the same key, including concurrently in isolated API tests.                                                   | Earnings allocation, approved adjustments and advance repayments commit once; no over-repayment or negative net pay.                                                              |
+| F12 | Have finance become ready after its original period finalized.                                                                           | Original trip/date retained; ready unallocated earnings carry to the next open payroll instead of reopening history.                                                              |
+| F13 | Prepare a credit adjustment and attempt own approval; attempt a debit/deduction with the setting off.                                    | Independent non-beneficiary Owner approval required; disabled deductions/debits rejected. D16 remains a real-use gate.                                                            |
+| F14 | HR records an actual payroll payment; Owner-only and beneficiary attempt the action; exceed unpaid balance.                              | Only an authorized independent HR actor records permitted amounts; no overpayment or money transfer is implied.                                                                   |
+| F15 | Owner reverses an unpaid finalized payroll; repeat; separately try a payroll with a payment.                                             | Linked repayments reverse exactly once and earnings become unallocated; paid payroll reversal is refused with history intact.                                                     |
+| F16 | Request/approve an advance without releasing it; then record partial releases with acknowledgment.                                       | Approval balance is zero; only actual released principal counts; releases cannot exceed approval and the approver cannot release it.                                              |
+| F17 | Delegate to named HR, test expiry/revocation/self-approval, then have a different HR release.                                            | Only active delegation and grants permit approval; independence is preserved.                                                                                                     |
+| F18 | Release operating funds, record expenses and unused returns, reconcile a shortage or multiple arrangements.                              | No automatic personal debt or duplicate expense. Unresolved variance/multiple arrangements remain for review.                                                                     |
+| F19 | Accounting batches ready trips across orders/earlier periods for one client; include an unready or already allocated trip.               | Eligible carry-over is preserved, invalid choices rejected, one active bill allocation per charge; payroll/whole-order completion/stamped copy are not prerequisites.             |
+| F20 | Issue an invoice; collect partially, fully and in excess; retry one collection.                                                          | Issue/payment positions remain separate; allocations stop at outstanding amount, excess is explicit credit, retries do not duplicate.                                             |
+| F21 | Accounting requests a void; same actor/another Owner approves; repeat with collections present.                                          | Independent approval required. Unpaid approved void releases allocations; any payment record blocks void/rebilling.                                                               |
+| F22 | Correct receipt on a completed trip with earnings and an invoice; attempt further payment, then reconfirm/review.                        | Trip/earning/invoice holds commit atomically; holds block the affected financial actions. Beneficiary cannot release their own hold. Paid history is retained.                    |
+| F23 | Driver/Helper calls another person's payroll/advance/report records; Dispatcher/Fleet/Accounting attempts unauthorized financial fields. | Ownership, field and capability boundaries hold on direct APIs, not just menus.                                                                                                   |
+| F24 | Review Owner, operational, HR, Accounting and crew reports, paging and totals.                                                           | Remit respected; operational counters describe the page, authorized financial totals are clearly distinguished, and document/finance/fleet exceptions are accurate.               |
+| F25 | Load the presentation seed twice in local development; attempt production/remote use.                                                    | Existing records/identities preserved, rerun has no duplicates, DEMO notice shown; unsafe destinations refused. Demo evidence is fictional and still requires file authorization. |
+| F26 | Test production-build installation/offline help and retry after disconnection.                                                           | Public help works where installed; no cached tokens, financial records or claimed offline receipt/payment writes. Device/install verification is recorded separately.             |
 
 Deployment planning starts only when:
 
-- [ ] Required operational/manual cases above have evidence and pass; failures are fixed and retested.
-- [ ] No unresolved Critical/High application security defects or unapproved release blockers remain.
-- [ ] Live private-storage, real-device/inbox, restore and rollback checks are recorded.
-- [ ] Hosting architecture specifies database/network isolation, TLS, trusted proxies, shared rate limiting/worker count, logs/alerts and secret ownership.
-- [ ] Financial preview exclusions are accepted in writing by the business Owner.
-- [ ] QA lead and business Owner sign off on the exact commit and release scope; deployment is approved as a separate next step.
+- [ ] Required operational and financial/manual cases have evidence; failures are fixed and retested.
+- [ ] No unresolved Critical/High application defects or unapproved release blockers remain.
+- [ ] Live private storage, real-device/inbox journeys, restore and rollback checks are recorded.
+- [ ] Hosting defines isolation, TLS, trusted proxies, shared rate limiting/worker count, logs/alerts and secret ownership.
+- [ ] The business accepts the exact supported financial scope and unresolved source/paid-record correction limits. D16 review is complete before real payroll use; enabling a setting alone is not legal approval.
+- [ ] The named human reviewer approves authorization, payroll, billing, upload and migration changes.
+- [ ] QA and the business Owner sign off on the exact commit/scope. Merge/deployment remain separate authorized actions; this branch is currently unmerged.
 
 ## 8. Copy this result record
 

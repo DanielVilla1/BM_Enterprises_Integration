@@ -23,11 +23,12 @@ flowchart TB
 
 ## What can I use?
 
-| Screen / area       | Your access                                       |
-| ------------------- | ------------------------------------------------- |
-| My trips            | Your assignments if you have a login              |
-| OR upload / viewing | Only if the Helper grant is enabled               |
-| Crew work           | A recorded Helper can be assigned without a login |
+| Screen / area                     | Your access                                                                                     |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| My trips                          | Your assignments if you have a login                                                            |
+| OR upload / viewing               | Only if the Helper grant is enabled                                                             |
+| Crew work                         | A recorded Helper can be assigned without a login                                               |
+| Payroll / Cash advances / Reports | With a login, own statements, own personal advance requests and owned reports; no expense entry |
 
 ## Quick checklist
 
@@ -60,9 +61,9 @@ The Driver alone accepts, departs, records delivery and confirms company receipt
 </details>
 
 <details>
-<summary><strong>Future personal records</strong></summary>
+<summary><strong>Personal financial records</strong></summary>
 
-Own payroll statements and personal advance requests are planned. One-helper share starts at 4% of earnings base; two-helper shares start at 3% each, under the versioned working policy. These are not current calculated balances or guaranteed preview amounts. Your personal deductions/repayments must be separately documented; operating expenses are not deducted twice. See [financial policies](../../decisions/financial-policies.md).
+With a provisioned login, **Payroll**, **Cash advances** and **Reports** show your own financial records and allow your own personal advance request. Helpers have no expense-entry or approval grant. One-helper share starts at 4% of earnings base; two-helper shares start at 3% each, under the versioned working policy. Your stored trip rate determines actual calculated earnings once the financial inputs are ready; `DEMO` balances are fictional. Your personal deductions/repayments must be separately documented; operating expenses are not deducted twice. See [financial policies](../../decisions/financial-policies.md).
 
 </details>
 

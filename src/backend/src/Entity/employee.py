@@ -39,6 +39,12 @@ class Principal:
 
 
 @dataclass(frozen=True)
+class EmployeeDirectoryEntry:
+    employee_id: UUID
+    full_name: str
+
+
+@dataclass(frozen=True)
 class AuditRecord:
     """One immutable audit entry."""
 

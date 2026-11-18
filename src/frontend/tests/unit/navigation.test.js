@@ -27,7 +27,7 @@ describe('visibleNavigation', () => {
       'delivery_order.manage': 'FULL',
       'truck.manage': 'VIEW',
       'trip.assignment_view': 'VIEW',
-      'expense.enter': 'FULL',
+      'expense.view': 'FULL',
       'report.view': 'FULL',
     })
     expect(keys).toEqual([
@@ -58,21 +58,21 @@ describe('visibleNavigation', () => {
     expect(keys).toEqual(['audit', 'permissions', 'account'])
   })
 
-  it('hides reports from crew members (OWN level) and accepts any matching capability', () => {
-    expect(pageKeys({ 'report.view': 'OWN' })).not.toContain('reports')
-    expect(pageKeys({ 'payroll.view_own': 'OWN' })).toContain('payroll')
-    expect(pageKeys({ 'cash_advance.request': 'OWN' })).toContain('advances')
+  it('shows ownership-scoped reports to crew and accepts any matching capability', () => {
+    expect(pageKeys({ 'report.view': 'OWN' })).toContain('reports')
+    expect(pageKeys({ 'payroll.view': 'OWN' })).toContain('payroll')
+    expect(pageKeys({ 'cash_advance.view': 'OWN' })).toContain('advances')
   })
 
   it('hides fleet from a role without truck access', () => {
     expect(pageKeys({ 'delivery_order.manage': 'VIEW' })).not.toContain('fleet')
   })
 
-  it('flags finance and report pages as previews', () => {
+  it('shows implemented finance and report pages without Soon indicators', () => {
     const preview = visibleNavigation({ 'billing.manage': 'FULL', 'report.view': 'FULL' }).filter(
       (page) => page.preview,
     )
-    expect(preview.map((page) => page.key)).toEqual(['billing', 'reports'])
+    expect(preview).toEqual([])
   })
 })
 

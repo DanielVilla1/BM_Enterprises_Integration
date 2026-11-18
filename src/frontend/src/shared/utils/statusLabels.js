@@ -49,8 +49,12 @@ const STATUS_TABLE = {
     AWAITING_REVIEW: ['Awaiting review', 'warning'],
     FINALIZED: ['Finalized', 'success'],
     ZERO_CONFIRMED: ['Zero expenses confirmed', 'info'],
+    CONFIRMED_ZERO: ['Zero expenses confirmed', 'info'],
   },
   payroll: {
+    DRAFT: ['Draft', 'neutral'],
+    REVERSED: ['Reversed', 'error'],
+    HELD: ['On hold', 'warning'],
     PENDING_CALCULATION: ['Pending calculation', 'warning'],
     CALCULATED: ['Calculated', 'info'],
     FINALIZED: ['Finalized', 'accent'],
@@ -62,6 +66,8 @@ const STATUS_TABLE = {
     RELEASED: ['Released', 'primary'],
     REPAYING: ['Repaying', 'accent'],
     SETTLED: ['Settled', 'success'],
+    RECONCILED: ['Reconciled', 'success'],
+    REVIEW_REQUIRED: ['Review required', 'warning'],
   },
   invoice: {
     DRAFT: ['Draft', 'neutral'],
@@ -69,6 +75,7 @@ const STATUS_TABLE = {
     PARTIALLY_PAID: ['Partly paid', 'warning'],
     PAID: ['Paid', 'success'],
     VOID: ['Void', 'error'],
+    VOID_REQUESTED: ['Void approval requested', 'warning'],
   },
 }
 

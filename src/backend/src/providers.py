@@ -31,21 +31,28 @@ from .rate_limiter import SlidingWindowLimiter
 from .Repository.audit_repository import AuditRepository
 from .Repository.document_repositories import IdempotencyRepository, OrDocumentRepository
 from .Repository.employee_repository import EmployeeRepository
+from .Repository.financial_repository import FinancialRepository
 from .Repository.fleet_repositories import DriverLicenseRepository, TruckRepository
 from .Repository.operations_repositories import ClientRepository, DeliveryOrderRepository
 from .Repository.permission_repository import PermissionRepository
 from .Repository.trip_repository import TripRepository
 from .Repository.unit_of_work import SqlAlchemyUnitOfWork
 from .Repository.webhook_event_repository import WebhookEventRepository
+from .Service.advance_service import AdvanceService
 from .Service.audit_service import AuditService
 from .Service.authentication_service import AuthenticationService
 from .Service.authorization_service import AuthorizationService
+from .Service.billing_service import BillingService
 from .Service.clerk_webhook_service import ClerkWebhookService
 from .Service.client_service import ClientService
 from .Service.delivery_order_service import DeliveryOrderService
 from .Service.driver_license_service import DriverLicenseService
 from .Service.employee_service import EmployeeService
+from .Service.finance_query_service import FinanceQueryService
+from .Service.financial_workflow import FinancialWorkflow
 from .Service.or_service import OrService
+from .Service.payroll_service import PayrollService
+from .Service.trip_finance_service import TripFinanceService
 from .Service.trip_service import TripService
 from .Service.trip_state_synchronizer import TripStateSynchronizer
 from .Service.truck_service import TruckService
@@ -162,6 +169,7 @@ def get_trip_service(session: Session = Depends(get_session)) -> TripService:
         OrDocumentRepository(session),
         AuditRepository(session),
         SqlAlchemyUnitOfWork(session),
+        financial_controls=get_trip_finance_service(session),
     )
 
 
@@ -184,6 +192,8 @@ def get_or_service(
         get_trip_service(session),
         settings.signed_url_ttl_seconds,
         settings.max_upload_bytes,
+        financial_controls=get_trip_finance_service(session),
+        presentation_enabled=settings.environment.lower() in {"development", "test", "presentation"},
     )
 
 
@@ -195,6 +205,44 @@ def get_authorization_service(session: Session = Depends(get_session)) -> Author
     settings = get_settings()
     flags = {"helper_or_upload_enabled": settings.helper_or_upload_enabled}
     return AuthorizationService(PermissionRepository(session), flags)
+
+
+# AI MODIFIED: Financial services share one request session and transaction ports.
+def _financial_service(service_type: type[FinancialWorkflow], session: Session) -> FinancialWorkflow:
+    return service_type(
+        FinancialRepository(session),
+        TripRepository(session),
+        DeliveryOrderRepository(session),
+        OrDocumentRepository(session),
+        EmployeeRepository(session),
+        get_authorization_service(session),
+        AuditRepository(session),
+        SqlAlchemyUnitOfWork(session),
+        get_settings().payroll_deductions_enabled,
+        ClientRepository(session),
+        get_settings().environment.lower() in {"development", "test", "presentation"},
+        TruckRepository(session),
+    )
+
+
+def get_trip_finance_service(session: Session = Depends(get_session)) -> TripFinanceService:
+    return _financial_service(TripFinanceService, session)  # type: ignore[return-value]
+
+
+def get_advance_service(session: Session = Depends(get_session)) -> AdvanceService:
+    return _financial_service(AdvanceService, session)  # type: ignore[return-value]
+
+
+def get_payroll_service(session: Session = Depends(get_session)) -> PayrollService:
+    return _financial_service(PayrollService, session)  # type: ignore[return-value]
+
+
+def get_billing_service(session: Session = Depends(get_session)) -> BillingService:
+    return _financial_service(BillingService, session)  # type: ignore[return-value]
+
+
+def get_finance_query_service(session: Session = Depends(get_session)) -> FinanceQueryService:
+    return _financial_service(FinanceQueryService, session)  # type: ignore[return-value]
 
 
 def get_webhook_service(

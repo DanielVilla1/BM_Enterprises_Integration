@@ -14,8 +14,9 @@ from fastapi.routing import APIRoute
 from sqlalchemy import select
 
 from backend.main import app
+from backend.src.config import get_settings
 from backend.src.Entity.access import AccessLevel, RoleCode
-from backend.src.providers import get_principal
+from backend.src.providers import get_principal, get_rate_limiter
 from backend.src.Repository.orm_models import RolePermissionRow
 
 PUBLIC_ROUTES = {("GET", "/api/v1/health"), ("POST", "/api/v1/webhooks/clerk")}
@@ -30,12 +31,32 @@ def _dependency_calls(dependant) -> Iterator[object]:
 
 
 def _all_routes() -> list[tuple[str, str, APIRoute]]:
+    # AI MODIFIED: FastAPI now keeps included routers as branches instead of flattening app.routes.
+    def api_routes(routes) -> Iterator[APIRoute]:
+        for route in routes:
+            if isinstance(route, APIRoute):
+                yield route
+            elif included := getattr(route, "original_router", None):
+                yield from api_routes(included.routes)
+
     return [
         (method, route.path, route)
-        for route in app.routes
-        if isinstance(route, APIRoute)
+        for route in api_routes(app.routes)
         for method in sorted(route.methods - {"HEAD", "OPTIONS"})
     ]
+
+
+def test_permission_inventory_covers_every_openapi_operation() -> None:
+    enumerated = {(method.lower(), path) for method, path, _route in _all_routes()}
+    documented = {
+        (method, path)
+        for path, operations in app.openapi()["paths"].items()
+        for method in operations
+        if method in {"get", "post", "put", "patch", "delete"}
+    }
+    assert ("post", "/api/v1/finance/payrolls") in enumerated
+    assert ("get", "/api/v1/employees") in enumerated
+    assert enumerated == documented
 
 
 def _capability_rule(route: APIRoute):
@@ -84,6 +105,10 @@ def test_every_role_gets_exactly_what_the_matrix_grants(client, session_factory,
             (row.capability, row.role_code): AccessLevel(row.access_level)
             for row in session.scalars(select(RolePermissionRow)).all()
         }
+        conditions = {
+            (row.capability, row.role_code): row.conditional_setting
+            for row in session.scalars(select(RolePermissionRow)).all()
+        }
     people = {role: employees.create((role,)) for role in RoleCode}
     from backend.tests.conftest import auth_headers
 
@@ -94,9 +119,15 @@ def test_every_role_gets_exactly_what_the_matrix_grants(client, session_factory,
             continue
         capability, minimum, only_levels = rule
         for role, person in people.items():
+            # RBAC checks are independent of the separately tested request budgets.
+            get_rate_limiter().reset()
             level = grants.get((capability, role.value))
             allowed = (
                 level is not None
+                and (
+                    conditions.get((capability, role.value)) is None
+                    or getattr(get_settings(), conditions[(capability, role.value)], False)
+                )
                 and (minimum is None or level.rank >= minimum.rank)
                 and (only_levels is None or level in only_levels)
             )
@@ -120,6 +151,7 @@ def test_unauthenticated_calls_to_protected_routes_return_401_problem_json(clien
     for method, path, _route in _all_routes():
         if (method, path) in PUBLIC_ROUTES:
             continue
+        get_rate_limiter().reset()
         response = client.request(method, _concrete_path(path), json={} if method in BODY_METHODS else None)
         content_type = response.headers.get("content-type", "")
         if response.status_code != 401 or "application/problem+json" not in content_type:

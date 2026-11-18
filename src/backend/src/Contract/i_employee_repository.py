@@ -10,7 +10,7 @@ from typing import Protocol
 from uuid import UUID
 
 from ..Entity.access import RoleCode
-from ..Entity.employee import Employee
+from ..Entity.employee import Employee, EmployeeDirectoryEntry
 
 
 class IEmployeeRepository(Protocol):
@@ -23,6 +23,8 @@ class IEmployeeRepository(Protocol):
     def list_page(self, limit: int, offset: int, only_active: bool | None) -> list[Employee]: ...
 
     def list_all(self) -> list[Employee]: ...
+
+    def list_directory(self) -> list[EmployeeDirectoryEntry]: ...
 
     def list_by_role(self, role_code: RoleCode, only_active: bool) -> list[Employee]: ...
 

@@ -11,20 +11,16 @@
 // AI MODIFIED: Pass conditional OR grants to the crew screen.
 
 import { AccountSummary } from '../components/account/AccountSummary'
-import { AdvancesPreview } from '../components/finance/AdvancesPreview'
+import { lazy, Suspense } from 'react'
 import { AuditPanel } from '../components/administration/AuditPanel'
-import { BillingPreview } from '../components/finance/BillingPreview'
 import { ClientsPanel } from '../components/clients/ClientsPanel'
 import { DashboardPanel } from '../components/dashboard/DashboardPanel'
 import { DeliveryOrdersPanel } from '../components/orders/DeliveryOrdersPanel'
 import { DispatchPanel } from '../components/dispatch/DispatchPanel'
-import { ExpensesPreview } from '../components/finance/ExpensesPreview'
 import { FleetPanel } from '../components/fleet/FleetPanel'
 import { MyTripsPanel } from '../components/trips/MyTripsPanel'
-import { PayrollPreview } from '../components/finance/PayrollPreview'
 import { PeoplePanel } from '../components/administration/PeoplePanel'
 import { PermissionsPanel } from '../components/administration/PermissionsPanel'
-import { ReportsPreview } from '../components/reports/ReportsPreview'
 import { useAuditLog } from '../hooks/useAuditLog'
 import { useClients } from '../hooks/useClients'
 import { useDashboard } from '../hooks/useDashboard'
@@ -35,6 +31,11 @@ import { useOrders } from '../hooks/useOrders'
 import { usePermissionMatrix } from '../hooks/usePermissionMatrix'
 import { useTrucks } from '../hooks/useTrucks'
 import { hasWriteAccess } from '../shared/utils/navigation'
+
+// AI MODIFIED: Load financial screens when opened, keeping operations startup small.
+const FinancePage = lazy(() =>
+  import('./FinancePage').then((module) => ({ default: module.FinancePage })),
+)
 
 /**
  * @function DashboardPage
@@ -282,15 +283,19 @@ export function PageContent({ pageKey, account, openPage }) {
     case 'permissions':
       return <PermissionsPage />
     case 'expenses':
-      return <ExpensesPreview />
     case 'payroll':
-      return <PayrollPreview isOwnView={capabilities['payroll.view_others'] === undefined} />
     case 'advances':
-      return <AdvancesPreview />
     case 'billing':
-      return <BillingPreview />
     case 'reports':
-      return <ReportsPreview />
+      return (
+        <Suspense fallback={<p role="status">Loading workspace…</p>}>
+          <FinancePage
+            key={`${account.employee_id}:${pageKey}`}
+            section={pageKey}
+            account={account}
+          />
+        </Suspense>
+      )
     default:
       return <AccountSummary loadState="ready" account={account} failure={null} />
   }

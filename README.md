@@ -21,7 +21,7 @@ src/
 
 Working modules: employees and role administration, clients, delivery orders, fleet and licenses, dispatch, crew changes, truck replacement, signed OR upload, driver receipt confirmation, operational dashboard, permission viewer and audit viewer.
 
-Trip expenses, earnings, payroll, cash advances, billing and expanded reports have **design previews only**. Their sample figures are not business records. [Financial working policies](docs/decisions/financial-policies.md) define intended behavior; those policies still require financial services, persistence, migrations, APIs and integration tests.
+On branch `sprint-5-6-finance-and-reporting`, expenses, earnings, payroll, advances, billing and reports now have persistent APIs and working screens. This work is **unmerged**. Read the [Sprint 5–6 handoff and presentation guide](docs/runbooks/sprint-5-6.md) for role access, fictional DEMO data, verification and remaining release gates. Personal deductions stay disabled pending D16 review.
 
 ## Operational sequence
 

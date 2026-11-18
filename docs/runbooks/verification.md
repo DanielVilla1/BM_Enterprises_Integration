@@ -1,5 +1,46 @@
 # Workflow/documentation change verification
 
+Recorded implementation evidence: **18 November 2026**, branch `sprint-5-6-finance-and-reporting`, unmerged. Documentation reconciliation was performed afterward against the current source and retained evidence. This page separates current branch results from historical pre-Sprint-5 checks.
+
+## Current Sprint 5–6 evidence
+
+| Check                                  | Recorded result / scope                                                                                                                                                                               |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Complete PostgreSQL suite, Python 3.12 | 258 passed; one opt-in load skip. The separate load check passed.                                                                                                                                     |
+| Complete SQLite suite, Python 3.14     | 251 passed, seven skipped; final focused contract/financial checks passed (five tests). These are the recorded runs, not a newly invented aggregate.                                                  |
+| Frontend                               | 78 tests passed; lint, formatting and production build passed.                                                                                                                                        |
+| Financial/report load                  | 30 trips, 20 users, 300 paced requests; zero failures, 30.27 s, achieved 9.91 requests/s, p95 102.45 ms. Local ASGI/PostgreSQL only.                                                                  |
+| API contract                           | Running development contract matches the committed snapshot; documented RFC 9457 errors are normalized across Python versions.                                                                        |
+| Permissions                            | Owner expenses Full; Owner billing View; no Owner payroll-payment grant. Inventory covers included routers and equals OpenAPI; Helper conditions and record/state/independence rules remain enforced. |
+| Schema and development runtime         | Migrations through 0006; rebuilt/restarted Docker app containers; running Owner workspaces read successfully.                                                                                         |
+| Dependency checks                      | Frontend production audit: zero vulnerabilities reported. Backend requirements audit: no known vulnerabilities reported. No refreshed full-development-audit claim is made.                           |
+| Fictional presentation baseline        | Eight trips, nine earnings, four advances, two payrolls, three invoices; explicit repeatable seed preserves existing records and Clerk links. Later user actions can change these counts/states.      |
+
+The detailed [Sprint 5–6 verification record](sprint-5-6-evidence/verification.md) and generator-owned [load measurement](sprint-5-6-evidence/load-postgres.json) retain the measurements. The documentation-only follow-up checks links/anchors, formatting, state/permission/route consistency and file coverage; it does **not** claim a fresh application, live-provider or browser test run. See the [documentation audit](documentation-audit.md).
+
+```mermaid
+flowchart LR
+    accTitle: Implementation evidence and remaining approval
+    accDescr: Persistent operational and financial code has local verification; manual, provider, legal and production review remain distinct gates.
+    branch["Unmerged Sprint 5–6 branch"] --> local["Local tests + contract + load + audits"]
+    local --> review["Human review + QA + D16"]
+    review --> staging["Live storage · mobile · restore · hosting checks"]
+    staging --> approval["Separate merge/release authorization"]
+```
+
+## Remaining limits
+
+Core finance and reports are implemented; they are no longer sample-only signed-in pages. The isolated `/preview.html` design harness still uses examples. `DEMO` records are fictional database content, not a production certification or actual transfers.
+
+No fresh real Clerk/Supabase journey, phone installation, internet/TLS capacity check, restore drill or production deployment was performed during this documentation update. Real financial use still requires D16 and release approval. Paid-record refunds/reversals, trip-source corrections, unsupported receipt/category exceptions and other limits remain explicit in [policy coverage](../decisions/financial-policies.md#implementation-coverage-and-limits) and [QA acceptance](qa.md).
+
+## Historical record before Sprint 5–6
+
+The collapsed material below is retained as historical evidence. Its old test counts, unimplemented-finance statements, Docker limitations and development-advisory counts describe those earlier reviews, **not the current branch**. Links to current procedures may reflect the present handbook, while the recorded observations remain historical.
+
+<details>
+<summary><strong>Historical workflow, layout and security reviews — superseded implementation status</strong></summary>
+
 Date: 18 November 2026. This records the current review, separately from older developer-guide test counts.
 
 **Passed local checks, outstanding live checks, development advisories and unimplemented finance.**
@@ -152,5 +193,7 @@ The full npm audit reports **five high-severity development dependency findings*
 <summary><strong>Evidence, scope and limitations</strong></summary>
 
 Financial services are still unimplemented; policy documents and previews do not process real payroll/billing. No schema migrations, live financial transactions, role/account mutations or provider credential changes are part of this change. Live Supabase storage, mobile hardware, Docker, production outage/restore drills and jurisdictional payroll/legal review are not certified by local tests.
+
+</details>
 
 </details>
