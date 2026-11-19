@@ -208,6 +208,69 @@ Use provisioned Clerk development/staging accounts according to that instance’
 
 </details>
 
+### Rolling 30-day mock data for the hosted demo
+
+The [recent-data CLI](../../src/backend/scripts/seed_recent.py) targets the existing SQLAlchemy PostgreSQL database used by FastAPI. In this deployment Cloudflare serves the React/Vite frontend and the API runs separately on Render; see [hosted connectivity](hosted-demo-connectivity.md). Run this operator command from a trusted machine or backend job with database access. It adds no public endpoint and does not belong in a Cloudflare frontend build or browser bundle.
+
+From the repository root, using Python from an activated backend virtual environment:
+
+```bash
+python tools/scripts/backend.py backend.scripts.seed_recent --dry-run
+```
+
+For writes, configure `DATABASE_URL` privately in the process environment or the ignored root `.env`. Use the same PostgreSQL database as the hosted API, with the existing `postgresql+psycopg2://` driver and `sslmode=require` or stricter. Migrations must already be at head. Never put this URL in `VITE_*` settings or command arguments. Replace `YOUR_DATABASE_HOST` below with the exact hostname from that URL:
+
+```bash
+python tools/scripts/backend.py backend.scripts.seed_recent --mock-data --confirm-host YOUR_DATABASE_HOST
+```
+
+For local SQLite, set `DATABASE_URL` to the intended local database and omit `--confirm-host`. For a local PostgreSQL database, the matching host flag is still required. `--dry-run` generates the JSON counts and date window without connecting to any database. The older `seed_presentation` command remains local-only and is a separate dataset.
+
+The seed holds **94 rows total across 11 tables**: 40 delivery orders, 6 trips, 12 crew assignments, 8 fictional employees and their 8 roles, 2 clients, 4 trucks, 3 licenses, 6 trip financials, 4 expense sheets and 1 audit event. It captures the runtime clock once with Python's `datetime.now(UTC)` (the stack's equivalent of `new Date()`). Business dates cover **today minus 29 days through today in Manila**, with UTC timestamps, one order on each historical date, five extra weekday orders, varied business hours and a dedicated **six-order batch today** between midnight and that captured instant. Even a run at midnight produces today's entries without future timestamps.
+
+Today also has scheduled, in-transit and delivered/OR-pending trips, pending orders and an available truck for operational KPIs. Historical trips illustrate failed and cancelled requests. Fuel expense sheets and agreed charges populate their existing workspaces. No receipt files, completed deliveries, earnings, invoices, payroll or payments are fabricated; views requiring those records remain empty. Mock employees are unlinked to Clerk and cannot sign in. Fictional license dates expire today so the fixture contains no future dates.
+
+Each run refreshes the same deterministic UUID slots with multi-row `INSERT ... ON CONFLICT DO UPDATE` statements, including dates on later days. Reruns overwrite edits to these sample records, keep their count fixed, and preserve unrelated records and existing Clerk links. Business values use realistic employee/client names, truck plates, locations and references, without visible `MOCK` labels. The internal UUID namespace and audit details still identify the data as fictional. Use these records for demonstration rather than actual operations. An unexpected unique-key collision or foreign-key conflict aborts the transaction. The append-only audit event is inserted once and preserves its original timestamp on reruns; it records initial installation, not each refresh.
+
+To remove the older labelled seed and recreate its 93 business rows with the revised values in the same hosted database, run this from the repository root with that database's `DATABASE_URL` already set:
+
+```bash
+python tools/scripts/backend.py backend.scripts.seed_recent --mock-data --renew --confirm-host YOUR_DATABASE_HOST
+```
+
+`--renew` deletes only the exact primary keys owned by this seed, in foreign-key order, then reinserts the dataset in the **same transaction**. It adds one bounded sign-in-link check and ten table-scoped bulk deletes to the normal seed budget (23 application statements total). It refuses linked sample employees; foreign keys reject any unrelated records referencing the seed, rolling back every deletion. Unrelated data and the original append-only audit event remain intact. If renewal is blocked, investigate the references rather than bypassing constraints. `--dry-run --renew` previews the new date window/counts without connecting or checking database dependencies.
+
+Execution uses one connection with `NullPool`, one transaction and **12 application SQL statements**: one finance-lock update and eleven table batches, with no application SELECTs or per-record queries. Connection setup/transaction control can add driver statements. PostgreSQL connections have a five-second connect timeout, five-second per-statement timeout, two-second lock timeout and fifteen-second idle-transaction timeout. These bound individual waits, not total wall-clock time. Native helpers and existing SQLAlchemy dependencies keep this out of the frontend bundle and avoid adding Faker, storage calls or identity-service calls. Errors roll back all seed writes and omit database exception details from CLI output.
+
+### Refresh mock data automatically when main is deployed
+
+After merging the seed PR, configure the existing Render backend once. The [deployment preparation command](../../src/backend/scripts/prepare_deploy.py) applies Alembic migrations and, when explicitly enabled, refreshes the same 94 mock rows using Render's existing private `DATABASE_URL`. The seed runs during a backend build, not during frontend builds, API requests, worker starts or cold starts. No database credentials need to be copied into GitHub or Cloudflare.
+
+In the Render backend service:
+
+1. Under **Settings**, select branch **main** and set **Auto-Deploy** to **After CI Checks Pass**. This waits for this repository's existing GitHub Actions checks before rebuilding; see [Render's deployment guide](https://render.com/docs/deploys).
+2. Check **Root Directory** and set **Build Command** to the matching command below. Keep the existing working **Start Command**.
+3. Under **Environment**, add `MOCK_DATA_AUTO_REFRESH=true` only for the demo backend. Keep its existing PostgreSQL `DATABASE_URL`, including `sslmode=require` or stricter. Render supplies `RENDER_GIT_BRANCH`; the command refuses automatic seeding unless it is exactly `main`. Preview/feature-branch services must leave mock refresh disabled.
+4. Save and deploy the merged commit once. Future successful builds of `main` run migrations followed by the seed without another local PowerShell command. Logs show `"dry_run": false`, `"total_rows": 94` and the runtime date window. A migration or seed failure fails the build.
+
+If **Root Directory** is `src/backend`:
+
+```bash
+pip install -r requirements.txt && PYTHONPATH=.. python -m backend.scripts.prepare_deploy
+```
+
+If **Root Directory** is empty (repository root):
+
+```bash
+pip install -r src/backend/requirements.txt && python tools/scripts/backend.py backend.scripts.prepare_deploy
+```
+
+`MOCK_DATA_AUTO_REFRESH` defaults to `false`, which applies migrations without mock writes. Set it back to `false` before using the database for actual operations. Refreshing overwrites the seeded demonstration records on each backend build; it preserves unrelated rows. Migration and seed transactions are separate: if seeding fails, successful schema migrations remain applied while the seed's own writes roll back. Roll back schemas only through the project's migration procedures.
+
+In the Cloudflare Pages project, set the production branch to `main` with automatic production deployments enabled under **Settings > Builds & deployments > Configure Production deployments**; see [Cloudflare branch controls](https://developers.cloudflare.com/pages/configuration/branch-build-controls/). Cloudflare rebuilds frontend code when main changes, while Render prepares the backend database. Existing seed data is already visible through the API without rebuilding the frontend. These are separate provider deployments, not one atomic release, and dashboard settings cannot be enabled merely by merging repository code.
+
+This updates the mock dates on backend deployments. It does not refresh them daily when there are no deployments; after midnight, today's dedicated batch appears on the next seed run.
+
 ## 5. Configuration
 
 **Secrets stay server-side.** Copy configuration deliberately; never commit `.env`.
